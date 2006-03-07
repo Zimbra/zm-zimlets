@@ -1,0 +1,34 @@
+<zimlet name="com_zimbra_sforce" version="1.0" description="Salesforce INTEGRATION">
+  <include>sforce.js</include>
+  <includeCSS>sforce.css</includeCSS>
+  <handlerObject>Com_Zimbra_SForce</handlerObject>
+
+  <zimletPanelItem label="Salesforce" icon="SFORCE-panelIcon">
+
+    <toolTipText>Use drag'n'drop to interact with your SalesForce account</toolTipText>
+
+    <dragSource type="ZmContact" />
+    <dragSource type="ZmMailMsg" />
+    <dragSource type="ZmAppt" />    
+    <dragSource type="ZmConv" />
+
+    <contextMenu>
+      <menuItem label="Login" id="LOGIN" />
+      <menuItem label="Preferences..." id="PREFERENCES" />
+      <menuItem />
+      <menuItem label="Visit Salesforce" id="WWW.SFORCE.COM" icon="SFORCE-panelIcon">
+        <canvas type="dialog" title="Salesforce Website" width="800" height="600" />
+        <actionUrl target="http://www.sforce.com">
+          <param name="referrer">www.zimbra.com</param>
+        </actionUrl>
+      </menuItem>
+    </contextMenu>
+
+  </zimletPanelItem>
+
+  <userProperties>
+    <property type="string" name="user" minLength="4" maxLength="32" label="User ID" />
+    <property type="password" name="passwd" minLength="4" maxLength="32" label="Password" />
+  </userProperties>
+
+</zimlet>

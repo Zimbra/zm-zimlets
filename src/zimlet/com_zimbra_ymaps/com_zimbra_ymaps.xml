@@ -1,0 +1,38 @@
+<zimlet name="com_zimbra_ymaps" version="1.1" description="Yahoo Maps">
+	<include>ymaps.js</include>
+	<includeCSS>ymaps.css</includeCSS>
+	<resource>blank_pixel.gif</resource>
+	<resource>ymaps.gif</resource>
+	<handlerObject>Com_Zimbra_YMaps</handlerObject>
+
+	<contentObject type="address">
+		<matchOn>
+			<regex attrs="ig">[\w]{3,}([A-Za-z]\.)?([ \w]*\#\d+)?(\r\n| )[ \w]{3,}\x20[A-Za-z]{2}\x20\d{5}(-\d{4})?\b</regex>
+		</matchOn>
+		<onClick>
+			<canvas type="window" />
+			<actionUrl target="http://maps.yahoo.com/maps_result">
+				<param name="addr">${src.objectContent}</param>
+			</actionUrl>
+		</onClick>
+	</contentObject>
+
+	<zimletPanelItem label="Maps" icon="YMAPS-panelIcon">
+		<toolTipText>Drag'n'drop a contact to display a Yahoo Map</toolTipText>
+		<dragSource type="ZmContact">
+			<canvas type="window" width="800" height="600" />
+			<actionUrl target="http://maps.yahoo.com/maps_result">
+				<param name="addr">${obj.workStreet}</param>
+				<param name="csz">${obj.workPostalCode}</param>
+			</actionUrl>
+		</dragSource>
+		<contextMenu>
+			<menuItem label="Visit Yahoo Maps" id="MAPS.YAHOO.COM" icon="YMAPS-panelIcon">
+				<canvas type="window" width="800" height="600" />
+				<actionUrl target="http://maps.yahoo.com">
+					<param name="referrer">www.zimbra.com</param>
+				</actionUrl>
+			</menuItem>
+		</contextMenu>
+	</zimletPanelItem>
+</zimlet>
