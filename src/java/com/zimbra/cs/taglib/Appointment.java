@@ -88,7 +88,9 @@ public class Appointment extends ZimbraTag {
         int cid = Integer.parseInt(mApptId);
         String id = acct.getId();
         Mailbox mbox = Mailbox.getMailboxByAccountId(id);
-        Invite invite = mbox.getAppointmentById(octxt, cid).getDefaultInvite();
+        Invite invite = mbox.getAppointmentById(octxt, cid).getDefaultInviteOrNull();
+        if (invite == null)
+            return "";
         int fid = sFields.get(mField);
         String val = null;
         switch (fid) {
