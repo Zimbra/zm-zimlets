@@ -124,7 +124,13 @@ if(ZaXDialog.XFormModifiers["ZaNewAccountXWizard"]) {
 	ZaXDialog.XFormModifiers["ZaNewAccountXWizard"].push(ZaSamAccount.AccountXWizModifier);	
 }
 ZaSamAccount.loadMethod = function(by, val, withCos) {
-	
+	var soapDoc = AjxSoapDoc.create("GetSambaDomainsRequest", "urn:zimbraAdmin", null);	
+	soapDoc.set("ldapSearchBase", "dc=ubuntu,dc=zimbra,dc=com");
+	soapDoc.set("query", "objectClass=sambaDomain");	
+	var modifyAccCommand = new ZmCsfeCommand();
+	var params = new Object();
+	params.soapDoc = soapDoc;	
+	resp = modifyAccCommand.invoke(params).Body.GetSambaDomainsResponse;
 }
 
 if(ZaItem.loadMethods["ZaAccount"]) {
