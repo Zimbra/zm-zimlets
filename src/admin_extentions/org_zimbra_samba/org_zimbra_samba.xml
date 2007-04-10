@@ -1,0 +1,4 @@
+<zimlet name="org_zimbra_samba" version="1.0" description="Admin Extension for managing Samba User Accounts" extension="true">
+<include>org_zimbra_samb_md4.js</include>
+<include>org_zimbra_samba.js</include>
+</zimlet>
