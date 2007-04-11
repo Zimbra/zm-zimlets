@@ -3,6 +3,8 @@
        	<property name="loginShells">/bin/bash,/bin/sh</property>        
     	<property name="homePath">/home/%u</property>        
    		<property name="gidBase">10000</property>        
-   		<property name="uidBase">10000</property>    
+   		<property name="uidBase">10000</property>   
+		<property name="ldapSuffix">dc=ubuntu,dc=zimbra,dc=com</property>
+		<property name="ldapGroupSuffix">ou=group</property>
     </global>
 </zimletConfig>

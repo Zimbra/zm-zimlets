@@ -96,12 +96,15 @@ if(ZaXDialog.XFormModifiers["ZaNewAccountXWizard"]) {
 					items: [
 						{type:_ZAWIZGROUP_, 
 							items:[
+								{ref:ZaPosixAccount.A_gidNumber, type:_OSELECT1_, editable:false,choices:this._app.getPosixGroupIdListChoices(), msgName:"Posix group",label:"Posix group", labelLocation:_LEFT_},							
 								{ref:ZaPosixAccount.A_gidNumber, type:_TEXTFIELD_, msgName:ZaPosixAccount.A_gidNumber,label:ZaPosixAccount.A_gidNumber, labelLocation:_LEFT_, cssClass:"admin_xform_number_input"},
 								{ref:ZaPosixAccount.A_uidNumber, type:_TEXTFIELD_, msgName:ZaPosixAccount.A_uidNumber,label:ZaPosixAccount.A_uidNumber, labelLocation:_LEFT_, width:250,
 									getDisplayValue:function () {
 										var val = this.getInstanceValue();
-										if(!val)
+									
+										if(!val) 
 											val = ZaPosixAccount.getNextUid();
+
 										return val;
 									}
 								},

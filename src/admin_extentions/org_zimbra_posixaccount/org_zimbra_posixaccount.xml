@@ -1,3 +1,0 @@
-<zimlet name="org_zimbra_posixaccount" version="1.0" description="Admin Extension for managing  Posix Accounts" extension="true">
-<include>org_zimbra_posixaccount.js</include>
-</zimlet>
