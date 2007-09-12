@@ -1,3 +1,28 @@
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: ZPL 1.1
+ * 
+ * The contents of this file are subject to the Zimbra Public License
+ * Version 1.1 ("License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.zimbra.com/license
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * The Original Code is: Zimbra Collaboration Suite Web Client
+ * 
+ * The Initial Developer of the Original Code is Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
+ * All Rights Reserved.
+ * 
+ * Contributor(s):
+ * 
+ * ***** END LICENSE BLOCK *****
+ */
+
 function Com_Flightexplorer_Fasttrack() {
 }
 
@@ -5,7 +30,7 @@ Com_Flightexplorer_Fasttrack.prototype = new ZmZimletBase;
 Com_Flightexplorer_Fasttrack.prototype.constructor = Com_Flightexplorer_Fasttrack;
 //Map of airline codes 
 
-Com_Flightexplorer_Fasttrack.airlines3 = new Object();
+Com_Flightexplorer_Fasttrack.airlines3 = {};
 Com_Flightexplorer_Fasttrack.airlines3["EIN"] = "Aer Lingus";
 Com_Flightexplorer_Fasttrack.airlines3["SER"] = "Aerocalifornia";
 Com_Flightexplorer_Fasttrack.airlines3["AMX"] = "Aerovias De Mexico";
@@ -494,8 +519,8 @@ function (menuItemId, flightData,flightCode) {
 	if(name)
 		appt.setName(name);
 
-	//this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP).getApptComposeController().show(appt);				
-	this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP).getCalController()._showQuickAddDialog(appt, false);
+	//AjxDispatcher.run("GetApptComposeController").show(appt);				
+	AjxDispatcher.run("GetCalController")._showQuickAddDialog(appt, false);
 }
 
 Com_Flightexplorer_Fasttrack.prototype.createAppointment = 
@@ -507,21 +532,21 @@ function(startDate) {
 	} else {
 		startDate.setMinutes(0);
 	}
-	var newAppt = new ZmAppt(this._appCtxt);
+	var newAppt = new ZmAppt();
 	newAppt.setStartDate(startDate);
 
 	newAppt.setEndDate(newAppt.getStartTime() + ZmCalViewController.DEFAULT_APPOINTMENT_DURATION);
 	newAppt.resetRepeatWeeklyDays();
 	newAppt.resetRepeatMonthlyDayList();
-	newAppt.repeatYearlyMonthsList = startDate.getMonth();
-	newAppt.repeatCustomDayOfWeek = ZmAppt.SERVER_WEEK_DAYS[startDate.getDay()];	
+	newAppt.resetRepeatYearlyMonthsList(startDate.getMonth());
+	newAppt.resetRepeatCustomDayOfWeek();
 	return newAppt;
 }
 
 Com_Flightexplorer_Fasttrack.prototype.singleClicked =
 function () {
 	if(!this.fastrackDlg)
-		this.fastrackDlg =  new FlightStatusDlg(this._appCtxt, this.getShell(), null, this);
+		this.fastrackDlg =  new FlightStatusDlg(this.getShell(), null, this);
 		
 	this.fastrackDlg.setZimlet(this);
 	this.fastrackDlg.popup();
@@ -548,7 +573,7 @@ function(spanElement, contentObjText, matchContext, canvas) {
 	}
 	
 	if(!this.fastrackDlg)
-		this.fastrackDlg =  new FlightStatusDlg(this._appCtxt, this.getShell(), null, this)
+		this.fastrackDlg =  new FlightStatusDlg(this.getShell(), null, this)
 		
 	this.fastrackDlg.setZimlet(this);
 	this.fastrackDlg.popup();
@@ -834,7 +859,7 @@ function(callback, result) {
 	if(flightInfo && callback) {
 		callback.run(flightInfo);	
 	}
-	this._appCtxt.getShell().setBusy(false);
+	appCtxt.getShell().setBusy(false);
 }
 
 

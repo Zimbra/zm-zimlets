@@ -15,7 +15,7 @@
  * The Original Code is: Zimbra Collaboration Suite Web Client
  * 
  * The Initial Developer of the Original Code is Zimbra, Inc.
- * Portions created by Zimbra are Copyright (C) 2006 Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
  * All Rights Reserved.
  * 
  * Contributor(s):
@@ -39,8 +39,8 @@ Com_Zimbra_Reminder.prototype.init =
 function() {
 	this._setReminders();
 	buttons = [DwtDialog.OK_BUTTON];
-	this._msgDialog = new DwtDialog(this._appCtxt.getShell(),null, null, buttons);
-	this._dialog = new DwtDialog(this._appCtxt.getShell(),null, null, buttons);
+	this._msgDialog = new DwtDialog(appCtxt.getShell(),null, null, buttons);
+	this._dialog = new DwtDialog(appCtxt.getShell(),null, null, buttons);
 	this._reloadAction = new AjxTimedAction(this, this._setReminders, true);
 	var reloadMS = (this.getUserProperty("reload") ? this.getUserProperty("reload") : 60) * 60000;
 	AjxTimedAction.scheduleAction(this._reloadAction, reloadMS);
@@ -118,7 +118,7 @@ function(reload) {
 	}
 	// Default to 5 min if no user property is set.
 	var alarmBeforeMS = (this.getUserProperty("remind") ? this.getUserProperty("remind") : 5) * 60000;
-	var cc = this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP).getCalController();
+	var cc = AjxDispatcher.run("GetCalController");
 	try {
 		var now = new Date();
 		// Get any events in the next 5 hours

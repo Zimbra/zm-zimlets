@@ -1,3 +1,28 @@
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: ZPL 1.1
+ * 
+ * The contents of this file are subject to the Zimbra Public License
+ * Version 1.1 ("License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.zimbra.com/license
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * The Original Code is: Zimbra Collaboration Suite Web Client
+ * 
+ * The Initial Developer of the Original Code is Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
+ * All Rights Reserved.
+ * 
+ * Contributor(s):
+ * 
+ * ***** END LICENSE BLOCK *****
+ */
+
 function Com_Zimbra_TravelAgent() {
 	/*if(!ZmOperation.MSG_KEY[201]) {
 		ZmOperation.MSG_KEY[201] = "travelAgent";
@@ -49,11 +74,11 @@ Com_Zimbra_TravelAgent.prototype.menuItemSelected = function(itemId) {
 
 Com_Zimbra_TravelAgent.prototype.showSideStepDlg = 
 function (homeOptions, workOptions, workZip, homeZip,addr) {
-	var view = new DwtComposite(this._appCtxt.getShell());	
+	var view = new DwtComposite(appCtxt.getShell());	
 	this.tabView = new DwtTabView(view,"SideStepTabView");
-	this.flightPage = new TravelAgentFlightFindView(this.tabView,this._appCtxt, this,homeOptions, workOptions, workZip, homeZip);
-	this.carPage = new TravelAgentCarFindView(this.tabView,this._appCtxt, this,homeOptions, workOptions, workZip, homeZip);	
-	this.hotelPage = new TravelAgentHotelFindView(this.tabView,this._appCtxt, this,addr);		
+	this.flightPage = new TravelAgentFlightFindView(this.tabView, this,homeOptions, workOptions, workZip, homeZip);
+	this.carPage = new TravelAgentCarFindView(this.tabView, this,homeOptions, workOptions, workZip, homeZip);	
+	this.hotelPage = new TravelAgentHotelFindView(this.tabView, this,addr);		
 	view.setSize("550px", "400px");
 	this.tabView.setSize("550px", "400px");	
 	this.flightPage.setSize("550px", "400px");	
@@ -63,7 +88,7 @@ function (homeOptions, workOptions, workZip, homeZip,addr) {
 	this.tabkeys.push(this.tabView.addTab("Flight", this.flightPage));
 	this.tabkeys.push(this.tabView.addTab("Car", this.carPage));	
 	this.tabkeys.push(this.tabView.addTab("Hotel", this.hotelPage));		
-	var canvas = new TravelDialog(this._appCtxt.getShell(),  "Search travel reservations across multiple engines",view);
+	var canvas = new TravelDialog(appCtxt.getShell(),  "Search travel reservations across multiple engines",view);
 //	canvas.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(canvas, canvas.popdown));
 	canvas.popup();
 		
@@ -198,11 +223,8 @@ function TravelDialog(parent,title,  view) {
 		this.setView(view);
 	}
 
-	this._appCtxt = this.shell.getData(ZmAppCtxt.LABEL);
-	this._msgDialog = this._appCtxt.getMsgDialog();
-		
 	this._treeView = {};
-	this._opc = this._appCtxt.getOverviewController();
+	this._opc = appCtxt.getOverviewController();
 };
 
 TravelDialog.prototype = new ZmDialog;

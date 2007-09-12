@@ -15,7 +15,7 @@
  * The Original Code is: Zimbra Collaboration Suite Web Client
  *
  * The Initial Developer of the Original Code is Zimbra, Inc.
- * Portions created by Zimbra are Copyright (C) 2006 Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
  * All Rights Reserved.
  *
  * Contributor(s):
@@ -31,11 +31,10 @@ Com_Zimbra_Date.prototype.constructor = Com_Zimbra_Date;
 
 Com_Zimbra_Date.prototype.init =
 function() {
-	Com_Zimbra_Date.prototype._appCtxt = this._appCtxt;
 	Com_Zimbra_Date.prototype._zimletContext = this._zimletContext;
 	Com_Zimbra_Date.prototype._className = "Object";
 	var pri = this._zimletContext.priority;
-	if (this._appCtxt.get(ZmSetting.CALENDAR_ENABLED)) {
+	if (appCtxt.get(ZmSetting.CALENDAR_ENABLED)) {
 		ZmObjectManager.registerHandler("ZmDate1ObjectHandler", ZmObjectManager.DATE, pri);
 		ZmObjectManager.registerHandler("ZmDate2ObjectHandler", ZmObjectManager.DATE, pri);
 		ZmObjectManager.registerHandler("ZmDate3ObjectHandler", ZmObjectManager.DATE, pri);
@@ -131,7 +130,7 @@ Com_Zimbra_Date.prototype.menuItemSelected = function(itemId) {
 
 Com_Zimbra_Date.prototype.toolTipPoppedUp =
 function(spanElement, contentObjText, matchContext, canvas) {
-	var cc = this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP).getCalController();
+	var cc = AjxDispatcher.run("GetCalController");
 	canvas.innerHTML = cc.getDayToolTipText(matchContext ? matchContext.date : new Date());
 };
 
@@ -143,32 +142,47 @@ function(html, idx, obj, context) {
 
 Com_Zimbra_Date.prototype._dayViewListener =
 function() {
-	var calApp = this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP);
+	var loadCallback = new AjxCallback(this, this._handleLoadDayView);
+	AjxDispatcher.require(["CalendarCore", "Calendar", "CalendarAppt"], false, loadCallback, null, true);
+};
+
+Com_Zimbra_Date.prototype._handleLoadDayView =
+function() {
+	var calApp = appCtxt.getApp(ZmApp.CALENDAR);
 	calApp.activate(true, ZmController.CAL_DAY_VIEW, Com_Zimbra_Date._actionContext.date);
 };
 
 Com_Zimbra_Date.prototype._newApptListener =
 function() {
-	var cc = this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP).getCalController();
-	// TODO support ev
-	cc.newAppointmentHelper(Com_Zimbra_Date._actionContext.date, null, null/*. ev.shiftKey */);
+	var loadCallback = new AjxCallback(this, this._handleLoadNewAppt);
+	AjxDispatcher.require(["CalendarCore", "Calendar", "CalendarAppt"], false, loadCallback, null, true);
+};
+
+Com_Zimbra_Date.prototype._handleLoadNewAppt =
+function() {
+	// TODO support ev.shiftKey
+	appCtxt.getAppViewMgr().popView(true, ZmController.LOADING_VIEW);	// pop "Loading..." page
+	AjxDispatcher.run("GetCalController").newAppointmentHelper(Com_Zimbra_Date._actionContext.date);
 };
 
 Com_Zimbra_Date.prototype._searchMailListener =
 function() {
-	this._appCtxt.getSearchController().dateSearch(Com_Zimbra_Date._actionContext.date);
+	appCtxt.getSearchController().dateSearch(Com_Zimbra_Date._actionContext.date);
 };
 
 Com_Zimbra_Date.prototype.clicked =
 function(spanElement, contentObjText, matchContext, canvas) {
-	var calApp = this._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP);
-	calApp.activate(true, null, matchContext.date);
+	var calController = AjxDispatcher.run("GetCalController");
+	calController.setDate(matchContext.date, 0, calController._miniCalendar.getForceRollOver());
+	if (!calController._viewVisible) {
+		calController.show(ZmController.CAL_DAY_VIEW);
+	}
 };
 
 // today/yesterday =======================
 
-function ZmDate1ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate1ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate1ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -196,8 +210,8 @@ function(line, startIndex) {
 
 // {next Tuesday}, {last Monday}, etc
 
-function ZmDate2ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate2ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate2ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -235,8 +249,8 @@ function(line, startIndex) {
 
 // {25th December}, {6th, June}, {6 June 2004}, {25th December, 2005}
 
-function ZmDate3ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate3ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate3ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -269,8 +283,8 @@ function(line, startIndex) {
 
 // {June 6th, 2005}, {June 6}, {May 24 10:11:26 2005},
 
-function ZmDate4ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate4ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate4ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -305,8 +319,8 @@ function(line, startIndex) {
 
 // {12-25-2005}, {06-06-05}, etc
 
-function ZmDate5ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate5ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate5ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -338,8 +352,8 @@ function(line, startIndex) {
 
 // {2005-06-24}
 
-function ZmDate6ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate6ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate6ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -366,8 +380,8 @@ function(line, startIndex) {
 
 //{12/25/2005}, {06/06/05}, etc
 
-function ZmDate7ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate7ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate7ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -399,8 +413,8 @@ function(line, startIndex) {
 
 // {2005/06/24}, {2005/12/25}
 
-function ZmDate8ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate8ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate8ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -425,8 +439,8 @@ function(line, startIndex) {
 
 // {June 2005}
 
-function ZmDate9ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate9ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate9ObjectHandler.prototype = new Com_Zimbra_Date();
@@ -452,8 +466,8 @@ function(line, startIndex) {
 
 // {Tuesday}, {Monday}, etc
 
-function ZmDate10ObjectHandler(appCtxt) {
-	Com_Zimbra_Date.call(this, appCtxt);
+function ZmDate10ObjectHandler() {
+	Com_Zimbra_Date.call(this);
 }
 
 ZmDate10ObjectHandler.prototype = new Com_Zimbra_Date();

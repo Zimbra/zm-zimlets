@@ -1,14 +1,21 @@
 <project name="Zimlet" default="package">
 
-	<!--
+    <property file='build-custom.properties' />
+
+    <!--
 	
 		Use the target reload-zimlets-extra to build all the zimlets, both core and extra,
-		install all the zimlets, then restart the tomcat.
+		install all the zimlets, then restart the webserver.
 		
 	-->
 	<property environment="env"/>
-	<property name="zimbra.home.dir" location="/opt/zimbra" />
-	<property name="deploy.dir" value="${zimbra.home.dir}/tomcat/webapps"/>
+
+    <property name="zimbra.home.dir" location="/opt/zimbra" />
+    <property name="jetty.home.dir" location="${zimbra.home.dir}/jetty" />
+    <property name="webserver.name" value="jetty"/>
+    <property name="webserver.root.dir" location="${zimbra.home.dir}/${webserver.name}"/>
+
+	<property name="deploy.dir" value="${webserver.root.dir}/webapps"/>
 	<property name="deploy.lib.path" value="/service/WEB-INF"/>
 	<property name="deploy.jsp.path" value="/service/jsp"/>
 
@@ -37,8 +44,8 @@
 	<property name="generated.dir" location="${build.dir}/generated" />
 	<property name="generated.java.dir" location="${generated.dir}/src/java" />
 
-	<property name="zimlets" value="com_zimbra_phone,com_zimbra_url,com_zimbra_email,com_zimbra_date,com_zimbra_search"/>
-    <property name="zimlets-extra" value="com_zimbra_tracking,com_zimbra_xslt,com_zimbra_ymaps,com_zimbra_evite,com_zimbra_po,com_zimbra_bugz,com_flightexplorer_fasttrack,com_zimbra_travelagent,com_zimbra_collector,com_zimbra_jspsample,com_zimbra_photo,com_zimbra_ytraffic,com_zimbra_gtranslator,com_zimbra_sforce,com_zimbra_sms,com_zimbra_amzn,com_zimbra_wikipedia,com_zimbra_asterisk,com_zimbra_asteriskmwi"/>
+	<property name="zimlets" value="com_zimbra_phone,com_zimbra_url,com_zimbra_email,com_zimbra_date,com_zimbra_html,com_zimbra_search"/>
+    <property name="zimlets-extra" value="com_zimbra_webex,com_zimbra_tracking,com_zimbra_xslt,com_zimbra_ymaps,com_zimbra_evite,com_zimbra_po,com_zimbra_bugz,com_flightexplorer_fasttrack,com_zimbra_travelagent,com_zimbra_collector,com_zimbra_jspsample,com_zimbra_photo,com_zimbra_ytraffic,com_zimbra_gtranslator,com_zimbra_sforce,com_zimbra_sms,com_zimbra_amzn,com_zimbra_wikipedia,com_zimbra_asterisk,com_zimbra_asteriskmwi,com_zimbra_edu,com_zimbra_videos,com_zimbra_blog,com_zimbra_snapfish"/>
 
 	<condition property="is-windows">
 		<os family="windows" />
@@ -99,6 +106,9 @@
 		<javac destdir="${build.classes.dir}" debug="true" classpathref="class.path">
 			<src refid="all.java.path" />
 		</javac>
+		<javac classpathref="class.path" destdir="${build.classes.dir}"
+			srcdir='../ZimbraWebClient/src' includes='**/templates/**/*.java' 
+		/>
 	</target>
 
 	<target name="package" depends="jar,package-zimlets">
@@ -111,17 +121,17 @@
 		<jar destfile="${dist.lib.dir}/zimbrataglib.jar" basedir="${build.classes.dir}" excludes="**/zimlet/**" />
 	</target>
 
-	<target name="reload-zimlets" depends="deploy-zimlets,restart-tomcat" description="Reload Zimlets"/>
-	<target name="reload-zimlets-extra" depends="deploy-zimlets-extra,restart-tomcat" description="Reload Zimlets Extra"/>
+	<target name="reload-zimlets" depends="deploy-zimlets,restart-webserver" description="Reload Zimlets"/>
+	<target name="reload-zimlets-extra" depends="deploy-zimlets-extra,restart-webserver" description="Reload Zimlets Extra"/>
 
-	<target name="package-zimlets" depends="build-init,compile">
+	<target name="package-zimlets" depends="build-init,compile,templates">
 		<foreach list="${zimlets}" target="package-zimlet" param="zimlet"/>
 		<zip destfile="${dist.zimlet.dir}/com_zimbra_phone.zip" update="true">
 			<fileset dir="${build.classes.dir}" includes="**/NANPHandler.class"/>
 		</zip>
 		<echo message="dist.zimlet.dir=${dist.zimlet.dir}" file="${dist.dir}/build.properties"/>
 	</target>
-	<target name="package-zimlets-extra" depends="build-init,compile">
+	<target name="package-zimlets-extra" depends="build-init,compile,templates">
 		<foreach list="${zimlets-extra}" target="package-zimlet-extra" param="zimlet"/>
 		<zip destfile="${dist.zimlet-extra.dir}/com_zimbra_tracking.zip" update="true">
 			<fileset dir="${build.classes.dir}" includes="**/TrackingHandler.class"/>
@@ -132,6 +142,7 @@
 		<echo>${zimlet}</echo>
 		<zip destfile="${dist.zimlet.dir}/${zimlet}.zip" update="true" >
 			<fileset dir="${src.zimlet.dir}/${zimlet}" />
+			<fileset dir="${build.dir}/templates/${zimlet}" includes="templates/**/*.js" />
 		</zip>
 	</target>
 
@@ -139,7 +150,33 @@
 		<echo>${zimlet}</echo>
 		<zip destfile="${dist.zimlet-extra.dir}/${zimlet}.zip" update="true" >
 			<fileset dir="${src.zimlet.dir}/${zimlet}" />
+			<fileset dir="${build.dir}/templates/${zimlet}" includes="templates/**/*.js" />
 		</zip>
+	</target>
+
+	<target name='templates' depends='build-init,compile'>
+		<taskdef name='template'
+			classname='com.zimbra.kabuki.tools.templates.TemplateTask'
+			classpathref="class.path"
+		/>
+		<for list="${zimlets}" param="zimlet">
+			<sequential>
+				<echo>compiling templates for @{zimlet}</echo>
+				<mkdir dir='${build.dir}/templates/@{zimlet}' />
+				<template destdir='${build.dir}/templates/@{zimlet}' prefix='@{zimlet}' define='true' authoritative="true">
+					<fileset dir='${src.zimlet.dir}/@{zimlet}' includes='templates/**/*.template' />
+				</template>
+			</sequential>
+		</for>
+		<for list="${zimlets-extra}" param="zimlet">
+			<sequential>
+				<echo>compiling templates for @{zimlet}</echo>
+				<mkdir dir='${build.dir}/templates/@{zimlet}' />
+				<template destdir='${build.dir}/templates/@{zimlet}' prefix='@{zimlet}' define='true' authoritative="true">
+					<fileset dir='${src.zimlet.dir}/@{zimlet}' includes='templates/**/*.template' />
+				</template>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="deploy-zimlets" depends="package-zimlets">
@@ -177,7 +214,7 @@
 		</java>
 	</target>
 
-	<target name="restart-tomcat">
-		<ant dir="${server.dir}" target="restart-tomcat"/>
+	<target name="restart-webserver">
+		<ant dir="${server.dir}" target="restart-webserver"/>
 	</target>
 </project>

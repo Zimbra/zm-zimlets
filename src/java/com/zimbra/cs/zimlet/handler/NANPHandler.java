@@ -15,7 +15,7 @@
  * The Original Code is: Zimlets
  * 
  * The Initial Developer of the Original Code is Zimbra, Inc.
- * Portions created by Zimbra are Copyright (C) 2006 Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
  * All Rights Reserved.
  * 
  * Contributor(s): 
@@ -50,9 +50,13 @@ public class NANPHandler implements ZimletHandler {
 
 	// FIXME: this needs to be much more robust...
 	// needed something for testing...
-    private Pattern NANP_NUMBER_PATTERN = Pattern.compile(
-    "\\b(\\(?\\d{3}\\)?[-. ])?\\d{3}[-. ]\\d{4}\\b");
+    //private Pattern NANP_NUMBER_PATTERN = Pattern.compile("\\b(\\(?\\d{3}\\)?[-. ])?\\d{3}[-. ]\\d{4}\\b");
     
+	//More robust, accepts Indian Mobile numbers also including extension numbers
+	//FIXME: Can be more generic and robust
+	private Pattern NANP_NUMBER_PATTERN = Pattern.compile(
+	"(((\\+\\d{2}[-\\. ]\\d{5}[-\\. ]?\\d{5})|(\\b(\\(?\\d{3}\\)?[-. ])?\\d{3}[-. ]\\d{4}\\b)|(\\(\\d{3}\\)[-\\. ]?\\d{7}))(( x| ext)[-#: ]?\\d{1,5}){0,1})");
+	
     /**
      * first digit of area code or exchange must be 2-9
      * second and third digits can't both be '1' and '1'
@@ -104,5 +108,10 @@ public class NANPHandler implements ZimletHandler {
 		h.test("213 555 1212123123");
 		h.test("213 55531212");
 		h.test("_Part_173_14431377.1162933715308");
+		h.test("+91-9996009850");
+		h.test("+91 2030572600 ext:1234");
+		h.test("+91 99236 00373");
+		h.test("213-555-1212 ext#71");
+		h.test("213-555-1212 x2371");
 	}
 }

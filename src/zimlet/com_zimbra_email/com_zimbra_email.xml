@@ -3,11 +3,11 @@
 	<handlerObject>Com_Zimbra_Email</handlerObject>
 	<contentObject type="email">
 		<matchOn>
-			<regex attrs="g">\b([0-9a-zA-Z]+[-._+&amp;])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}\b</regex>
+			<regex attrs="ig">\b(mailto:[ ]*)?([0-9a-zA-Z]+[-._+&amp;])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}([\w/_\.]*(\?\S+)?)\b</regex>
 		</matchOn>
 		<contextMenu>
 			<menuItem label="Search" icon="Search" id="SEARCH"/>
-			<menuItem label="Search Builder" icon="NewContact" id="SEARCHBUILDER"/>
+			<menuItem label="Advanced Search" icon="NewContact" id="SEARCHBUILDER"/>
 			<menuItem label="New Email" icon="NewMessage" id="NEWEMAIL"/>
 			<menuItem label="Edit Contact" icon="Edit" id="NEWCONTACT"/>
 			<menuItem label="New Filter" icon="Plus" id="NEWFILTER"/>

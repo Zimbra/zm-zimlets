@@ -1,10 +1,34 @@
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: ZPL 1.1
+ * 
+ * The contents of this file are subject to the Zimbra Public License
+ * Version 1.1 ("License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.zimbra.com/license
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * The Original Code is: Zimbra Collaboration Suite Web Client
+ * 
+ * The Initial Developer of the Original Code is Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
+ * All Rights Reserved.
+ * 
+ * Contributor(s):
+ * 
+ * ***** END LICENSE BLOCK *****
+ */
 
-function FlightStatusDlg(appCtxt, parent, className, zimlet) {
+function FlightStatusDlg(parent, className, zimlet) {
 	//var buttons = [ DwtDialog.OK_BUTTON, DwtDialog.CANCEL_BUTTON ];
-	ZmDialog.call(this, parent, null, className, "Flight Status");
 	
-	this._appCtxt = appCtxt;
-	this.zimlet = zimlet;	
+	ZmDialog.call(this, {parent:parent, className:className, title:"Flight Status"});
+	
+	this.zimlet = zimlet;
 	var contentEl = this._createContentEl();
 	var contentDiv = this._getContentDiv();
 	contentDiv.appendChild(contentEl);
@@ -12,7 +36,7 @@ function FlightStatusDlg(appCtxt, parent, className, zimlet) {
 	this.currentAirline = null;
 	this.currentFlightNum = null;
 	this._setMouseEventHdlrs();
-	this._objectManager = new ZmObjectManager(this, this._appCtxt);	
+	this._objectManager = new ZmObjectManager(this);	
 	
 	this._flightNumInputField = new DwtInputField({parent:this, type:DwtInputField.STRING,
 											initialValue:"", size:null, maxLen:null,
@@ -61,7 +85,7 @@ FlightStatusDlg.prototype._okButtonListener = function () {
 FlightStatusDlg.prototype.popdown =
 function() {
 //	this.shell.getKeyboardMgr().enable(true);
-	this._appCtxt.getShell().setCursor("default");
+	appCtxt.getShell().setCursor("default");
 	ZmDialog.prototype.popdown.call(this);
 }
 // Protected methods

@@ -1,7 +1,31 @@
-function TravelAgentCarFindView(parent, appCtxt,zimlet, workAirportOptions, homeAirportOptions, workZip, homeZip) {
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: ZPL 1.1
+ * 
+ * The contents of this file are subject to the Zimbra Public License
+ * Version 1.1 ("License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.zimbra.com/license
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * The Original Code is: Zimbra Collaboration Suite Web Client
+ * 
+ * The Initial Developer of the Original Code is Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
+ * All Rights Reserved.
+ * 
+ * Contributor(s):
+ * 
+ * ***** END LICENSE BLOCK *****
+ */
+
+function TravelAgentCarFindView(parent, zimlet, workAirportOptions, homeAirportOptions, workZip, homeZip) {
 	DwtTabViewPage.call(this,parent);
 	this.zimlet = zimlet;
-	this._appCtxt = appCtxt;
 	this._pickupAirportsSelectHome = null;
 	this._pickupAirportsSelectWork = null;
 	this._dropoffAirportsSelectWork = null;
@@ -412,7 +436,7 @@ function () {
 	var dateButtonListener = new AjxListener(this, this._dateButtonListener);
 	var dateCalSelectionListener = new AjxListener(this, this._dateCalSelectionListener);
 		
-	this._pickupDateButton = ZmApptViewHelper.createMiniCalButton(this, this._pickupDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, this._appCtxt, true);
+	this._pickupDateButton = ZmCalendarApp.createMiniCalButton(this, this._pickupDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, true);
 									
 	this._dropoffAirportField = new DwtInputField({parent:this, type:DwtInputField.STRING,
 											initialValue:myAirport, size:null, maxLen:null,
@@ -428,7 +452,7 @@ function () {
 		dropoffTimeCell.appendChild(this._dropoffTimeSelect.getHtmlElement());
 	delete this._dropoffTimeSelectId;	
 
-	this._dropoffDateButton = ZmApptViewHelper.createMiniCalButton(this, this._dropoffDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, this._appCtxt, true);
+	this._dropoffDateButton = ZmCalendarApp.createMiniCalButton(this, this._dropoffDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, true);
 	
 	if(searchSideStep=="true" || searchSideStep===true) {
 		var searchButton = new DwtButton(this);	
@@ -670,11 +694,11 @@ function(ev) {
 	if(ev.target && ev.target.id) {
 		if(ev.target.id==this._pick_coa_id) {
 			/*alert("Clicked");*/
-			this._airportLookupDlg = new TravelAgentAirportLookupDlg(this._appCtxt.getShell(), this._appCtxt, this,this.zimlet);			
+			this._airportLookupDlg = new TravelAgentAirportLookupDlg(appCtxt.getShell(), this,this.zimlet);			
 			this._airportLookupDlg.popup();
 			this._airportLookupDlg.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._setPickupAirportCode));
 		} else if (ev.target.id==this._drop_coa_id) {
-			this._airportLookupDlg = new TravelAgentAirportLookupDlg(this._appCtxt.getShell(), this._appCtxt, this,this.zimlet);			
+			this._airportLookupDlg = new TravelAgentAirportLookupDlg(appCtxt.getShell(), this,this.zimlet);			
 			this._airportLookupDlg.popup();
 			this._airportLookupDlg.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._setDropoffAirportCode));
 		

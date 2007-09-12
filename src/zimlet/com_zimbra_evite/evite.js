@@ -29,6 +29,8 @@ function Com_zimbra_evite() {
 Com_zimbra_evite.prototype = new ZmZimletBase();
 Com_zimbra_evite.prototype.constructor = Com_zimbra_evite;
 
+Com_zimbra_evite.CALENDAR_VIEW = "appointment";
+
 Com_zimbra_evite.prototype.init =
 function() {
 	this.login();
@@ -153,7 +155,7 @@ function(result) {
 			for (var i = 0; i < appts.size(); i++) {
 				var appt = appts.get(i);
 				var name = appt.getName();
-				var startDate = AjxDateUtil.getTimeStr(appt.getStartDate(), "%Y%n%d");
+				var startDate = AjxDateUtil.getTimeStr(appt.startDate, "%Y%n%d");
 				if (name == title) {  // XXX and check the date to really make sure.
 					found = true;
 					break;
@@ -171,7 +173,7 @@ function(result) {
 
 Com_zimbra_evite.prototype.getUsername =
 function() {
-	return this.xmlObj()._appCtxt.get(ZmSetting.USERNAME);
+	return appCtxt.get(ZmSetting.USERNAME);
 };
 
 Com_zimbra_evite.prototype.createAppt =
@@ -222,7 +224,7 @@ function() {
 	if (folders) {
 		for (var i = 0; i < folders.length; i++) {
 			var f = folders[i];
-			if (f && f.name == 'evite' && f.view == ZmOrganizer.VIEWS[ZmOrganizer.CALENDAR]) {
+			if (f && f.name == 'evite' && f.view == Com_zimbra_evite.CALENDAR_VIEW) {
 				this.eviteFolderID = f.id;
 				return;
 			}
@@ -238,7 +240,7 @@ function(parent) {
 	var folderNode = soapDoc.set("folder");
 	folderNode.setAttribute("name", "evite");
 	folderNode.setAttribute("l", parent);
-	folderNode.setAttribute("view", ZmOrganizer.VIEWS[ZmOrganizer.CALENDAR]);
+    folderNode.setAttribute("view", Com_zimbra_evite.CALENDAR_VIEW);
 	var command = new ZmCsfeCommand();
 	var resp = command.invoke({soapDoc: soapDoc});
 	var id = resp.Body.CreateFolderResponse.folder[0].id;
@@ -265,7 +267,7 @@ function() {
 	// for one month ahead.
 	var start = new Date();
 	start.setHours(0, 0, 0, 0);
-	var calController = this.xmlObj()._appCtxt.getApp(ZmZimbraMail.CALENDAR_APP).getCalController();
+	var calController = AjxDispatcher.run("GetCalController");
 	return calController.getApptSummaries(start.getTime(), start.getTime()+AjxDateUtil.MSEC_PER_DAY * 30, true, this.eviteFolderID);
 };
 

@@ -15,7 +15,7 @@
  * The Original Code is: Zimbra Collaboration Suite Web Client
  * 
  * The Initial Developer of the Original Code is Zimbra, Inc.
- * Portions created by Zimbra are Copyright (C) 2006 Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
  * All Rights Reserved.
  * 
  * Contributor(s):
@@ -37,7 +37,7 @@ Com_Zimbra_YMaps.prototype.constructor = Com_Zimbra_YMaps;
 Com_Zimbra_YMaps.prototype.init =
 function() {
 	(new Image()).src = this.getResource('blank_pixel.gif');
-	if (ZmAssistant && ZmAssistant.register) ZmAssistant.register(new Com_Zimbra_YMaps_Asst(this._appCtxt));
+	if (ZmAssistant && ZmAssistant.register) ZmAssistant.register(new Com_Zimbra_YMaps_Asst());
 };
 
 // Y! Maps Webservice URL
@@ -146,7 +146,7 @@ function(img_src, obj) {
 Com_Zimbra_YMaps._callback = 
 function(obj, result) {
 	var r = result.text;
-	Com_Zimbra_YMaps._displayImage(r.substring(r.indexOf("http://img"),r.indexOf("</Result>")), obj);
+	Com_Zimbra_YMaps._displayImage(r.substring(r.indexOf("http://gws"),r.indexOf("</Result>")), obj);
 };
 
 
@@ -154,10 +154,9 @@ function(obj, result) {
 // Zimlet assistant class
 // - used by the Assistant dialog to run games via "command-line"
 //////////////////////////////////////////////////////////////////////////
-function Com_Zimbra_YMaps_Asst(appCtxt) {
-	if (arguments.length == 0) return;
+function Com_Zimbra_YMaps_Asst() {
 	// XXX: localize later (does NOT belong in ZmMsg.properties)
-	ZmAssistant.call(this, appCtxt, "Yahoo Maps", "map", "Map an address using Yahoo Maps");
+	ZmAssistant.call(this, "Yahoo Maps", "map", "Map an address using Yahoo Maps");
 };
 
 Com_Zimbra_YMaps_Asst.prototype = new ZmAssistant();
@@ -166,7 +165,7 @@ Com_Zimbra_YMaps_Asst.prototype.constructor = Com_Zimbra_YMaps_Asst;
 Com_Zimbra_YMaps_Asst.prototype.okHandler =
 function(dialog) {
 	// get reference to the ymaps zimlet
-	var zm = this._appCtxt.getZimletMgr();
+	var zm = appCtxt.getZimletMgr();
 	var zimlet = zm ? zm._ZIMLETS_BY_ID["com_zimbra_ymaps"] : null;
 	if (zimlet && this._address) {
 		zimlet.handlerObject.toolTipPoppedUp(null, this._address, null, dialog.getAssistantDiv());

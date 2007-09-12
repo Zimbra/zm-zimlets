@@ -1,7 +1,31 @@
-function TravelAgentFlightFindView(parent, appCtxt,zimlet, workAirportOptions, homeAirportOptions, workZip, homeZip) {
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: ZPL 1.1
+ * 
+ * The contents of this file are subject to the Zimbra Public License
+ * Version 1.1 ("License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.zimbra.com/license
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * The Original Code is: Zimbra Collaboration Suite Web Client
+ * 
+ * The Initial Developer of the Original Code is Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2006, 2007 Zimbra, Inc.
+ * All Rights Reserved.
+ * 
+ * Contributor(s):
+ * 
+ * ***** END LICENSE BLOCK *****
+ */
+
+function TravelAgentFlightFindView(parent, zimlet, workAirportOptions, homeAirportOptions, workZip, homeZip) {
 	DwtTabViewPage.call(this,parent);
 	this.zimlet = zimlet;
-	this._appCtxt = appCtxt;
 	this._departAirportsSelectHome = null;
 	this._departAirportsSelectWork = null;
 	this._arriveAirportsSelectWork = null;
@@ -88,7 +112,7 @@ function () {
 
 	if(this.zimlet) {
 		var myPlannerClbk = new AjxCallback(this, this.zimlet.myplannerCallback);
-		var url = [ZmZimletBase.PROXY,AjxStringUtil.urlEncode("http://myplanner.org/travelagent.php?id=1")].join("");
+		var url = [ZmZimletBase.PROXY,AjxStringUtil.urlComponentEncode("http://myplanner.org/travelagent.php?id=1")].join("");
 		AjxRpc.invoke(null, url, null, myPlannerClbk);
 	}
 	
@@ -460,7 +484,7 @@ function () {
 	var dateButtonListener = new AjxListener(this, this._dateButtonListener);
 	var dateCalSelectionListener = new AjxListener(this, this._dateCalSelectionListener);
 		
-	this._departDateButton = ZmApptViewHelper.createMiniCalButton(this, this._departDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, this._appCtxt, true);
+	this._departDateButton = ZmCalendarApp.createMiniCalButton(this, this._departDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, true);
 									
 	this._flightToField = new DwtInputField({parent:this, type:DwtInputField.STRING,
 											initialValue:null, size:null, maxLen:null,
@@ -476,7 +500,7 @@ function () {
 		returnTimeCell.appendChild(this._returnTimeSelect.getHtmlElement());
 	delete this._returnTimeSelectId;	
 
-	this._returnDateButton = ZmApptViewHelper.createMiniCalButton(this, this._returnDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, this._appCtxt, true);
+	this._returnDateButton = ZmCalendarApp.createMiniCalButton(this, this._returnDateMiniCalBtnId, dateButtonListener, dateCalSelectionListener, true);
 	
 	this._adultSelect = new DwtSelect(this,[new DwtSelectOption("1", true, "1"), 
 	new DwtSelectOption("2", false, "2"),
@@ -810,11 +834,11 @@ function(ev) {
 	if(ev.target && ev.target.id) {
 		if(ev.target.id==this._dep_coa_id) {
 			/*alert("Clicked");*/
-			this._airportLookupDlg = new TravelAgentAirportLookupDlg(this._appCtxt.getShell(), this._appCtxt, this,this.zimlet);			
+			this._airportLookupDlg = new TravelAgentAirportLookupDlg(appCtxt.getShell(), this,this.zimlet);			
 			this._airportLookupDlg.popup();
 			this._airportLookupDlg.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._setDepAirportCode));
 		} else if (ev.target.id==this._arr_coa_id) {
-			this._airportLookupDlg = new TravelAgentAirportLookupDlg(this._appCtxt.getShell(), this._appCtxt, this,this.zimlet);					
+			this._airportLookupDlg = new TravelAgentAirportLookupDlg(appCtxt.getShell(), this,this.zimlet);					
 			this._airportLookupDlg.popup();
 			this._airportLookupDlg.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._setArrAirportCode));
 		}

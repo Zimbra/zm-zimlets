@@ -15,7 +15,7 @@
  * The Original Code is: Zimbra Collaboration Suite Web Client
  *
  * The Initial Developer of the Original Code is Zimbra, Inc.
- * Portions created by Zimbra are Copyright (C) 2006 Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
  * All Rights Reserved.
  *
  * Contributor(s):
@@ -31,10 +31,10 @@ Com_Zimbra_Url.prototype.constructor = Com_Zimbra_Url;
 
 Com_Zimbra_Url.prototype.init =
 function() {
-	// Pre-load placeholder image
-	(new Image()).src = this.getResource('blank_pixel.gif');
+	
+	this._disablePreview = this.getBoolConfig("disablePreview",true);
 
-	this._alexaId = this.getConfig("alexaThumbnailId");
+	this._alexaId = this.getConfig("alexaThumbnailId");	
 	if (this._alexaId) {
 		this._alexaId = AjxStringUtil.trim(this._alexaId);
 		// console.log("Found Alexa ID: %s", this._alexaId);
@@ -86,11 +86,28 @@ function(spanElement, obj, context, canvas) {
 	if (/^\s*true\s*$/i.test(this.getConfig("stripUrls"))) {
 		url = url.replace(/[?#].*$/, "");
 	}
-
-	if (this._alexaId)
+	
+	if(this._disablePreview){
+		this._showUrlThumbnail(url,canvas);
+	} else if (this._alexaId) {
 		this._showAlexaThumbnail(url, canvas);
-	else
+	} else {
+		// Pre-load placeholder image
+		(new Image()).src = this.getResource('blank_pixel.gif');
 		this._showFreeThumbnail(url, canvas);
+	}
+};
+
+Com_Zimbra_Url.prototype.clicked = function(){
+  var tooltip = DwtShell.getShell(window).getToolTip();
+  if(tooltip) {
+      tooltip.popdown();
+  }
+  return true;
+};
+
+Com_Zimbra_Url.prototype._showUrlThumbnail = function(url, canvas){
+	canvas.innerHTML = "<b>URL:</b> "+url;
 };
 
 Com_Zimbra_Url.prototype._showFreeThumbnail = function(url, canvas) {

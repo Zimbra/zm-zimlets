@@ -15,7 +15,7 @@
  * The Original Code is: Zimbra Collaboration Suite Server.
  * 
  * The Initial Developer of the Original Code is Zimbra, Inc.
- * Portions created by Zimbra are Copyright (C) 2005, 2006 Zimbra, Inc.
+ * Portions created by Zimbra are Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
  * All Rights Reserved.
  * 
  * Contributor(s): 
@@ -35,23 +35,26 @@ public class Note extends ZimbraTag {
 
     private String mId;
 
+    @Override
     public void setId(String val) {
         mId = val;
     }
 
+    @Override
     public String getId() {
         return mId;
     }
 
+    @Override
     public String getContentStart(Account acct, OperationContext octxt) throws ZimbraTagException, ServiceException {
         if (mId == null) {
             throw ZimbraTagException.MISSING_ATTR("id");
         }
         int mid = Integer.parseInt(mId);
-        String id = acct.getId();
+//        String id = acct.getId();
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(id);
         com.zimbra.cs.mailbox.Note note = mbox.getNoteById(octxt, mid);
 
-        return note.getContent();
+        return note.getText();
     }
 }
