@@ -64,7 +64,7 @@ function(obj, canvas) {
 	} else {
 		var url = ZmZimletBase.PROXY + AjxStringUtil.urlComponentEncode(Com_Zimbra_Amzn.URL + obj);
 		DBG.println(AjxDebug.DBG2, "Com_Zimbra_Amzn url " + url);
-		AjxRpc.invoke(null, url, null, new AjxCallback(this, this._searchCallback, obj), true);
+		AjxRpc.invoke(null, url, null, new AjxCallback(this, this._searchCallback,[obj, canvas]), true);
 	}	
 };
 
@@ -178,7 +178,7 @@ function(itemList, obj) {
 	for(var i=0; i < 3; i++) {
 		var imgEl = document.getElementById(ZmZimletBase.encodeId(obj + "_AIMG_" + i));
 		var txtEl = document.getElementById(ZmZimletBase.encodeId(obj + "_ATXT_" + i));
-		if(!items[i]) {
+		if(items && !items[i]) {
 			txtEl.innerHTML = "<b><center>" + this.getMessage("amzn_searchedFor") + obj + "<br/><br/>" + this.getMessage("amzn_error") + "</center></b>";
 			continue;
 		}
@@ -216,13 +216,15 @@ function(obj, results) {
 };
 
 Com_Zimbra_Amzn.prototype._searchCallback = 
-function(obj, results) {
-	var result = AjxXmlDoc.createFromXml(results.text).toJSObject(true, false);
-	var bookInfo = new Object();
-	DBG.dumpObj(result);
-	if(result.Items.Item) {
-		this._displayBooks(result.Items.Item, obj);
-	} else {
-		this._displayBooks(null, obj);
-	}
+function(obj,canvas, results) {
+    if(results && results.success){
+        var result = AjxXmlDoc.createFromXml(results.text).toJSObject(true, false);
+        DBG.dumpObj(result);
+        var items = result.Items;
+        if(items && items.Item){
+            this._displayBooks(items.Item, obj);
+            return;
+        }
+    }
+    canvas.innerHTML = "<table style='height:170px;width:330px;'><tr><th valign='middle'>"+AjxMsg["noResults"]+"</th></tr></table>";
 };
