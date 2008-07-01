@@ -426,14 +426,10 @@ function(lati,longi) {
 
 
     if((!latitude || !longitude) && (!coords ||(coords && (!coords.latitude || !coords.longitude))) && lati!=45){
-        var msg = "<span style=\"text-align:center;\">" +
-                                 "Maxmind is paid service.You need to pay to know latitude and longitude<br>"+
-                                  "otherwise you have to enter latitude and longitude manually."+
-                                 "</span>";
-        var messageDlg = this._getMessageDlg(msg,false);
+        var messageDlg = this._getMessageDlg();
         if (messageDlg)
         {
-            var listener = new AjxListener (this, this.selectLocation,false);
+            var listener = new AjxListener (this, this.selectLocation);
             messageDlg.setButtonListener (DwtDialog.OK_BUTTON, listener);
             messageDlg.popup();
         }
@@ -468,7 +464,7 @@ YahooLocalController.prototype._getGeoIP =
 function(callback) {
 	geoip_country_code = null;
 
-	var url = "http://j.aaaamaxmind.com/app/geoip.js";
+	var url = "http://j.maxmind.com/app/geoip.js";
 	var respCallback = new AjxCallback(this, this._handleGetIP, callback);
 	var serverURL = ZmZimletBase.PROXY + AjxStringUtil.urlComponentEncode(url);
 
@@ -494,26 +490,35 @@ function() {
 };
 
 YahooLocalController.prototype.selectLocation =
-function(isZip){
+function(){
     this.messageDlg.popdown();
-    this._dlg_propertyEditor = new YLocalDialog(appCtxt._shell, null, this._zimlet,isZip);
+    this._dlg_propertyEditor = new YLocalDialog(appCtxt._shell, null, this._zimlet);
     this._dlg_propertyEditor.popup();
 }
 
 YahooLocalController.prototype._locateLocation =
 function(){
+
      var latitude = this._textObj1.getValue();
      var longitude = this._textObj2.getValue();
      this._zimlet.setUserProperty("latitude",latitude);
      this._zimlet.setUserProperty("longitude",longitude);
      this._zimlet._controller._dlg_propertyEditor.popdown();
-     this._zimlet._controller._handleSearchLocal();
+     //if(changebylocation)
+       //this._zimlet._controller.changeLocation({latitude:0,longitude:0});
+     //else
+        this._zimlet._controller._handleSearchLocal();
 }
 
 YahooLocalController.prototype._getMessageDlg =
-function(msg){
+function(){
     this.messageDlg = new DwtDialog (appCtxt.getShell(),null,"Confirmation",[DwtDialog.OK_BUTTON]);
-    this.messageDlg.setContent (msg);
+    this.messageDlg.setContent ("<span style=\"text-align:center;\">" +
+                                 "Maxmind is paid service.You need to pay to know latitude and longitude<br>"+
+                                  "otherwise you have to enter latitude and longitude manually."+
+                                 "</span>"
+                );
+
     return this.messageDlg;
 };
 
@@ -560,20 +565,9 @@ function(zip) {
 YahooLocalController.prototype._handleLatLonForZip =
 function(zip, result) {
 	if (!result || (result && !result.success)) {
-		var msg = "<span style=\"text-align:center;\">" +
-                                 "Csgnetwork is a paid service.You need to pay to know latitude and longitude<br>"+
-                                  "otherwise you have to enter latitude and longitude manually."+
-                                 "</span>";
-        var messageDlg = this._getMessageDlg(msg,true);
-        if (messageDlg)
-        {
-            var listener = new AjxListener (this, this.selectLocation,true);
-            messageDlg.setButtonListener (DwtDialog.OK_BUTTON, listener);
-            messageDlg.popup();
-        }
-        //this.test();
+		this._showErrorLoadingAPI();
 		return;
-    }
+	}
 
 	if (result.text.match(/Zipcode not found!/i)) {
 		appCtxt.setStatusMsg(this._zimlet.getMessage("zipCodeInvalid"), ZmStatusView.LEVEL_CRITICAL);
@@ -605,28 +599,6 @@ function(zip, result) {
 		newLongitude: lon
 	});
 };
-
-YahooLocalController.prototype.setLanLongAndChangeLocation=
-function(){
-    this.popdown();
-    var latitude = this._textObj1.getValue();
-    var longitude = this._textObj2.getValue();
-    var params = {
-		clean: true,
-		typeControl:true,
-		panControl:false,
-		zoomControl:"long",
-		zoomLevel: 6,
-		defaultLat: latitude,
-		defaultLon: longitude
-	};
-    this._zimlet._controller.setView(params);
-
-	this._zimlet._controller.getMapsView().changeLocation({
-		latitude:   latitude,
-		longitude:  longitude
-	});
-}
 
 YahooLocalController.prototype._sendListener =
 function(ev) {
