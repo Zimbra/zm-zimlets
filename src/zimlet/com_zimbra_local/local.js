@@ -40,6 +40,9 @@ function() {
 		if (!localSearchBtnEl) {
 			this.addLocalSearchToolBar((new AjxListener(this,this._localSearchListener)));
 		}
+		else {
+			Dwt.setVisible(localSearchBtnEl, true);
+		}
 	}
 };
 
