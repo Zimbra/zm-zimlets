@@ -1,0 +1,14 @@
+<zimlet name="com_zimbra_searchauto" version="0.1" description="Search Auto-complete">
+  <include>searchauto.js</include>
+  <includeCSS>searchauto.css</includeCSS>
+  <handlerObject>com_zimbra_searchauto</handlerObject>
+
+  <zimletPanelItem label="Search Autocomplete" icon="sa-panelIcon">
+    <toolTipText>Stores and auto-completes Search History</toolTipText>
+  </zimletPanelItem>
+
+  <userProperties>
+   <property type="string" name="history"  value=""/>
+   <property type="string" name="turnONAutoComplete" value="true"/>
+  </userProperties>
+</zimlet>
