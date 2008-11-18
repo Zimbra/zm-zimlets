@@ -62,7 +62,7 @@ Com_Zimbra_Url.prototype._getHtmlContent =
 function(html, idx, obj, context) {
 	var escapedUrl = obj.replace(/\"/g, '\"');
 	if (escapedUrl.substr(0, 4) == 'www.') {
-		escapedUrl = "http://" + escapedUrl + "/";
+		escapedUrl = "http://" + escapedUrl;
 	}
 	html[idx++] = "<a target='_blank' href='";
 	html[idx++] = escapedUrl;
