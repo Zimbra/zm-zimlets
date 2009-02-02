@@ -315,9 +315,7 @@ Com_Zimbra_Video.prototype._createVideoLinksHtml = function(videoLinks){
 		if(i==0){
 			radio.checked = true;
 		}
-        if(AjxEnv.isIE)
-            radio.attachEvent("onclick",selectYouTubeURL)
-        var videoSelectCell = row.insertCell(row.cells.length);
+		var videoSelectCell = row.insertCell(row.cells.length);
 		videoSelectCell.appendChild(radio);
 		var videoLinkCell = row.insertCell(row.cells.length);
 		videoLinkCell.innerHTML = "<div id='"+linkId+"'>"+videoLinks[i]+"</div>";
@@ -355,14 +353,6 @@ Com_Zimbra_Video.prototype._createVideoLinksHtml = function(videoLinks){
 				      dlg.dispose();
 			      }));
 };
-
-function selectYouTubeURL(){
-        var len = this.event.srcElement.parentElement.parentElement.parentElement.children.length;
-        for(var i=0;i<len;i++){
-            this.event.srcElement.parentElement.parentElement.parentElement.children[i].firstChild.firstChild.checked = false;
-        }
-        this.event.srcElement.checked=true;
-    }
 
 
 //Method: Search functionality
