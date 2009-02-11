@@ -94,7 +94,7 @@ function(calcId){
 	var elements = {};
 	elements[ZmAppViewMgr.C_APP_CONTENT] = calcView;
 	elements[ZmAppViewMgr.C_TOOLBAR_TOP] = this._toolbar[ZmId.VIEW_CALC];
-	appViewMgr.createView({viewId:ZmId.VIEW_CALC, elements:elements});
+	appViewMgr.createView(ZmId.VIEW_CALC, null, elements);
 	this._addSelectionListeners(this._toolbar[ZmId.VIEW_CALC]);
 	this._iframe = document.getElementById(iframeId);
 	Dwt.associateElementWithObject(this._iframe, this);
@@ -442,7 +442,7 @@ function(content) {
 	elements[ZmAppViewMgr.C_APP_CONTENT] = resultView;
 	elements[ZmAppViewMgr.C_TOOLBAR_TOP] = this._toolbar[ZmId.VIEW_CALC_RESULT];
 
-	appViewMgr.createView({viewId:ZmId.VIEW_CALC_RESULT, elements:elements});
+	appViewMgr.createView(ZmId.VIEW_CALC_RESULT, null, elements);
 	this._addSelectionListeners(this._toolbar[ZmId.VIEW_CALC_RESULT]);
 
 	return resultView;

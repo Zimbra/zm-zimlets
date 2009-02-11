@@ -142,7 +142,8 @@ function(ev) {
 			var contact = new ZmContact(null);
 			contact.initFromEmail(this._participants[i]);
 
-			var createContactReq = soapDoc.set("CreateContactRequest",null,null,"urn:zimbraMail");
+			var createContactReq = soapDoc.set("CreateContactRequest");
+			createContactReq.setAttribute("xmlns", "urn:zimbraMail");
 			var doc = soapDoc.getDoc();
 			var cn = doc.createElement("cn");
 			createContactReq.appendChild(cn);

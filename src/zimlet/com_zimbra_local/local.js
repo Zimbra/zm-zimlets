@@ -356,7 +356,7 @@ function() {
 	var elements = {};
 	elements[ZmAppViewMgr.C_TOOLBAR_TOP] = this._toolbar;
 	elements[ZmAppViewMgr.C_APP_CONTENT] = this._mapsView;
-	appCtxt.getAppViewMgr().createView({viewId:ZmId.VIEW_YMAPS, elements:elements});
+	appCtxt.getAppViewMgr().createView(ZmId.VIEW_YMAPS, null, elements);
 };
 
 YahooLocalController.prototype._createMapView =

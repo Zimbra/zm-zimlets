@@ -1,4 +1,4 @@
-<zimlet name="com_zimbra_searchrefiner" version="0.1" description="Refines Search">
+<zimlet name="com_zimbra_searchrefiner" version="0.1" description="Search Refiner">
   <include>searchrefiner.js</include>
   <includeCSS>searchrefiner.css</includeCSS>
   <handlerObject>com_zimbra_searchrefiner</handlerObject>
