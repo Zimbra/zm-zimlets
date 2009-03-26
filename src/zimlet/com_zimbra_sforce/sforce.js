@@ -595,6 +595,9 @@ Com_Zimbra_SForce.prototype.dlg_createAccount = function(acct_data, contact_data
 };
 
 Com_Zimbra_SForce.prototype.noteDropped = function(note) {
+	//stores checkboxId and salesforce obj type _dwtIdAndObjType["DWT124"] = "A" or "O" or "C"
+	this._dwtIdAndObjType = [];
+
         if (!note)
                 return;
 
@@ -633,6 +636,7 @@ Com_Zimbra_SForce.prototype.noteDropped = function(note) {
         }
 
         var domains = [], tmp = {};
+		this.allEmails = emails;
 	for (var i = 0; i < emails.length; ++i) {
                 DBG.println(AjxDebug.DBG3, emails[i]);
                 if (/@([^>]+)>?$/.test(emails[i])) {
@@ -663,6 +667,20 @@ Com_Zimbra_SForce.prototype.noteDropped = function(note) {
                                 acctsSorted[c[i].AccountId].Con.push(c[i]);
                         }
                 }
+				
+				//Get the list of ids for all contacts to which we user has actually sent this email to.
+				this._sentContactsMappedIds = [];
+                var c = Com_Zimbra_SForce._RECENT.Contacts;
+                for (var i = 0; i < c.length; ++i) {
+					var reqC = c[i].Email.__msh_content;
+					for(var j=0; j < this.allEmails.length; j++) {
+							var currC = this.allEmails[j];
+							if(currC.toLowerCase() == reqC.toLowerCase()) {
+								this._sentContactsMappedIds[c[i].Id.__msh_content] = true;
+							}
+					}
+				}
+
                 var o = records;
                 for (var i = 0; i < o.length; ++i) {
                         o[i].TYPE = "O";
@@ -754,6 +772,11 @@ Com_Zimbra_SForce.prototype.dlg_addNoteToAccounts = function(accounts, note) {
             for (i = 0; i < displayLimit; i++) {
                 cbid = Dwt.getNextId();
                 checkboxes.push(cbid);
+				if(this._sentContactsMappedIds[acct.Con[i].Id.__msh_content]){
+					chkContact = true;
+				} else {
+					chkContact =  false;
+				}
                 html = this._checkBoxHtml(acct.Con[i], cbid, 2, chkContact, html);
             }
         }
@@ -812,7 +835,11 @@ Com_Zimbra_SForce.prototype.dlg_addNoteToAccounts = function(accounts, note) {
 				      for (i = 0; i < checkboxes.length; ++i) {
 					      var cb = document.getElementById(checkboxes[i]);
 					      if (cb.checked) {
-							  ids.push({ WhatId: cb.value });
+							  if(this._dwtIdAndObjType[checkboxes[i]] == "C") {
+								 ids.push({ WhoId: cb.value });
+							  } else {
+								ids.push({ WhatId: cb.value });
+							  }
 						  }
 				      }
 				      if (ids.length == 0) {
@@ -877,6 +904,7 @@ Com_Zimbra_SForce.prototype.apptDropped = function(obj) {
 
 /// Called by the Zimbra framework upon an accepted drag'n'drop
 Com_Zimbra_SForce.prototype.doDrop = function(obj) {
+
 	switch (obj.TYPE) {
 	    case "ZmMailMsg":
 	    case "ZmConv":
@@ -933,7 +961,7 @@ Com_Zimbra_SForce.prototype._sendAddSForce = function(ev) {
 // checked - default the checkbox to checked?
 // html - array to append html too
 Com_Zimbra_SForce.prototype._checkBoxHtml = function(rec, cbid, indent, checked, html) {
-
+	this._dwtIdAndObjType[cbid] = rec.TYPE;
     html.push("<tr><td><input type='checkbox' value='",
             rec.Id,
             "' id='",
