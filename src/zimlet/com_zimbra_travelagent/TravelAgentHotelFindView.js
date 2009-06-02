@@ -1,7 +1,8 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ * 
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008 Zimbra, Inc.
+ * Copyright (C) 2006, 2007 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
@@ -10,6 +11,7 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * 
  * ***** END LICENSE BLOCK *****
  */
 
@@ -250,7 +252,7 @@ function () {
 	//sigh
 	}	
 	
-	if(searchSideStep === true || searchSideStep=="true") {
+	if(searchSideStep=="true") {
 		var searchButton = new DwtButton({parent:this});	
 		searchButton.setText("Search SideStep.com");
 		searchButton.setImage("SideStepIcon");		
@@ -261,7 +263,7 @@ function () {
 			searchButtonCell.appendChild(searchButton.getHtmlElement());
 	}
 	
-	if(searchTravelocity === true || searchTravelocity=="true"){
+	if(searchTravelocity=="true") {
 		var searchButton2 = new DwtButton({parent:this});	
 		searchButton2.setText("Search travelocity.com");
 		searchButton2.setImage("TravelocityIcon");			
@@ -272,7 +274,7 @@ function () {
 			searchButtonCell2.appendChild(searchButton2.getHtmlElement());
 	}
 	
-	if(searchHotwire === true || searchHotwire=="true") {
+	if(searchHotwire=="true") {
 		var searchButton3 = new DwtButton({parent:this});	
 		searchButton3.setText("Search hotwire.com");
 		searchButton3.setImage("HotwireIcon");		

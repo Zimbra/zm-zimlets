@@ -1,15 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2008 Zimbra, Inc.
- * 
+ * Copyright (C) 2006, 2007 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ *
  * ***** END LICENSE BLOCK *****
  *@Author Raja Rao DV
  */
@@ -35,7 +37,6 @@ function() {
 	if (pv != "") {
 		if (pv.indexOf(this._currentVersion) == -1) {//if current version isnt present, then add it
 			pv = this._currentVersion + "::" + pv;
-			pv = this._get5PrevVersions(pv);
 			this.setUserProperty("supporttool_previousVersions", pv, true);
 		}
 		this._prevVersions = pv.split("::");
@@ -48,16 +49,6 @@ function() {
 	this._createVersionNameValueArray();
 };
 
-com_zimbra_supporttool.prototype._get5PrevVersions =
-function(pv) {
-	var arry = pv.split("::");
-	var versions = new Array();
-	for(var i = 0; i < arry.length && i < 5; i++) {
-		versions.push(arry[i]);
-	}
-
-	return versions.join("::");		
-};
 
 //depricated - we now use appCtxt.getSettings().getInfoResponse.version in .init to get the version. 
 //but, if that breaks, call this method instead

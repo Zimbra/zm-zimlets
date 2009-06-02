@@ -1,7 +1,8 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ * 
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2005, 2006, 2007, 2008, 2009 Zimbra, Inc.
+ * Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
@@ -10,6 +11,7 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * 
  * ***** END LICENSE BLOCK *****
  */
 
@@ -31,22 +33,6 @@ function() {
 		this._alexaKey = AjxStringUtil.trim(this.getConfig("alexaThumbnailKey"));
 		// console.log("Found Alexa Key: %s", this._alexaKey);
 	}
-    Com_Zimbra_Url.REGEXES = [];
-    //populate regular expressions
-    var s = this.getConfig("ZIMLET_CONFIG_REGEX_VALUE");
-    if(s){
-        var r = new RegExp(s,"gi");
-        if(r)
-        Com_Zimbra_Url.REGEXES.push(r);
-    }
-
-    if (/^\s*true\s*$/i.test(this.getConfig("supportUNC"))) {
-        s = this.getConfig("ZIMLET_UNC_REGEX_VALUE");
-        var r = new RegExp(s,"gi");
-        if(r)
-        Com_Zimbra_Url.REGEXES.push(r);
-    }
-
 };
 
 // Const
@@ -56,41 +42,29 @@ Com_Zimbra_Url.THUMB_SIZE = 'width="200" height="150"';
 
 Com_Zimbra_Url.prototype.match =
 function(line, startIndex) {
-    for (var i = 0; i < Com_Zimbra_Url.REGEXES.length; i++) {
-        
-        var re = Com_Zimbra_Url.REGEXES[i];
-		re.lastIndex = startIndex;
-		var m = re.exec(line);
-        if (!m) {
-            continue;
-        }
-        var last = m[0].charAt(m[0].length - 1);
-        if (last == '.' || last == "," || last == '!') {
-            var m2 = {index: m.index };
-            m2[0] = m[0].substring(0, m[0].length - 1);
-            return m2;
-        } else {
-            return m;
-        }
-    }
+	this.RE.lastIndex = startIndex;
+	var m = this.RE.exec(line);
+	if (!m) {
+		return null;
+	}
+
+	var last = m[0].charAt(m[0].length - 1);
+	if (last == '.' || last == "," || last == '!') {
+		var m2 = {index: m.index };
+		m2[0] = m[0].substring(0, m[0].length - 1);
+		return m2;
+	} else {
+		return m;
+	}
 };
 
 Com_Zimbra_Url.prototype._getHtmlContent =
 function(html, idx, obj, context) {
-	var escapedUrl = obj.replace(/\"/g, '\"').replace(/^\s+|\s+$/g,"");
+	var escapedUrl = obj.replace(/\"/g, '\"');
 	if (escapedUrl.substr(0, 4) == 'www.') {
 		escapedUrl = "http://" + escapedUrl;
 	}
-    /*if(navigator.appVersion.match(/windows/ig)){
-        escapedUrl = obj.replace(/\//g,'\\');
-    }else{*/
-        escapedUrl = escapedUrl.replace(/\\/g,'/');
-    /*}*/
-    if(escapedUrl.indexOf("\\\\") == 0 || escapedUrl.indexOf("//") == 0){
-       obj.isUNC = true;
-       escapedUrl = "file://"+escapedUrl;
-    }
-    html[idx++] = "<a target='_blank' href='";
+	html[idx++] = "<a target='_blank' href='";
 	html[idx++] = escapedUrl;
 	html[idx++] = "'>";
 	html[idx++] = AjxStringUtil.htmlEncode(obj);
@@ -100,20 +74,12 @@ function(html, idx, obj, context) {
 
 Com_Zimbra_Url.prototype.toolTipPoppedUp =
 function(spanElement, obj, context, canvas) {
-	var url = obj.replace(/^\s+|\s+$/g,"");
+	var url = obj;
 	if (/^\s*true\s*$/i.test(this.getConfig("stripUrls"))) {
 		url = url.replace(/[?#].*$/, "");
 	}
-    /*if(navigator.appVersion.match(/windows/ig)){
-        url = url.replace(/\//g,'\\');
-    }else{*/
-        url = url.replace(/\\/g,'/');
-   /* }*/
-    if(url.indexOf("\\\\") == 0 || url.indexOf("//") == 0){
-       url = "file://"+url;
-    }
-
-    if(this._disablePreview || url.indexOf("file://")==0){  //local files
+	
+	if(this._disablePreview){
 		this._showUrlThumbnail(url,canvas);
 	} else if (this._alexaId) {
 		this._showAlexaThumbnail(url, canvas);
@@ -133,7 +99,7 @@ Com_Zimbra_Url.prototype.clicked = function(){
 };
 
 Com_Zimbra_Url.prototype._showUrlThumbnail = function(url, canvas){
-	canvas.innerHTML = "<b>URL:</b> "+ decodeURI(url);
+	canvas.innerHTML = "<b>URL:</b> " + decodeURI(url);
 };
 
 Com_Zimbra_Url.prototype._showFreeThumbnail = function(url, canvas) {

@@ -1,7 +1,8 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ * 
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2008 Zimbra, Inc.
+ * Copyright (C) 2007 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
@@ -10,6 +11,7 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * 
  * ***** END LICENSE BLOCK *****
  */
 
@@ -21,21 +23,10 @@ function Com_Zimbra_YMEmoticons() {
 Com_Zimbra_YMEmoticons.prototype = new ZmZimletBase;
 Com_Zimbra_YMEmoticons.prototype.constructor = Com_Zimbra_YMEmoticons;
 
-Com_Zimbra_YMEmoticons.prototype.onFindMsgObjects = function(msg, manager) {
-	if (msg.folderId == ZmOrganizer.ID_CHATS) {
-		if (!manager.__hasSmileysHandler) {
-			manager.addHandler(this);
-			manager.sortHandlers();
-			manager.__hasSmileysHandler = true;
-		}
-	} else {
-		if (manager.__hasSmileysHandler) {
-			manager.removeHandler(this);
-			manager.sortHandlers();
-			manager.__hasSmileysHandler = false;
-		}
-	}
-};
+// Com_Zimbra_YMEmoticons.prototype.init = function() {
+// 	// not sure it's wise to register it for now.
+// //	ZmObjectManager.registerHandler("Com_Zimbra_YMEmoticons", "ymemoticons", this._zimletContext.priority);
+// };
 
 Com_Zimbra_YMEmoticons.prototype.match = function(line, startIndex) {
 	this.re.lastIndex = startIndex;

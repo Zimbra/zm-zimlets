@@ -1,15 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008 Zimbra, Inc.
- * 
+ * Copyright (C) 2006, 2007 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ *
  * ***** END LICENSE BLOCK *****
  */
 
@@ -124,7 +126,7 @@ Com_Zimbra_Date.prototype.match = function(line, startIndex){
 		re = Com_Zimbra_Date.REGEXES[i];
 		re.lastIndex = startIndex;
 		m = re.exec(line);
-		if (m && m[0] && (!match || m[0].length > match[0].length )) { //Longest match wins 
+		if (m && m[0] && (!match || match.index > m.index)) {
 			match = m;
 			rule = Com_Zimbra_Date.RULES[i];
 			mapping = re.mapping;
@@ -172,10 +174,10 @@ Com_Zimbra_Date.prototype._initDateObjectHandlers = function() {
 
 	// initialize constants
 	Com_Zimbra_Date.MAPPINGS = {
-		datenum:	"(0[1-9]|[1-9]|[1-2][0-9]|3[0-1])",
+		datenum:	"([1-9]|[1-2][0-9]|3[0-1])",
 		dayname:	"("+AjxDateUtil.S_DAYNAME+")",
 		weekord:	"("+AjxDateUtil.S_WEEKORD+")",
-		monthnum:	"(0[1-9]|[1-9]|1[0-2])",
+		monthnum:	"([1-9]|1[1-2])",
 		monthname:	"("+AjxDateUtil.S_MONTHNAME+")",
 		yearnum:	"(\\d{2}|[1-9]\\d{2,3})",
 		number:		"(\\d+)"
@@ -188,9 +190,8 @@ Com_Zimbra_Date.prototype._initDateObjectHandlers = function() {
 	// get all the defined patterns
 	var i, pattern;
 	for (i = 1; pattern = this.getMessage("format"+i+".pattern"); i++) {
-		if (pattern.match(/^###+/)) break; //Minimum three hashes to terminate
-        if (pattern.match(/^#/)) continue; //one hash to skip/disable the pattern
-        Com_Zimbra_Date.PATTERNS.push(pattern);
+		if (pattern.match(/^#+/)) break;
+		Com_Zimbra_Date.PATTERNS.push(pattern);
 		Com_Zimbra_Date.RULES.push(this.getMessage("format"+i+".rule"));
 	}
 	for (i = 0; i < Com_Zimbra_Date.DEFAULT_FORMATS.length; i++) {

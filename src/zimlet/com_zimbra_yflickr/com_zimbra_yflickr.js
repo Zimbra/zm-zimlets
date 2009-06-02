@@ -1,19 +1,3 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * 
- * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2008 Zimbra, Inc.
- * 
- * The contents of this file are subject to the Yahoo! Public License
- * Version 1.0 ("License"); you may not use this file except in
- * compliance with the License.  You may obtain a copy of the License at
- * http://www.zimbra.com/license.
- * 
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
- * 
- * ***** END LICENSE BLOCK *****
- */
 // The Yahoo Flickr Zimlet (CZ,KK,PJ,MP)
 
 // Constants used by this Zimlet
@@ -765,13 +749,13 @@ Com_Zimbra_Yflickr.prototype.deselectAllPhotos = function()
  */
 Com_Zimbra_Yflickr.prototype.doneAttachPhotos = function ()
 {
-    // locate the compose controller and set up the callback handler
-    var cc = appCtxt.getApp(ZmApp.MAIL).getComposeController(appCtxt.getApp(ZmApp.MAIL).getCurrentSessionId(ZmId.VIEW_COMPOSE));
-    var callback = new AjxCallback (cc,cc._handleResponseSaveDraftListener);
+    // locate the composer control and set up the callback handler
+    var composer = appCtxt.getApp(ZmApp.MAIL).getComposeController();
+    var callback = new AjxCallback (this,composer._handleResponseSaveDraftListener);
 
     // build up the attachment list 
     attachment_list = this.attachment_ids.join(",");
-    cc.sendMsg(attachment_list,ZmComposeController.DRAFT_TYPE_MANUAL,callback);
+    composer.sendMsg(attachment_list,ZmComposeController.DRAFT_TYPE_MANUAL,callback);
 
     // and clean up all the photosets
     this.deselectAllPhotos();
@@ -876,7 +860,6 @@ Com_Zimbra_Yflickr.prototype.onSaveToFlickr = function(ct,label,src)
     titleS.className = "Yflickr_hLeft";
     titleS.appendChild (document.createTextNode ("Title (Optional): "));
     var titleI = document.createElement ("input");
-    titleI.value = label;
     titleS.appendChild (titleI);
 
     var tagsS = document.createElement ("span");
@@ -929,9 +912,6 @@ Com_Zimbra_Yflickr.prototype.onConfirmSaveToFlickr = function (ct, label, src, t
     title = title || "";
     tags = tags || "";
 
-    uploadDlg.popdown();
-    this.info("Your photo is getting uploaded in the background.");
-
     /* Make a call to yflickr.jsp to upload the selected photo to Flickr */
 
     var url = this.getResource("yflickr.jsp");
@@ -965,10 +945,10 @@ Com_Zimbra_Yflickr.prototype._getUploadDlg = function(){
  */
 Com_Zimbra_Yflickr.prototype.onDoneSaveToFlickr = function(result)
 {
-    //var uploadDlg = this._getUploadDlg();
+    var uploadDlg = this._getUploadDlg();
     
-    //var d = uploadDlg._getContentDiv();
-    //YFlickr_clearElement (d);
+    var d = uploadDlg._getContentDiv();
+    YFlickr_clearElement (d);
 
     var xmlo = null;
     var jso = null;
@@ -992,21 +972,17 @@ Com_Zimbra_Yflickr.prototype.onDoneSaveToFlickr = function(result)
     detailS.className = "Yflickr_hCenter";
 
     if (result.success) {
-        /*statusS.appendChild (document.createTextNode ("Upload to Flickr succeeded"));*/
+        statusS.appendChild (document.createTextNode ("Upload to Flickr succeeded"));
         var photoid;
         if (jso && jso.photoid) { photoid = jso.photoid.toString(); }
         else { photoid = ""; }
-        /*detailS.appendChild (document.createTextNode ("Photo Id: " + photoid));*/
-        this.info("Upload to flicker succeded. Photo Id:"+photoid);
+        detailS.appendChild (document.createTextNode ("Photo Id: " + photoid));
     } else {
-        //statusS.appendChild (document.createTextNode ("Upload to Flickr failed"));
-        this.info("Upload to flicker failed");
+        statusS.appendChild (document.createTextNode ("Upload to Flickr failed"));
         this.debug ("<xmp>" + result.text + "</xmp>");
     }
 
-
-
-    /*d.appendChild (statusS);
+    d.appendChild (statusS);
     d.appendChild (detailS);
 
     uploadDlg.setButtonEnabled (DwtDialog.OK_BUTTON, true);
@@ -1014,7 +990,7 @@ Com_Zimbra_Yflickr.prototype.onDoneSaveToFlickr = function(result)
 
     uploadDlg.setButtonListener (DwtDialog.OK_BUTTON, new AjxListener (this, function() { uploadDlg.popdown(); }));
     uploadDlg.setButtonListener (DwtDialog.CANCEL_BUTTON, new AjxListener (this, function() { uploadDlg.popdown(); }));
-    if (!uploadDlg.isPoppedUp()) { uploadDlg.popup(); }*/
+    if (!uploadDlg.isPoppedUp()) { uploadDlg.popup(); }
 }
 
 Com_Zimbra_Yflickr.prototype.msgDropped = function(msg)

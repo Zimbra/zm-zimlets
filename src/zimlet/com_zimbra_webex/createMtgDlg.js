@@ -1,7 +1,8 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ * 
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2008 Zimbra, Inc.
+ * Copyright (C) 2007 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
@@ -10,6 +11,7 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * 
  * ***** END LICENSE BLOCK *****
  */
 ///  Dialog that can create a webex meeting
@@ -204,7 +206,7 @@ Com_Zimbra_WebEx_CreateMtgDlg.getOriginalDlgHtml = function() {
 						"<TD colSpan=\"3\">" +
 							"<TABLE class=\"wx_createmtg\" id=\"Table2\" cellSpacing=\"0\" cellPadding=\"0\" border=\"0\">" +
 								"<TR>" +
-									"<TD><SELECT class=\"wx_createmtg_ctrl\" name=\"wxCreateMtg_Month\" id=\"wxCreateMtg_Month\">" +
+									"<TD><SELECT class=\"wx_createmtg_ctrl\" iname=\"wxCreateMtg_Month\" id=\"wxCreateMtg_Month\">" +
 											"<OPTION value=\"0\">Jan</OPTION>" +
 											"<OPTION value=\"1\">Feb</OPTION>" +
 											"<OPTION value=\"2\">Mar</OPTION>" +

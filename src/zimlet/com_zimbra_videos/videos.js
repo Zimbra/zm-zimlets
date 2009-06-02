@@ -1,7 +1,8 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ * 
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2008 Zimbra, Inc.
+ * Copyright (C) 2007 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
@@ -10,6 +11,7 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * 
  * ***** END LICENSE BLOCK *****
  */
 
@@ -313,9 +315,7 @@ Com_Zimbra_Video.prototype._createVideoLinksHtml = function(videoLinks){
 		if(i==0){
 			radio.checked = true;
 		}
-        if(AjxEnv.isIE)
-            radio.attachEvent("onclick",selectYouTubeURL)
-        var videoSelectCell = row.insertCell(row.cells.length);
+		var videoSelectCell = row.insertCell(row.cells.length);
 		videoSelectCell.appendChild(radio);
 		var videoLinkCell = row.insertCell(row.cells.length);
 		videoLinkCell.innerHTML = "<div id='"+linkId+"'>"+videoLinks[i]+"</div>";
@@ -353,14 +353,6 @@ Com_Zimbra_Video.prototype._createVideoLinksHtml = function(videoLinks){
 				      dlg.dispose();
 			      }));
 };
-
-function selectYouTubeURL(){
-        var len = this.event.srcElement.parentElement.parentElement.parentElement.children.length;
-        for(var i=0;i<len;i++){
-            this.event.srcElement.parentElement.parentElement.parentElement.children[i].firstChild.firstChild.checked = false;
-        }
-        this.event.srcElement.checked=true;
-    }
 
 
 //Method: Search functionality

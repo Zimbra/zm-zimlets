@@ -1,15 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2008, 2009 Zimbra, Inc.
- * 
+ * Copyright (C) 2006, 2007 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ *
  * ***** END LICENSE BLOCK *****
  *@Author Raja Rao DV
  */
@@ -285,7 +287,7 @@ function() {
 		return;
 
 	this.wasTriggeredBySearchBtn = false;
-	this._refineMainDiv = document.getElementById(ZmId.WIDGET_OVERVIEW+"__"+ZmAppAccordionController.ID+":"+appCtxt.getActiveAccount().name).appendChild(document.createElement('div'));
+	this._refineMainDiv = document.getElementById("zov__Mail").appendChild(document.createElement('div'));
 	this._refineMainDiv.id = "sr_mainDivId";
 	this._refineMainDiv.style.display = "none";
 	this._refineMainDiv.innerHTML = this._headerHTML() + this._narrowedByHTML() + this._getAllSectionsHTML();
@@ -430,7 +432,7 @@ com_zimbra_searchrefiner.show = function() {
 	var sr = document.getElementById("sr_mainDivId");
 	sr.style.display = "block";
 	sr.style.zIndex = 500;
-	var treeHdrs = document.getElementById(ZmId.WIDGET_OVERVIEW+"__"+ZmAppAccordionController.ID+":"+appCtxt.getActiveAccount().name).childNodes;
+	var treeHdrs = document.getElementById("zov__Mail").childNodes;
 	for (var i = 0; i < treeHdrs.length; i++) {
 		if (treeHdrs[i].id != "sr_mainDivId") {
 			treeHdrs[i].style.display = "none";
@@ -442,7 +444,7 @@ com_zimbra_searchrefiner.hide = function() {
 	var sr = document.getElementById("sr_mainDivId");
 	sr.style.display = "none";
 	sr.style.zIndex = 100;
-	var treeHdrs = document.getElementById(ZmId.WIDGET_OVERVIEW+"__"+ZmAppAccordionController.ID+":"+appCtxt.getActiveAccount().name).childNodes;
+	var treeHdrs = document.getElementById("zov__Mail").childNodes;
 	for (var i = 0; i < treeHdrs.length; i++) {
 		if (treeHdrs[i].id != "sr_mainDivId") {
 			treeHdrs[i].style.display = "block";

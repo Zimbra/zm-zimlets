@@ -1,15 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2008, 2009 Zimbra, Inc.
- * 
+ * Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Yahoo! Public License
  * Version 1.0 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ *
  * ***** END LICENSE BLOCK *****
  */
 
@@ -354,7 +356,7 @@ function() {
 	var elements = {};
 	elements[ZmAppViewMgr.C_TOOLBAR_TOP] = this._toolbar;
 	elements[ZmAppViewMgr.C_APP_CONTENT] = this._mapsView;
-	appCtxt.getAppViewMgr().createView({viewId:ZmId.VIEW_YMAPS, elements:elements});
+	appCtxt.getAppViewMgr().createView(ZmId.VIEW_YMAPS, null, elements);
 };
 
 YahooLocalController.prototype._createMapView =
@@ -385,11 +387,11 @@ function() {
 
 		if (button == ZmOperation.UPCOMING) {
 			var b = this._toolbar.getOp(button);
-			b.setText(this._zimlet.getMessage("menuItemUpcoming"));
+			b.setText(this._zimlet.getMessage("upcoming"));
 			b.setToolTipContent(this._zimlet.getMessage("upcomingTooltip"));
 		} else if (button == ZmOperation.TRAFFIC) {
 			var b = this._toolbar.getOp(button);
-			b.setText(this._zimlet.getMessage("menuItemTraffic"));
+			b.setText(this._zimlet.getMessage("traffic"));
 			b.setToolTipContent(this._zimlet.getMessage("trafficTooltip"));
 		}
 
@@ -644,11 +646,9 @@ function(ev) {
 		"&mvt=m&tp=1"
 	].join("");
 
-	var body = this._zimlet.getMessage("msgBody").replace("{0}", mapObject.query ? "("+mapObject.query+")" : "");//"Hi,\n Your friend has shared you a Yahoo Map regarding \""+mapObject.query+"\". \n\nPlease access it @ \t\n\n";
-	var footer = this._zimlet.getMessage("msgFooter");//"\n\nThis email was sent to you by a user on Yahoo Maps (maps.yahoo.com)."
-	var subject = this._zimlet.getMessage("msgSubject").replace("{0}",appCtxt.get(ZmSetting.USERNAME));//appCtxt.get(ZmSetting.USERNAME) + " sent this Yahoo Maps.";
-
-    this._zimlet.getMessage("maxMindError");
+	var body = "Hi,\n Your friend has shared you a Yahoo Map regarding \""+mapObject.query+"\". \n\nPlease access it @ \t\n\n";
+	var footer = "\n\nThis email was sent to you by a user on Yahoo Maps (maps.yahoo.com)."
+	var subject = appCtxt.get(ZmSetting.USERNAME) + " sent this Yahoo Maps.";
 
 	if (appCtxt.get(ZmSetting.HTML_COMPOSE_ENABLED) &&
 		appCtxt.get(ZmSetting.COMPOSE_AS_FORMAT) == ZmSetting.COMPOSE_HTML)
