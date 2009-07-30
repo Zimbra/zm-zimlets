@@ -64,8 +64,16 @@ function(html, idx, obj, context) {
 	if (escapedUrl.substr(0, 4) == 'www.') {
 		escapedUrl = "http://" + escapedUrl;
 	}
-	html[idx++] = "<a target='_blank' href='";
-	html[idx++] = escapedUrl;
+	if (escapedUrl.indexOf("/zimbra/?app=") > 0) {
+		var app = escapedUrl.substr(escapedUrl.indexOf("/zimbra/?app=") + "/zimbra/?app=".length);
+		if (app.indexOf("&") > 0)
+			app = app.substr(0, app.substr("&"));
+		html[idx++] = "<a href='";
+		html[idx++] = "javascript:top.appCtxt.getAppController().activateApp(top.ZmApp."+app.toUpperCase()+", null, null);";
+	} else {
+		html[idx++] = "<a target='_blank' href='";
+		html[idx++] = escapedUrl;
+	}
 	html[idx++] = "'>";
 	html[idx++] = AjxStringUtil.htmlEncode(obj);
 	html[idx++] = "</a>";
