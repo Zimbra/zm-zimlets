@@ -161,12 +161,38 @@ function(html, idx, obj) {
 Com_Zimbra_Email.prototype.toolTipPoppedUp =
 function(spanElement, contentObjText, matchContext, canvas) {
 
-	var addr = (contentObjText instanceof AjxEmailAddress)
-		? contentObjText.address : contentObjText;
+	/*var addr = (contentObjText instanceof AjxEmailAddress)
+		? contentObjText.address : contentObjText;*/
+
+    var addr, isMailTo = false;
+
+    if(contentObjText instanceof AjxEmailAddress){
+        addr = contentObjText.address;
+    }else{
+        addr = contentObjText;
+        isMailTo = this.isMailToLink(addr);
+        if(!isMailTo){  //Handle href="mailto:xxxx" urls
+            var node = null;
+            if(spanElement) node = spanElement.firstChild;
+            else{  //if hover does not pass spanElement
+                var hover = this.getShell().getHoverMgr().getHoverObject();
+                if(hover && hover.target){
+                    node = hover.target.firstChild;
+                }
+            }
+
+            //Not TextNode, Anchor Tag, mailto href
+            if(node && node.nodeType != 3 && /^(a)$/.test(node.tagName.toLowerCase()) && ZmMailMsgView._MAILTO_RE.test(node.href)){
+                addr = node.href;
+                isMailTo = true;
+            }
+        }
+    }
+
 	var name = (contentObjText instanceof AjxEmailAddress)
 		? contentObjText.dispName : contentObjText;
 
-	if (this.isMailToLink(addr)) {
+	if (isMailTo) {
 		addr = (this.parseMailToLink(addr)).to || addr;
 	}
 
@@ -182,8 +208,12 @@ function(spanElement, contentObjText, matchContext, canvas) {
 
 	var contactList = AjxDispatcher.run("GetContacts");
 	var contact = contactList ? contactList.getContactByEmail(addr) : null;
-	if (contact) {
+	if (contact || isMailTo) {
 		var hint = isYahoo ? this._getYahooHint(name) : this._composeTooltipHint;
+        if(!contact){
+            contact = new ZmContact(null);
+            contact.setAttr(ZmContact.F_email, addr);
+        }
 		toolTip = contact.getToolTip(addr, false, hint);
 	} else {
 		var hint = isYahoo ? this._getYahooHint(name) : this._newTooltipHint;
@@ -275,10 +305,24 @@ function(str){
 Com_Zimbra_Email.prototype.clicked =
 function(spanElement, contentObjText, matchContext, ev) {
 
-	var addr = (contentObjText instanceof AjxEmailAddress)
-		? contentObjText.address : contentObjText;
+    var addr, isMailTo = false;
 
-    if(this._yahooSocialEnabled){
+    if(contentObjText instanceof AjxEmailAddress){
+        addr = contentObjText.address;
+    }else{
+        addr = contentObjText;
+        isMailTo = this.isMailToLink(addr);
+        if(!isMailTo){  //Handle href="mailto:xxxx" urls
+            var node = spanElement ? spanElement.firstChild : null;
+            //Not TextNode, Anchor Tag, mailto href
+            if(node && node.nodeType != 3 && /^(a)$/.test(node.tagName.toLowerCase()) && ZmMailMsgView._MAILTO_RE.test(node.href)){
+                addr = node.href;
+                isMailTo = true;
+            }
+        }
+    }
+
+    if(this._yahooSocialEnabled && !isMailTo){
         var parts = addr.split("@");
         var domain = (parts.length > 0) ? parts[1] : null;
         if (domain && domain == "yahoo.com") {
@@ -293,10 +337,10 @@ function(spanElement, contentObjText, matchContext, ev) {
 	// if contact found or there is no contact list (i.e. contacts app is disabled), go to compose view
 	if (contact ||
 		contactList == null ||
-		(AjxUtil.isString(addr) && this.isMailToLink(addr)))
+		(AjxUtil.isString(addr) && /*this.isMailToLink(addr)*/ isMailTo))
 	{
 		this._actionObject = null;
-		this._composeListener(ev,addr);
+		this._composeListener(ev, addr);
 	}
 	else
 	{
@@ -395,7 +439,7 @@ function(ev, addr) {
 		params.toOverride = mailToParams.to;
 		params.subjOverride = mailToParams.subject;
 		params.extraBodyText = mailToParams.body;
-		addr = mailToParams.to || addr;
+		addr = mailToParams.to || addr;        
 	}
 
 	params.action = ZmOperation.NEW_MESSAGE;
