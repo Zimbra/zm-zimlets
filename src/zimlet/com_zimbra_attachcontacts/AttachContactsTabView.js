@@ -301,7 +301,7 @@ function() {
 
 	AjxDispatcher.require("Contacts");
 	if( appCtxt.isChildWindow) {
-		AjxPackage.require("zimbraMail.abook.controller.ZmAddrBookTreeController");
+		//AjxPackage.require("zimbraMail.abook.controller.ZmAddrBookTreeController");
 		ZmOverviewController.CONTROLLER["ADDRBOOK"] = "ZmAddrBookTreeController";
 	}
 	var app = appCtxt.getApp(ZmApp.CONTACTS);
