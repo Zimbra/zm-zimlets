@@ -566,7 +566,6 @@ GoogleDocsTabView.prototype.uploadFiles = function(attachDialog, docIds, index, 
         pArray.push("_url=" + AjxStringUtil.urlComponentEncode(exportUrl)); //"https"+currentItem.url.substring(currentItem.url.indexOf(":")) + "&format="+extension));//accessor.serviceProvider.docExportURL+ "?format="+extension+"&id="+exportDocId));
         pArray.push("_auth=" + AjxStringUtil.urlComponentEncode(OAuth.getAuthorizationHeader("", message.parameters)));
         pArray.push("_fid=" + AjxStringUtil.urlComponentEncode(currentItem.title));
-        pArray.push("_uploader=" + AjxStringUtil.urlComponentEncode(appCtxt.get(ZmSetting.CSFE_ATTACHMENT_UPLOAD_URI)+"?fmt=raw&upload=1"));
 
         jspUrl = this.zimlet.getResource(this.zimlet.oauthHandlerJSP) + "?" + pArray.join("&");
         AjxRpc.invoke(null, jspUrl, null, new AjxCallback(this, this.uploadFiles, [attachDialog, docIds, ++index]), true);

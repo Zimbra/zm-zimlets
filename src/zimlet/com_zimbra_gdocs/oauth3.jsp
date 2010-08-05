@@ -143,9 +143,8 @@
 
         GetMethod method = new GetMethod(url); //+ "?showfolders=true");
         String fileName = request.getParameter("_fid");
-        String uploader = request.getParameter("_uploader");
         fileName = fileName.replaceAll("\\b\\s{1,}\\b", "");
-        MultipartPostMethod postMethod = new MultipartPostMethod(uploader+"&fileName="+fileName);
+        MultipartPostMethod postMethod = new MultipartPostMethod("http://localhost:7070/service/upload?fmt=raw&upload=1&fileName="+fileName);
         
         try {
 
