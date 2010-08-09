@@ -43,7 +43,7 @@ com_zimbra_gdocs.prototype.init = function() {
 
 	this.gdView = new GoogleDocsTabView(tabview, this);
 	this.gdView.attachDialog = attachDialog;
-    tabkey = attachDialog.addTab("gdocs", tabLabel, this.gdView, "GDocs_Icon");
+    tabkey = attachDialog.addTab("gdocs", tabLabel, this.gdView);
 	callback = new AjxCallback(this.gdView, this.gdView.uploadFiles);
 	attachDialog.addOkListener(tabkey, callback);
 };
