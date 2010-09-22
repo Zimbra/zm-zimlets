@@ -1,13 +1,6 @@
-<zimlet name="com_zimbra_email" version="11.0.1" target="main view-window" label="Email" description="Highlights and previews associated contact for an email address.">
-	<include>templates/Email.template.js</include>
+<zimlet name="com_zimbra_email" version="2.0" target="main view-window" description="Highlights and previews associated contact for an email address.">
 	<include>email.js</include>
-	<include>EmailToolTipSlideShow.js</include>
-	<include>EmailToolTipslide.js</include>
-	<include>EmailToolTipPrefDialog.js</include>
-	<include>SeriesAnimation.js</include>
-	<include>UnknownPersonSlide.js</include>
-	<includeCSS>email.css</includeCSS>
-	<handlerObject>com_zimbra_email_handlerObject</handlerObject>
+	<handlerObject>Com_Zimbra_Email</handlerObject>
 	<contentObject type="email">
 		<matchOn>
 			<regex attrs="ig">\b(mailto:[ ]*)?([0-9a-zA-Z]+[.&amp;#!$%'*+-/=?^_`{}|~])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}([\w/_\.]*(\?\S+)?)\b</regex>
@@ -22,7 +15,4 @@
 			<menuItem label="${msg.goToUrl}" icon="URL" id="GOTOURL"/>
 		</contextMenu>
 	</contentObject>
-	<zimletPanelItem label="${msg.label}" icon="MsgStatusUnread">
-		<toolTipText>${msg.tooltip}</toolTipText>
-	</zimletPanelItem>
 </zimlet>

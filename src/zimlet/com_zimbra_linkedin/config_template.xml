@@ -1,5 +1,0 @@
-<zimletConfig name="com_zimbra_linkedin" version="0.2">
-  <global>
-    <property name="allowedDomains">*.linkedin.com</property>
-  </global>
-</zimletConfig>
