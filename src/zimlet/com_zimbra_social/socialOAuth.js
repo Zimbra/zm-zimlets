@@ -76,11 +76,8 @@ SocialOAuth.prototype.showOAuthDialog = function(serviceName) {
 
 SocialOAuth.prototype._createPINView =
 function() {
-	try{
-		var stepNotes = this.zimlet.getMessage("stepNotes");
-		var step1 = this.zimlet.getMessage("step1").replace("{0}", this.serviceName).replace("{1}", this.serviceName);
-	}catch(e) {
-	}
+	var stepNotes = this.zimlet.getMessage("stepNotes").replace("{0}", this.serviceName);
+	var step1 = this.zimlet.getMessage("step1").replace("{0}", this.serviceName).replace("{1}", this.serviceName);
 	var subs = {
 		logoutfirst:  AjxMessageFormat.format(this.zimlet.getMessage("logoutfirst"), this.serviceName),
 		stepsToAddAccount: AjxMessageFormat.format(this.zimlet.getMessage("stepsToAddAccount"), this.serviceName),
