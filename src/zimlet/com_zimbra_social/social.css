@@ -1,5 +1,11 @@
 .Imgsocial-panelIcon {
-    background: transparent url("social_twitter.png") no-repeat 0 0;
+    background: transparent url("social-icon.png") no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+}
+.Imgsocial-icon {
+    background: transparent url("social-icon.png") no-repeat 0 0;
     width: 16px;
     height: 16px;
     overflow: hidden;
@@ -7,12 +13,6 @@
 
 .Imgsocial_twitterIcon {
     background: transparent url("social_twitter.png") no-repeat 0 0;
-    width: 16px;
-    height: 16px;
-    overflow: hidden;
-}
-.Imgsocial_greenAppIcon {
-    background: transparent url("social_greenApp.png") no-repeat 0 0;
     width: 16px;
     height: 16px;
     overflow: hidden;
