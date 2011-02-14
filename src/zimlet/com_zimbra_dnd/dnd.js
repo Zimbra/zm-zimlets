@@ -235,7 +235,9 @@ Com_Zimbra_DnD.prototype._onDrop = function(ev) {
             }
         }
 
-        var controller = appCtxt.getApp(ZmApp.MAIL).getComposeController(appCtxt.getApp(ZmApp.MAIL).getCurrentSessionId(ZmId.VIEW_COMPOSE));
+        var curView = appCtxt.getAppViewMgr().getCurrentView();
+        var controller = curView.getController();
+        if(!controller) { return; }
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
