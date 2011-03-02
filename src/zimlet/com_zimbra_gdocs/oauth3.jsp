@@ -1,4 +1,4 @@
-<!--
+<%--
  * ***** BEGIN LICENSE BLOCK *****
  * 
  * Zimbra Collaboration Suite Zimlets
@@ -13,7 +13,7 @@
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * 
  * ***** END LICENSE BLOCK *****
--->
+--%>
 <%@ page language="java" import="org.apache.commons.httpclient.*" %>
 <%@ page language="java" import="org.apache.commons.httpclient.methods.*" %>
 <%@ page language="java" import="org.apache.commons.httpclient.methods.multipart.*" %>
