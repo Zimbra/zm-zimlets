@@ -172,7 +172,6 @@ function(line, startIndex) {
 			match = m;
 			rule = Com_Zimbra_Date.RULES[i];
 			mapping = re.mapping;
-			break;
 		}
 	}
 
@@ -215,7 +214,7 @@ function() {
 
 	// initialize constants
 	Com_Zimbra_Date.MAPPINGS = {
-		datenum:	"(3[0-1]|0[1-9]|[1-9]|[1-2][0-9])",
+		datenum:	"(0[1-9]|[1-9]|[1-2][0-9]|3[0-1])",
 		dayname:	"("+AjxDateUtil.S_DAYNAME+")",
 		weekord:	"("+AjxDateUtil.S_WEEKORD+")",
 		monthnum:	"(0[1-9]|[1-9]|1[0-2])",

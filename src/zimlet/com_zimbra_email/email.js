@@ -264,11 +264,7 @@ function(contact, address) {
 
 EmailTooltipZimlet.prototype.hoverOut =
 function(object, context, x, y, span) {
-	if(!this.tooltip) {
-		return;
-	}
 	this._hoverOver =  false;
-	this.tooltip._poppedUp = false;//makes the tooltip sticky
 	setTimeout(AjxCallback.simpleClosure(this.popDownIfMouseNotOnSlide, this), 700);
 	//override to ignore hoverout. 
 };
@@ -280,7 +276,6 @@ function() {
 	} else if(this.slideShow && this.slideShow.isMouseOverTooltip) {
 		return;
 	} else if(this.tooltip) {
-		this.tooltip._poppedUp = true;//makes the tooltip non-sticky
 		this.tooltip.popdown();
 	}
 };
@@ -288,9 +283,7 @@ function() {
 EmailTooltipZimlet.prototype.popdown =
 function() {
 	this._hoverOver =  false;
-	
 	if(this.tooltip) {
-		this.tooltip._poppedUp = true;
 		this.tooltip.popdown();
 	}
 };
@@ -301,14 +294,6 @@ function(subscriberZimlet, isPrimary) {
 	if(isPrimary) {
 		this.primarySubscriberZimlet = subscriberZimlet;
 	}
-};
-/**
-* This is called from core-zimbra when the user hover-over's an email within msg/conv lists.
-*
-**/
-EmailTooltipZimlet.prototype.onHoverOverEmailInList =
-function(object, ev) {
-	this.hoverOver(object, null, ev.docX, ev.docY);
 };
 
 EmailTooltipZimlet.prototype.hoverOver =
@@ -381,9 +366,6 @@ function(object, context, x, y, span) {
 	this.x = x;
 	this.y = y;
 	this.tooltip = tooltip;
-	//this is used by mail/conv list
-    Dwt.setHandler(tooltip._div, DwtEvent.ONMOUSEOUT, AjxCallback.simpleClosure(this.hoverOut, this));
-
 	var addr = (object instanceof AjxEmailAddress) ? object.address : object;
 	var isMailTo = this.isMailToLink(addr);
 	if (isMailTo) {
@@ -563,7 +545,8 @@ function(obj, span, context) {
 
     if (!isDetachWindow && appCtxt.get(ZmSetting.SEARCH_ENABLED) && actionMenu.getOp("SEARCHEMAILS")) {
         this.createSearchMenu(actionMenu);
-	}
+    }
+
 	var addr = this._getAddress(obj);
 	if (this.isMailToLink(addr)) {
 		addr = (this.parseMailToLink(addr)).to || addr;
@@ -589,7 +572,7 @@ function(obj, span, context) {
 	if (actionMenu.getOp("SEARCHEMAILS") && (isDetachWindow || !appCtxt.get(ZmSetting.SEARCH_ENABLED))) {
 		ZmOperation.removeOperation(actionMenu, "SEARCHEMAILS", actionMenu._menuItems);
 	}
-    else{
+    else {
         if (obj && obj.type) {
             if (actionMenu.getOp("SEARCHEMAILS")){
                  if (obj.type == "FROM"){
