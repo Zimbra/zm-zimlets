@@ -42,7 +42,7 @@ function(line, startIndex) {
 Com_Zimbra_Phone.prototype.init =
 function() {
 	var regexps = [
-        new RegExp("\\b" + this.getMessage("localPhoneRegEx") + "\\b","ig")
+        new RegExp(this.getMessage("localPhoneRegEx"),"ig")
     ];
 	this.regexps = regexps;
 	this.countryCode = this.getMessage("countryCode");

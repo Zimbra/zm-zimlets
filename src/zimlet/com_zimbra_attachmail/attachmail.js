@@ -131,14 +131,13 @@ AttachMailTabView.prototype.showMe =
 function() {
 
 	DwtTabViewPage.prototype.showMe.call(this);
-	var acct = appCtxt.multiAccounts ? appCtxt.getAppViewMgr().getCurrentView().getFromAccount() : appCtxt.getActiveAccount();
-	if (this.prevAccount && (acct.id == this.prevAccount.id)) {
+	if(this._isLoaded) {
 			this.setSize(Dwt.DEFAULT, "255");
-			return;
+		return;
 	}
-	this.prevAccount = acct;
 	this._createHtml1();
 	document.getElementById(this._folderTreeCellId).onclick = AjxCallback.simpleClosure(this._treeListener, this);
+	this._isLoaded = true;
 };
 
 /**
@@ -485,12 +484,12 @@ function() {
 	app._createDeferredFolders();
 
 	var base = this.toString();
-
+	var acct = appCtxt.getActiveAccount();
 	var params = {
 		treeIds: ["FOLDER"],
 		fieldId: this._folderTreeCellId,
-		overviewId: (appCtxt.multiAccounts) ? ([base, this.prevAccount.name].join(":")) : base,
-		account: this.prevAccount
+		overviewId: (appCtxt.multiAccounts) ? ([base, acct.name].join(":")) : base,
+		account: acct
 	};
 	this._setOverview(params);
 	this.setSize(Dwt.DEFAULT, "255");
@@ -515,13 +514,11 @@ function(params) {
 			treeIds: params.treeIds
 		};
 		overview =  opc.createOverview(ovParams);
-		overview.account = this.prevAccount;    //need to set account here before set overview so that account switch from selection list will be used to get tree data.
 		overview.set(params.treeIds);
 
 	} else if (params.account) {
 		overview.account = params.account;
 	}
-	overview.setSelected(this.prevAccount.id + ":" + ZmFolder.ID_INBOX, "FOLDER");
 	this._overview = overview;
 	document.getElementById(params.fieldId).appendChild(overview.getHtmlElement());
 	this.treeView = overview.getTreeView("FOLDER");
@@ -545,7 +542,7 @@ AttachMailTabView.prototype._hideRoot =
 function(treeView) {
 	var ti = treeView.getTreeItemById(ZmOrganizer.ID_ROOT);
 	if (!ti) {
-		var rootId = ZmOrganizer.getSystemId(ZmOrganizer.ID_ROOT, this.prevAccount);
+		var rootId = ZmOrganizer.getSystemId(ZmOrganizer.ID_ROOT);
 		ti = treeView.getTreeItemById(rootId);
 	}
 	ti.showCheckBox(false);

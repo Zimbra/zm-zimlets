@@ -158,7 +158,7 @@ GrouponZimlet.prototype._openNewsFeedCard = function(deal) {
 	cardProps.deal = deal;
 	cardProps.headerName = deal.vendor_name;
 	cardProps.type = "FACEBOOK";
-	cardProps.headerIcon = "GrouponIcon";
+	cardProps.headerIcon = params.headerIcon;
 	cardProps.autoScroll = true;
 	var tableId = this.grouponApp._showCard(cardProps);
 
@@ -203,6 +203,7 @@ function() {
 		return;
 	}
 	this.pView = new DwtComposite(this.getShell());
+	this.pView.getHtmlElement().style.overflow = "auto";
 	this.pView.getHtmlElement().innerHTML = this._createPreferenceView();
 
 	var dialog_args = {
