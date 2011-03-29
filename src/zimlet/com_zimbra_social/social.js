@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010, 2011 Zimbra, Inc.
+ * Copyright (C) 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -216,7 +216,7 @@ function() {
 
 SocialZimlet.prototype._addAccountCheckBoxListeners =
 function() {
-	for (var accntId in this.allAccounts) {
+	for (var accntId = 0; accntId < this.allAccounts.length; accntId++) {
 		var callback = AjxCallback.simpleClosure(this._saveToAccountCheckboxesPref, this, accntId);
 		Dwt.setHandler(document.getElementById(this.allAccounts[accntId].checkboxId), DwtEvent.ONCLICK, callback);
 	}
