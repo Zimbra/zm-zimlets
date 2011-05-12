@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 Zimbra, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -551,8 +551,6 @@ function(actionMenu) {
     searchOp.setMenu(this._searchMenu);
 };
 
-
-
 EmailTooltipZimlet.prototype._resetFilterMenu =
 function() {
 	var filterItems = this._filterMenu.getItems();
@@ -769,6 +767,7 @@ function(itemId, item, ev) {
 		case "NEWCONTACT":		this._contactListener(true);	break;
 		case "ADDTOFILTER":		this._filterListener();		break;
 		case "GOTOURL":			this._goToUrlListener();	break;
+        case "COPY_TEXT":       this._copyListener(ev);	break;
 	}
 };
 
@@ -942,6 +941,14 @@ function() {
 	}
 };
 
+EmailTooltipZimlet.prototype._copyListener =
+function(ev) {
+    var textToCopy = "";
+    var actionObject = this._actionObject;
+    
+    if (actionObject) {textToCopy = actionObject.toString();}
+    if (textToCopy) {DwtClipboardManager.getInstance().copyToClipboard(textToCopy);}
+}
 /**
  * Helper function
  */
@@ -1009,7 +1016,7 @@ function(bubbleId, email) {
 	if (bubble) {
 		var loc = Dwt.getLocation(bubble);
 		loc.y += Dwt.getSize(bubble).y + 2;
-		this._aclv.expandDL(email, null, null, null, loc);
+		this._aclv.expandDL({email:email, loc:loc});
 	}
 };
 
