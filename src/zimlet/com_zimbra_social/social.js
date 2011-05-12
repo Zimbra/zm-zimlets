@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010, 2011 Zimbra, Inc.
+ * Copyright (C) 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -39,21 +39,13 @@ function(app, toolbar, controller, view) {
 	    view == ZmId.VIEW_CONV ||
 	    view == ZmId.VIEW_TRAD)
 	{
-		var buttonIndex = -1;
-		for (var i = 0, count = toolbar.opList.length; i < count; i++) {
-			if (toolbar.opList[i] == ZmOperation.VIEW_MENU) {
-				buttonIndex = i + 1;
-				break;
-			}
-		}
 		ZmMsg.socialBtnLabel = this.getMessage("socialize");
 		var buttonArgs = {
 			text    : ZmMsg.socialBtnLabel,
 			tooltip: this.getMessage("socializeTooltip"),
-			index: buttonIndex,
 			image: "social-icon"
 		};
-		var button = toolbar.createOp("SOCIAL_ZIMLET_TOOLBAR_BUTTON", buttonArgs);
+		var button = toolbar.createZimletOp("SOCIAL_ZIMLET_TOOLBAR_BUTTON", buttonArgs);
 		button.addSelectionListener(new AjxListener(this.miniDlg, this.miniDlg._buttonListener, [controller]));
 	}
 };
@@ -216,7 +208,7 @@ function() {
 
 SocialZimlet.prototype._addAccountCheckBoxListeners =
 function() {
-	for (var accntId in this.allAccounts) {
+	for (var accntId = 0; accntId < this.allAccounts.length; accntId++) {
 		var callback = AjxCallback.simpleClosure(this._saveToAccountCheckboxesPref, this, accntId);
 		Dwt.setHandler(document.getElementById(this.allAccounts[accntId].checkboxId), DwtEvent.ONCLICK, callback);
 	}
