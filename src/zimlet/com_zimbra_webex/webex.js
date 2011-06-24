@@ -1482,7 +1482,7 @@ function() {
 			keyValArray[key] = val;
 		}
 	}
-	this.metaData.set("webexZimletAccountPreferences", keyValArray, null, new AjxCallback(this, this._saveAccPrefsHandler));
+	this.metaData.set("webexZimletAccountPreferences", keyValArray, null, new AjxCallback(this, this._saveAccPrefsHandler), null, true);
 };
 
 /**
@@ -1717,7 +1717,7 @@ function() {
 			val = val == "" ? "N/A" : val;
 			keyValArray[key] = val;
 		}
-		this.metaData.set("webexZimletGeneralPreferences", keyValArray, null, new AjxCallback(this, this._saveGeneralPrefsHandler));
+		this.metaData.set("webexZimletGeneralPreferences", keyValArray, null, new AjxCallback(this, this._saveGeneralPrefsHandler), null, true);
 	} catch(ex) {
 		this._showErrorMessage(ex);
 	}
@@ -1798,7 +1798,7 @@ function(apptId, meetingKey, seriesMeetingKey) {
 	keyValArry["hostName"] = this._currentWebExAccount[WebExZimlet.PROP_USERNAME.propId];
 	keyValArry["hostPwd"] = this._currentWebExAccount[WebExZimlet.PROP_PASSWORD.propId];
 	keyValArry["companyId"] = this._currentWebExAccount[WebExZimlet.PROP_COMPANY_ID.propId];
-	this._currentMetaData.set("webexZimletApptIdsHash", keyValArry, null, null);
+	this._currentMetaData.set("webexZimletApptIdsHash", keyValArry, null, null, null, true);
 };
 
 /**
