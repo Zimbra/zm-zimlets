@@ -111,7 +111,7 @@ function(jsonObj) {
 		return;
 	}
 	var listings = jsonObj.listings;
-	if(!listings || !listings.listing) {
+	if(!listings.listing) {
 		this._slide.setErrorMessage(this.getMessage("mustBeValidNumber"));
 		return;
 	}
