@@ -22,7 +22,6 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -66,7 +65,7 @@ public class ZimbraTag extends BodyTagSupport {
     
     private Account getRequestAccount(AuthToken token) throws ZimbraTagException, ServiceException {
     	Provisioning prov = Provisioning.getInstance();
-        Account acct = prov.get(Key.AccountBy.id, token.getAccountId(), token);
+        Account acct = prov.get(Provisioning.AccountBy.id, token.getAccountId(), token);
         if (acct == null) {
         	throw ZimbraTagException.AUTH_FAILURE("account not found "+token.getAccountId());
         }
