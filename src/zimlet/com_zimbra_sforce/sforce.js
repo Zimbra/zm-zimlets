@@ -1073,7 +1073,7 @@ function(itemName) {
 			itemCode = "001";
 			break;
 		case "Lead":
-			itemCode = "500";
+			itemCode = "00Q";
 			break;
 		case "Opportunity":
 			itemCode = "006";
@@ -1083,9 +1083,13 @@ function(itemName) {
 			break;
 		case "Solution":
 			itemCode = "501";
-			break;		case "Account":
-		itemCode = "001";
-		break;
+			break;
+		case "Contact":
+			itemCode = "003";
+			break;
+		case "Account":
+			itemCode = "001";
+			break;
 		case "Report":
 			itemCode = "00O";
 			break;		case "Account":
@@ -1241,7 +1245,6 @@ function() {
 					if (id != "") {
 						editLinksHtml = this._getSFViewEditLinks(id);
 					}
-
 					html[i++] = ["<tr><td>", editLinksHtml, "</td>"].join("");
 					html[i++] = ["<td>",caseNumber,"</td>"].join("");
 					html[i++] = ["<td>",ownerName,"</td>"].join("");
@@ -1270,16 +1273,16 @@ function() {
 				for (var j = 0; j < records.length; j++) {
 					var rec = records[j];
 					var oppName = rec.Opportunity ? (rec.Opportunity.Name ? rec.Opportunity.Name.toString() : "") : "";
-					html[i++] = ["<tr><td>", editLinksHtml, "</td>"].join("");
 					var role = "";
 					if (rec.Role) {
 						role = rec.Role.toString();
 					}
-					var id = rec.Id ? rec.Id.toString() : "";
+					var id = rec && rec.Opportunity && rec.Opportunity.Id ? rec.Opportunity.Id.toString() : "";
 					var editLinksHtml = "";
 					if (id != "") {
 						editLinksHtml = this._getSFViewEditLinks(id);
 					}
+					html[i++] = ["<tr><td>", editLinksHtml, "</td>"].join("");
 					html[i++] = ["<td >",role,"</td><td>",oppName,"</td></tr>"].join("");
 				}
 				html[i++] = "</table>";
@@ -1414,7 +1417,7 @@ function(mode, id) {
 	} else if (mode == "edit") {
 		part = AjxStringUtil.urlEncode(["/", id, "/e?retURL=/", id].join(""));
 	} else if (mode == "clone") {
-		part = AjxStringUtil.urlEncode(["/", id, "/e?retURL=/", id, "&clone=1"].join(""));
+		part = AjxStringUtil.urlEncode(["/", id, "/e?clone=1&retURL=/", id].join(""));
 	}
 	window.open(baseUrl + part);
 };
@@ -2146,7 +2149,7 @@ Com_Zimbra_SForce.prototype._showNotesDlg = function(note) {
 	div = document.createElement("div");
 	div.id = "SForce_mainAccountsInfoDiv";
 
-	div.style.height = "290px";
+	div.style.height = "270px";
 	div.style.overflow = "auto";
 	div.style.background = "white";
 
