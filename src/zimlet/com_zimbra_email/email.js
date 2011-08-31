@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -192,7 +192,7 @@ function(ev) {
 		this._composeListener(ev, bubble.address);
 	}
 	else if (this._bubbleList) {
-		this._bubbleList.selectAddressText();
+		this._bubbleList.selectText(bubble);
 	}
 };
 
@@ -549,6 +549,8 @@ function(actionMenu) {
     var searchOp = actionMenu.getOp("SEARCHEMAILS");
     searchOp.setMenu(this._searchMenu);
 };
+
+
 
 EmailTooltipZimlet.prototype._resetFilterMenu =
 function() {
@@ -1003,7 +1005,7 @@ function(bubbleId, email) {
 	if (bubble) {
 		var loc = Dwt.getLocation(bubble);
 		loc.y += Dwt.getSize(bubble).y + 2;
-		this._aclv.expandDL({email:email, loc:loc});
+		this._aclv.expandDL(email, null, null, null, loc);
 	}
 };
 
