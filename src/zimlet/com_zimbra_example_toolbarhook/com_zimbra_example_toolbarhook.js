@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -26,7 +26,7 @@ com_zimbra_example_toolbarhook_HandlerObject.prototype.constructor = com_zimbra_
 com_zimbra_example_toolbarhook_HandlerObject.prototype.initializeToolbar =
 function(app, toolbar, controller, viewId) {
 
-    if (viewId == appCtxt.get(ZmSetting.CONV_MODE) || viewId == ZmId.VIEW_TRAD) {
+    if (viewId == ZmId.VIEW_CONVLIST || viewId == ZmId.VIEW_TRAD) {
         // get the index of "View" menu so we can display the button after that
         var buttonIndex = 0;
         for (var i = 0; i < toolbar.opList.length; i++) {
