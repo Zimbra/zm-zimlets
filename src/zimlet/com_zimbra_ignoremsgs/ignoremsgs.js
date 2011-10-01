@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2009, 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -101,7 +101,7 @@ ZmIgnoreMsgsZimlet.prototype.setIgnoreMsgsFldrId =
 ZmIgnoreMsgsZimlet.prototype.initializeToolbar =
 		function(app, toolbar, controller, view) {
 
-			if (view == appCtxt.get(ZmSetting.CONV_MODE) ||
+			if (view == ZmId.VIEW_CONVLIST ||
 					view == ZmId.VIEW_CONV ||
 					view == ZmId.VIEW_TRAD) {
 				var buttonIndex = -1;

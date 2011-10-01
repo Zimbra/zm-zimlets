@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -261,7 +261,7 @@ function() {
 		pattern = pattern.replace(/\{([a-z]+)\}/g, Com_Zimbra_Date.__replaceKeyword);
 
 		// NOTE: can't use \b with asian characters!
-		boundary = this.getMessage("format"+(i+1)+".boundary");
+		boundary = this.getMessage("format"+i+".boundary");
 		if ((boundary != "" && boundary == BOUNDARY_TRUE) || boundary_all == BOUNDARY_TRUE) {
 			pattern = "\\b"+pattern+"\\b";
 		}

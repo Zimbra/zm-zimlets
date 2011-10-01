@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -139,8 +139,7 @@ function(html, idx, obj, spanId, context, options) {
 				dataClass:		appCtxt.getAutocompleter(),
 				matchValue:		ZmAutocomplete.AC_VALUE_FULL,
 				options:		{addrBubbles:true, massDLComplete:true},
-				compCallback:	this._dlAddrSelected.bind(this),
-				contextId:		this.name
+				compCallback:	new AjxCallback(this, this._dlAddrSelected)
 			};
 			this._aclv = new ZmAutocompleteListView(aclvParams);
 		}
@@ -192,8 +191,8 @@ function(ev) {
 	if (ev.detail == DwtEvent.ONDBLCLICK) {
 		this._composeListener(ev, bubble.address);
 	}
-	else if (this._bubbleList && this._bubbleList.selectAddressText) {
-		this._bubbleList.selectAddressText();
+	else if (this._bubbleList) {
+		this._bubbleList.selectText(bubble);
 	}
 };
 
@@ -551,6 +550,8 @@ function(actionMenu) {
     searchOp.setMenu(this._searchMenu);
 };
 
+
+
 EmailTooltipZimlet.prototype._resetFilterMenu =
 function() {
 	var filterItems = this._filterMenu.getItems();
@@ -678,6 +679,10 @@ function(obj, span, context) {
         }
     }
 
+	if (actionMenu.getOp("SEARCHBUILDER") && (isDetachWindow || !appCtxt.get(ZmSetting.BROWSE_ENABLED))) {
+		ZmOperation.removeOperation(actionMenu, "SEARCHBUILDER", actionMenu._menuItems);
+	}
+
 	if (actionMenu.getOp("ADDTOFILTER") && (isDetachWindow || !appCtxt.get(ZmSetting.FILTERS_ENABLED))) {
 		ZmOperation.removeOperation(actionMenu, "ADDTOFILTER", actionMenu._menuItems);
 	}
@@ -748,7 +753,7 @@ function(spanElement, contentObjText, matchContext, ev) {
 	}
 
 	this._actionObject = contentObjText;
-	this._composeListener(ev, this._getAddress(contentObjText));
+	this._composeListener(ev, contentObjText);
 };
 
 EmailTooltipZimlet.prototype.menuItemSelected =
@@ -1000,7 +1005,7 @@ function(bubbleId, email) {
 	if (bubble) {
 		var loc = Dwt.getLocation(bubble);
 		loc.y += Dwt.getSize(bubble).y + 2;
-		this._aclv.expandDL({email:email, loc:loc});
+		this._aclv.expandDL(email, null, null, null, loc);
 	}
 };
 
