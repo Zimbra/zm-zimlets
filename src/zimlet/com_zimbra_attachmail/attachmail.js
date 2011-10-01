@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010, 2011 Zimbra, Inc.
+ * Copyright (C) 2009, 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -37,9 +37,8 @@ var AttachMailZimlet = com_zimbra_attachmail_HandlerObject;
  */
 AttachMailZimlet.prototype.initializeToolbar =
 function(app, toolbar, controller, viewId) {
-	var viewType = appCtxt.getViewTypeFromId(viewId);
-	if (viewType == ZmId.VIEW_COMPOSE && !this._addedToMainWindow) {
-		var btn = toolbar.getOp(ZmId.OP_ATTACHMENT);
+	if (viewId.indexOf("COMPOSE") >= 0 && !this._addedToMainWindow) {
+		var btn = toolbar.getOp("ATTACHMENT");
 		btn.addSelectionListener(new AjxListener(this, this._addTab));	
 	} 
 };
@@ -239,9 +238,9 @@ function() {
 
 	document.getElementById(AttachMailTabView.ELEMENT_ID_NAV_BUTTON_CELL).appendChild(this._navTB.getHtmlElement());
 
-
 	var params = {parent: appCtxt.getShell(), className: "AttachMailTabBox AttachMailList", posStyle: DwtControl.ABSOLUTE_STYLE, view: ZmId.VIEW_BRIEFCASE_ICON, type: ZmItem.ATT};
 	var bcView = this._tabAttachMailView = new ZmAttachMailListView(params);
+
 	this.showAttachMailTreeView(); //this must be called AFTER setting this._tabAttachMailView since callback called from it uses it. so far only on IE7 for some reason this callback was called before the previous line, when this line was above it, but it was the bug
 
 	bcView.reparentHtmlElement(this._folderListId);
@@ -249,8 +248,6 @@ function() {
 	Dwt.setPosition(bcView.getHtmlElement(), Dwt.RELATIVE_STYLE);
 	//this.executeQuery(ZmOrganizer.ID_BRIEFCASE);
 };
-
-
 
 /**
  * Listens for "search" button events.
@@ -617,7 +614,6 @@ function() {
  * @extends		ZmListView
  */
 ZmAttachMailListView = function(params) {
-	this._showCheckboxColSpan = appCtxt.get(ZmSetting.SHOW_SELECTION_CHECKBOX) ? 1 : 0;
 	ZmListView.call(this, params);
 	this._controller = new ZmAttachMailController();
 };
@@ -632,7 +628,6 @@ function(base, item, params) {
 
 ZmAttachMailListView.prototype._getCellContents =
 function(htmlArr, idx, item, field, colIdx, params) {
-
 	var fragment = item.fragment ? AjxStringUtil.htmlEncode(item.fragment.slice(0, 80)) : "";
 
 	var from = item.getAddress("FROM");
@@ -644,7 +639,6 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	var attachCell = "";
 	var cols = 2;
 	if (item.hasAttach){
-
 		attachCell = "<td width='16px'><div class='ImgAttachment'/></td>";
 		cols = 3;
 	}
@@ -653,11 +647,6 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	
 	var subject = item.subject ? AjxStringUtil.htmlEncode(item.subject.slice(0, 32)) : "<no subject>";
 	htmlArr[idx++] = "<tr>";
-	if (this._showCheckboxColSpan == 1) {
-		htmlArr[idx++] = "<td rowspan=3 style='vertical-align:middle;' width=20><center>";
-		idx = this._getImageHtml(htmlArr, idx, "CheckboxUnchecked", this._getFieldId(item, ZmItem.F_SELECTION));
-		htmlArr[idx++] = "</center></td>";
-	}
 	htmlArr[idx++] = attachCell;
 	htmlArr[idx++] = "<td align=left><span class='AttachMailSubject'> " + subject + "</span></td>";
 

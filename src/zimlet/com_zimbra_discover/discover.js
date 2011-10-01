@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2008, 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2008, 2009, 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -119,7 +119,7 @@ DiscoverZimlet.prototype.initToolbarButton = function() {
 		return;
 	// Add the discover Button to the conversation page
 	var viewid = appCtxt.getAppViewMgr().getCurrentViewId();
-	if(viewid == appCtxt.get(ZmSetting.CONV_MODE)) {
+	if(viewid == ZmId.VIEW_CONVLIST) {
 		this._cnvController = AjxDispatcher.run("GetConvListController");
 		this._cnvController._discover = this;
 		if (!this._cnvController._toolbar) {
