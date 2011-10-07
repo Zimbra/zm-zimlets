@@ -205,8 +205,8 @@ function(spanElement, contentObjText, matchContext, canvas) {
 		isYahoo = (domain && domain == "yahoo.com");
 	}
 
-	var contactList = AjxDispatcher.run("GetContacts");
-	var contact = contactList ? contactList.getContactByEmail(addr) : null;
+	var contactsApp = appCtxt.getApp(ZmApp.CONTACTS);
+	var contact = contactsApp && contactsApp.getContactByEmail(addr);
 	if (contact) {
 		var hint = isYahoo ? this._getYahooHint() : this._composeTooltipHint;
 		toolTip = contact.getToolTip(addr, false, hint);
