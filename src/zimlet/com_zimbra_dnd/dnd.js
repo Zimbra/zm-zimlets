@@ -254,13 +254,13 @@ Com_Zimbra_DnD.prototype._uploadFiles = function(file) {
     try {
 
         var req = new XMLHttpRequest();
-        var fileName = null;
+        var fileName = file.name || file.fileName;
 
         req.open("POST", appCtxt.get(ZmSetting.CSFE_UPLOAD_URI)+"&fmt=extended,raw", true);
         req.setRequestHeader("Cache-Control", "no-cache");
         req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         req.setRequestHeader("Content-Type",  (file.type || "application/octet-stream") + ";");
-        req.setRequestHeader("Content-Disposition", 'attachment; filename="'+ this.convertToEntities(file.fileName) + '"');
+        req.setRequestHeader("Content-Disposition", 'attachment; filename="'+ this.convertToEntities(fileName) + '"');
 
         var tempThis = req;
         req.onreadystatechange = AjxCallback.simpleClosure(this._handleResponse, this, tempThis);
