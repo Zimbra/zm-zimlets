@@ -1,13 +1,13 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
- *
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 VMware, Inc.
+ * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- *
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * ***** END LICENSE BLOCK *****
@@ -78,8 +78,7 @@ function(viewId, isNewView) {
 	if(appCtxt.isChildWindow) {
 		this._zimletContext = parentAppCtxt.getZimletMgr().getZimletByName("com_zimbra_gtranslator");
 	}
-	var viewType = appCtxt.getViewTypeFromId(viewId);
-	if (viewType == ZmId.VIEW_COMPOSE &&  !this._zimletContext._isToolbarClosed && !this._zimletContext._alreadyUsed) {
+	if (viewId.indexOf("COMPOSE") >= 0 &&  !this._zimletContext._isToolbarClosed && !this._zimletContext._alreadyUsed) {
 		var composeController = appCtxt.getCurrentController();
 		var currentMsg = composeController._msg;
 		if(!currentMsg || (currentMsg.id != this.srcMsgObj.id)) {
@@ -340,8 +339,14 @@ function(data) {
 GTranslatorZimlet.prototype._initializeGTranslatorToolbar =
 function() {
 	var viewId = appCtxt.getCurrentViewId();
-	var id = "zv__" + viewId + "__MSG_body";
-	this._currentMsgBody = document.getElementById(id);
+	var id = "";
+	if (viewId.indexOf("MSG") == -1) {
+		id = "zv__" + viewId + "__MSG_body";
+		this._currentMsgBody = document.getElementById(id);
+	} else {
+		id = "zv__" + viewId + "__MSG_body";
+		this._currentMsgBody = document.getElementById(id);
+	}
 	if (!this._currentMsgBody) {
 		this.displayErrorMessage(this.getMessage("GTranslatorZimlet_couldNotGrabBody"), null, this.getMessage("GTranslatorZimlet_zimletError"));
 		return;
