@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+ * Copyright (C) 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -243,6 +243,7 @@ function(attrs) {
 	}
 	attrs = this._formatTexts(attrs);
 	var iHtml = AjxTemplate.expand("com_zimbra_email.templates.Email1#ContactDetails", attrs);
+	this._setTextDivHeight(iHtml);
 	document.getElementById(UnknownPersonSlide.TEXT_DIV_ID).innerHTML = iHtml;
 	document.getElementById("UnknownPersonSlide_Frame").onmouseup =  AjxCallback.simpleClosure(this._handleAllClicks, this);
 	/*
@@ -306,4 +307,16 @@ function(photoName) {
 	img.onload = AjxCallback.simpleClosure(this._handleImageLoad, this, img);
 	var timeoutCallback = new AjxCallback(this, this._handleImgLoadFailure);
 	this.emailZimlet.showLoadingAtId(timeoutCallback, UnknownPersonSlide.PHOTO_PARENT_ID);
+};
+
+UnknownPersonSlide.prototype._setTextDivHeight =
+function(html) {
+	if (!this._tempdiv) {
+		this._tempdiv = document.createElement("div");
+		this._tempdiv.style.left = -1000;
+		this.emailZimlet.getShell().getHtmlElement().appendChild(this._tempdiv);
+	}
+	this._tempdiv.innerHTML = html;
+	this._textDivOffsetHeight = this._tempdiv.offsetHeight + this._tempdiv.offsetHeight*0.25;
+	this._tempdiv.innerHTML = "";
 };
