@@ -572,8 +572,8 @@ SocialZimlet.prototype.twitterSearchKeyHdlr =
 
 SocialZimlet.prototype._twitterSearchBtnListener =
 		function() {
-			var val = document.getElementById("social_searchField").value;
-			if (AjxStringUtil.trim(val) == "" || val.indexOf("<") >= 0 || val.length > 20) {
+			var val = escape(document.getElementById("social_searchField").value);
+			if (AjxStringUtil.trim(val) == "" || val.length > 30) {
 				return;
 			}
 
@@ -869,6 +869,7 @@ SocialZimlet.prototype._showCard =
 			}
 
 			card.id = "social_card" + this.cardIndex;
+			card.style.padding = "5px";
 			var cardInfoSectionId = "social_cardInfoSectionId" + this.cardIndex;
 			//used to reset heights when window is resized
 			this.cardInfoSectionIdsArray.push(cardInfoSectionId);
@@ -1783,13 +1784,12 @@ SocialZimlet.prototype._postToTweetOrFB =
 			if (message.toLowerCase().indexOf("d @") == 0) {
 				isDM = true;
 			}
-
 			for (var id in this.allAccounts) {
 				var account = this.allAccounts[id];
-				if (account.type == "twitter") {
+				if (account.__on == "true" && account.type == "twitter") {
 					if (message.length > 140) {
 						appCtxt.getAppController().setStatusMsg(this.getMessage("moreThan140Chars"), ZmStatusView.LEVEL_WARNING);
-						continue;
+						return; //dont continue
 					}
 
 					this.twitter.postToTwitter(account, message);
@@ -1797,7 +1797,7 @@ SocialZimlet.prototype._postToTweetOrFB =
 				} else if (account.__on == "true" && account.type == "facebook" && !isDM) {
 					if (message.length > 420) {
 						appCtxt.getAppController().setStatusMsg(this.getMessage("moreThan420Chars"), ZmStatusView.LEVEL_WARNING);
-						continue;
+						return;  //dont continue
 					}
 					noAccountSelected = false;
 					this.facebook._publishToFacebook({account:account, message:message});
@@ -2373,16 +2373,35 @@ SocialZimlet.prototype._getAdditionalSCMessageInfo =
 			this._SCPostIdAndCommentboxMap[obj.id] = commentBoxId;
 			var attachments = obj.attachments;
 			var media_files = obj.media_files;
-			html[i++] = "<ul style='list-style-type:none;list-style:none outside none;clear:both;pading:8px 0 0;overflow:hidden;'>";
-			for (var j = 0; j < media_files.length; j++) {
-				var m = media_files[j];
-				html[i++] = "<li style='clear:left;display:block;'><a href='" + m.url + "' target='_blank'><img style='width:45px;height:45px' src='" + m.thumbnails.square45 + "'></img></a></li>";
+			var mediaFilesLen = media_files.length;
+			var by2 = mediaFilesLen/2;
+			var numOfRows = Math.ceil(by2);
+			var mediaFilesCounter = 0;
 
+			html[i++] = "<table style='padding: 5px'>";
+			for (var j = 0; j < numOfRows; j++) {
+				html[i++] = "<tr>";
+				var m1 = media_files[mediaFilesCounter++];
+				var m2 = media_files[mediaFilesCounter++];
+				if(m1) {
+					html[i++] = "<td>";
+					html[i++] = "<a href='" + m1.url + "' target='_blank'><img style='width:90px;height:90px' src='" + m1.thumbnails.square45 + "'></img></a>";
+					html[i++] = "<br/><label style='font-height:12px;color:darkblue;padding-bottom:5px'>"+ m1.title +"</label></td>";
+				}
+				if(m2) {
+					html[i++] = "<td>";
+					html[i++] = "<a href='" + m2.url + "' target='_blank'><img style='width:90px;height:90px' src='" + m2.thumbnails.square45 + "'></img></a>";
+					html[i++] = "<br/><label style='font-height:12px;color:darkblue;padding-bottom:5px;'>"+ m2.title +"</label></td>";
+				}
+				html[i++] = "</tr>";
 			}
-			html[i++] = "</ul>";
+			html[i++] = "</table>";
 			html[i++] = "<ul style='list-style-type:none;list-style:none outside none;clear:both;pading:8px 0 0;overflow:hidden;'>";
 			for (var j = 0; j < attachments.length; j++) {
 				var a = attachments[j];
+				if(a.content_type && a.content_type.indexOf("image") == 0) {
+					continue;
+				}
 				html[i++] = "<li style='clear:left;display:block;'><a target='_blank' href='" + a.url + "'>" + a.filename + "</a></li>";
 
 			}
@@ -2767,7 +2786,7 @@ SocialZimlet.prototype._getSocialcastAccountLinkId =
 			this._allSocialcastAccountsLinks[id] = {hasHandler:false, url:url};
 			return id;
 
-		}
+		};
 SocialZimlet.prototype._getFacebookCommentLinkId =
 		function(postId, tableId) {
 			var id = "social_FaceBookCommentLink_" + Dwt.getNextId();
@@ -3249,7 +3268,7 @@ SocialZimlet.prototype._updateAllWidgetItems =
 				this.tSearchFolders = new Array();
 				for (var i = 0; i < this.twitter.allSearches.length; i++) {
 					var search = this.twitter.allSearches[i];
-					this.tSearchFolders.push({name:search.name, icon:"Search", account:"", type:"SEARCH", search:search});
+					this.tSearchFolders.push({name:AjxStringUtil.urlDecode(search.name), icon:"Search", account:"", type:"SEARCH", search:search});
 				}
 			}
 
@@ -3331,7 +3350,7 @@ SocialZimlet.prototype._updateAllWidgetItems =
 					} else {
 						var search = account;
 						if (search.axn == "on") {
-							var label = search.name;
+							var label = AjxStringUtil.urlDecode(search.name);
 							var tableId = this._showCard({headerName:label, type:"SEARCH", autoScroll:false});
 							this.tableIdAndSearchMap[tableId] = search;
 							this.tableIdAndMarkAsReadId[tableId] = search._p;
