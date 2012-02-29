@@ -64,7 +64,24 @@ function(app, toolbar, controller, viewId) {
 		button.removeDropDownSelectionListener();
 		button.addSelectionListener(new AjxListener(this, this._addMenuItems, [button, menu]));
 		button.addDropDownSelectionListener(new AjxListener(this, this._addMenuItems, [button, menu]));
+
+		//force focus to-field when its not a reply
+		var composeView = controller._composeView;
+		this._forceFocusToField(composeView);
+		setTimeout(AjxCallback.simpleClosure(this._forceFocusToField, this, composeView), 3000);
 	}
+};
+
+/**
+ *
+ * @param composeView ZmComposeView
+ */
+Com_Zimbra_EmailTemplates.prototype._forceFocusToField =
+function(composeView) {
+	if(!composeView || composeView._isReply() || !composeView._field || composeView._field[AjxEmailAddress.TO]) {
+		return;
+	}
+	appCtxt.getKeyboardMgr().grabFocus(composeView._field[AjxEmailAddress.TO]);
 };
 
 Com_Zimbra_EmailTemplates.prototype._addMenuItems =

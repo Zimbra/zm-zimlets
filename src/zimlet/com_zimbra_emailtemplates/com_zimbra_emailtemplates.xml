@@ -1,4 +1,4 @@
-<zimlet name="com_zimbra_emailtemplates" version="0.8" label="${msg.label}" description="${msg.description}" target="main compose-window">
+<zimlet name="com_zimbra_emailtemplates" version="0.9" label="${msg.label}" description="${msg.description}" target="main compose-window">
 <!--
  * ***** BEGIN LICENSE BLOCK *****
  * 
