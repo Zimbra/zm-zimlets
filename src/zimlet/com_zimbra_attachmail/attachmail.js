@@ -659,7 +659,9 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	htmlArr[idx++] = "</span></td></tr>";
 	
 	if (fragment != "") {
-		htmlArr[idx++] = "<tr><td align=left colspan="+cols+"><span class='AttachMailFrag'>" + fragment + "</span></td></tr>";
+		htmlArr[idx++] = "<tr><td align=left colspan="+cols+"><span class='AttachMailFrag'>";
+		htmlArr[idx++] =  AjxStringUtil.htmlEncode(item.fragment.slice(0, 40));
+		htmlArr[idx++] = "</span></td></tr>";
 	}
 	htmlArr[idx++] = "</table></div>";
 	
