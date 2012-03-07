@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010, 2011 VMware, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -76,8 +76,11 @@ SocialOAuth.prototype.showOAuthDialog = function(serviceName) {
 
 SocialOAuth.prototype._createPINView =
 function() {
-	var stepNotes = this.zimlet.getMessage("stepNotes").replace("{0}", this.serviceName);
-	var step1 = this.zimlet.getMessage("step1").replace("{0}", this.serviceName).replace("{1}", this.serviceName);
+	try{
+		var stepNotes = this.zimlet.getMessage("stepNotes");
+		var step1 = this.zimlet.getMessage("step1").replace("{0}", this.serviceName).replace("{1}", this.serviceName);
+	}catch(e) {
+	}
 	var subs = {
 		logoutfirst:  AjxMessageFormat.format(this.zimlet.getMessage("logoutfirst"), this.serviceName),
 		stepsToAddAccount: AjxMessageFormat.format(this.zimlet.getMessage("stepsToAddAccount"), this.serviceName),

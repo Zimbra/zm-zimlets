@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2011 VMware, Inc.
+ * Copyright (C) 2006, 2007, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -146,7 +146,8 @@ function(matchedText, item) {
 ZmSalesDemoZimlet.prototype._do_addsalesZimletBar =
 function(viewId, matchedText, item) {
 	this.salesZimlet_bar_expanded = false;
-	if (viewId.indexOf("MSG") == 0) {
+	var viewType = appCtxt.getViewTypeFromId(viewId);
+	if (viewType != ZmId.VIEW_MSG) {
 		var infoBar = document.getElementById(["zv__MSG__",viewId,"_infoBar"].join(""));
 	} else {
 		var infoBar = document.getElementById(["zv__",viewId,"__MSG_infoBar"].join(""));

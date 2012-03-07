@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -436,7 +436,8 @@ function(params, ex) {
 	
 	var msg;
 	if (params.name && (ex.code == ZmCsfeException.MAIL_ALREADY_EXISTS)) {
-		msg = AjxMessageFormat.format(ZmMsg.errorAlreadyExists, [params.name]);
+		var type = appCtxt.getFolderTree(appCtxt.getActiveAccount()).getFolderTypeByName(params.name);
+		msg = AjxMessageFormat.format(ZmMsg.errorAlreadyExists, [params.name,type.toLowerCase()]);
 	} else if (params.url) {
 		var errorMsg = (ex.code == ZmCsfeException.SVC_RESOURCE_UNREACHABLE) ? ZmMsg.feedUnreachable : ZmMsg.feedInvalid;
 		msg = AjxMessageFormat.format(errorMsg, params.url);

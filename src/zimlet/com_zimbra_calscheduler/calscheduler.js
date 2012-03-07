@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2008, 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -558,16 +558,19 @@ function() {
 			keyUpCallback: keyUpCallback,
 			compCallback: acCallback
 		};
+		params.contextId = [this.name, ZmCalBaseItem.PERSON].join("-");
 		this._acContactsList = new ZmAutocompleteListView(params);
 		this._acList[ZmCalBaseItem.PERSON] = this._acContactsList;
 
 		// autocomplete for locations/equipment
 		if (appCtxt.get(ZmSetting.GAL_ENABLED)) {
 			params.options = {type:ZmAutocomplete.AC_TYPE_LOCATION};
+			params.contextId = [this.name, ZmCalBaseItem.LOCATION].join("-");
 			this._acLocationsList = new ZmAutocompleteListView(params);
 			this._acList[ZmCalBaseItem.LOCATION] = this._acLocationsList;
 
 			params.options = {type:ZmAutocomplete.AC_TYPE_EQUIPMENT};
+			params.contextId = [this.name, ZmCalBaseItem.EQUIPMENT].join("-");
 			this._acEquipmentList = new ZmAutocompleteListView(params);
 			this._acList[ZmCalBaseItem.EQUIPMENT] = this._acEquipmentList;
 		}

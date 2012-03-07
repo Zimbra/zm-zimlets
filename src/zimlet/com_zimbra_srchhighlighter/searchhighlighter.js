@@ -1,13 +1,13 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010, 2011 VMware, Inc.
- * 
+ * Copyright (C) 2009, 2010 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * ***** END LICENSE BLOCK *****
@@ -230,7 +230,6 @@ SearchHighlighterZimlet.prototype.addMenuButton = function(controller, menu) {
  * @param {ZmMsgController} controller  A controller
  */
 SearchHighlighterZimlet.prototype._clearSearchWordHighlights = function(controller) {
-	var msgBody;
 	var currentView = appCtxt.getAppViewMgr().getCurrentView();
 	var view;
 	if(currentView.getItemView) {
@@ -241,10 +240,8 @@ SearchHighlighterZimlet.prototype._clearSearchWordHighlights = function(controll
 	if(!view) {
 		return;
 	}
-	var bodyEl = view.getHtmlBodyElement();
-	if (bodyEl) {
-		msgBody = bodyEl.ownerDocument;
-	} else {
+	var msgBody = view.getDocument();
+	if (!msgBody) {
 		var elId = view.getHTMLElId();
 		if (elId) {
 			var doc = document.getElementById(elId + "_body__iframe");

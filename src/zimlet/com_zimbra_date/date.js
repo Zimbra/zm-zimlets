@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -222,7 +222,10 @@ function() {
 		monthname:	"("+AjxDateUtil.S_MONTHNAME+")",
 		yearnum:	"(\\d{2}|[1-9]\\d{2,3})",
         fullyearnum:"(\\d{4})",
-		number:		"(\\d+)"
+		number:		"(\\d+)",
+        timenum:    "(1[0-2]:?[0-5][0-9]|[1-9]:?[0-5][0-9]|1[0-2]|[1-9])",         //12hr
+        militarytimenum:    "(2[0-3]:?[0-5][0-9]|[0-1][0-9]:?[0-5][0-9])"        //24hr
+
 	};
 
 	Com_Zimbra_Date.PATTERNS = [];
@@ -261,7 +264,7 @@ function() {
 		pattern = pattern.replace(/\{([a-z]+)\}/g, Com_Zimbra_Date.__replaceKeyword);
 
 		// NOTE: can't use \b with asian characters!
-		boundary = this.getMessage("format"+i+".boundary");
+		boundary = this.getMessage("format"+(i+1)+".boundary");
 		if ((boundary != "" && boundary == BOUNDARY_TRUE) || boundary_all == BOUNDARY_TRUE) {
 			pattern = "\\b"+pattern+"\\b";
 		}

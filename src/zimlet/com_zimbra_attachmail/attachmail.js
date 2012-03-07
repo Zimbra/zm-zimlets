@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2009, 2010, 2011 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -33,33 +33,43 @@ var AttachMailZimlet = com_zimbra_attachmail_HandlerObject;
 
 
 /**
- * Called by framework when compose toolbar is being initialized
+ * Called by framework when attach popup called
  */
-AttachMailZimlet.prototype.initializeToolbar =
-function(app, toolbar, controller, viewId) {
-	if (viewId.indexOf("COMPOSE") >= 0 && !this._addedToMainWindow) {
-		var btn = toolbar.getOp("ATTACHMENT");
-		btn.addSelectionListener(new AjxListener(this, this._addTab));	
-	} 
+
+AttachMailZimlet.prototype.initializeAttachPopup =
+function(menu, controller) {
+    var mi = controller._createAttachMenuItem(menu, ZmMsg.mail,
+        new AjxListener(this, this.showAttachmentDialog ));
 };
 
-AttachMailZimlet.prototype._addTab =
+AttachMailZimlet.prototype.removePrevAttDialogContent =
+function(contentDiv) {
+    var elementNode =  contentDiv && contentDiv.firstChild;
+    if (elementNode && elementNode.className == "DwtComposite" ){
+        contentDiv.removeChild(elementNode);
+    }
+};
+
+AttachMailZimlet.prototype.showAttachmentDialog =
 function() {
-	if(this._addedToMainWindow){
-		return;
-	}
+
 	var attachDialog = this._attachDialog = appCtxt.getAttachDialog();
-	var tabview = attachDialog ? attachDialog.getTabView() : null;
-	
-	this.AMV = new AttachMailTabView(tabview, this);
-	
-	var tabLabel = this.getMessage("AttachMailZimlet_tab_label");
-	var tabkey = attachDialog.addTab("attachmail", tabLabel, this.AMV);
-	this.AMV.attachDialog = attachDialog;
-	
-	var callback = new AjxCallback(this.AMV, this.AMV.uploadFiles);
-	attachDialog.addOkListener(tabkey, callback);
-	this._addedToMainWindow = true;
+	attachDialog.setTitle(ZmMsg.attachMail);
+    this.removePrevAttDialogContent(attachDialog._getContentDiv().firstChild);
+    if (!this.AttachContactsView || !this.AttachContactsView.attachDialog){
+	    this.AMV = new AttachMailTabView(this._attachDialog, this);
+    }
+
+    this.AMV.reparentHtmlElement(attachDialog._getContentDiv().childNodes[0], 0);
+    this.AMV.attachDialog = attachDialog;
+	attachDialog.setOkListener(new AjxCallback(this.AMV, this.AMV.uploadFiles));
+
+    var view = appCtxt.getCurrentView();
+    var callback = new AjxCallback(view, view._attsDoneCallback, [true]);
+    attachDialog.setUploadCallback(callback);
+
+    this.AMV.attachDialog.popup();
+    this._addedToMainWindow = true;
 };
 
 /**
@@ -91,11 +101,18 @@ AttachMailZimlet.prototype.singleClicked = function() {
 AttachMailTabView =
 function(parent, zimlet, className) {
 	this.zimlet = zimlet;
-	DwtTabViewPage.call(this, parent, className, Dwt.STATIC_STYLE);
-	this.setScrollStyle(Dwt.SCROLL);
+	DwtComposite.call(this,parent,className,Dwt.STATIC_STYLE);
+	var acct = appCtxt.multiAccounts ? appCtxt.getAppViewMgr().getCurrentView().getFromAccount() : appCtxt.getActiveAccount();
+	if (this.prevAccount && (acct.id == this.prevAccount.id)) {
+			this.setSize(Dwt.DEFAULT, "275");
+			return;
+	}
+	this.prevAccount = acct;
+	this._createHtml1();
+	document.getElementById(this._folderTreeCellId).onclick = AjxCallback.simpleClosure(this._treeListener, this);
 };
 
-AttachMailTabView.prototype = new DwtTabViewPage;
+AttachMailTabView.prototype = new DwtComposite;
 AttachMailTabView.prototype.constructor = AttachMailTabView;
 
 /**
@@ -132,7 +149,7 @@ function() {
 	DwtTabViewPage.prototype.showMe.call(this);
 	var acct = appCtxt.multiAccounts ? appCtxt.getAppViewMgr().getCurrentView().getFromAccount() : appCtxt.getActiveAccount();
 	if (this.prevAccount && (acct.id == this.prevAccount.id)) {
-			this.setSize(Dwt.DEFAULT, "255");
+			this.setSize(Dwt.DEFAULT, "275");
 			return;
 	}
 	this.prevAccount = acct;
@@ -185,7 +202,7 @@ function() {
  */
 AttachMailTabView.prototype._createHtml1 =
 function() {
-	this._contentEl = this.getContentHtmlElement();
+
 	this._tableID = Dwt.getNextId();
 	this._folderTreeCellId = Dwt.getNextId();
 	this._folderListId = Dwt.getNextId();
@@ -214,7 +231,7 @@ function() {
 	html[idx++] = '</tr>';
 	html[idx++] = '</table>';
 
-	this._contentEl.innerHTML = html.join("");
+    this.setContent(html.join(""));
 
 	var searchButton = new DwtButton({parent:this});
 	var searchButtonLabel = this.zimlet.getMessage("AttachMailZimlet_tab_button_search");
@@ -238,9 +255,9 @@ function() {
 
 	document.getElementById(AttachMailTabView.ELEMENT_ID_NAV_BUTTON_CELL).appendChild(this._navTB.getHtmlElement());
 
+
 	var params = {parent: appCtxt.getShell(), className: "AttachMailTabBox AttachMailList", posStyle: DwtControl.ABSOLUTE_STYLE, view: ZmId.VIEW_BRIEFCASE_ICON, type: ZmItem.ATT};
 	var bcView = this._tabAttachMailView = new ZmAttachMailListView(params);
-
 	this.showAttachMailTreeView(); //this must be called AFTER setting this._tabAttachMailView since callback called from it uses it. so far only on IE7 for some reason this callback was called before the previous line, when this line was above it, but it was the bug
 
 	bcView.reparentHtmlElement(this._folderListId);
@@ -248,6 +265,8 @@ function() {
 	Dwt.setPosition(bcView.getHtmlElement(), Dwt.RELATIVE_STYLE);
 	//this.executeQuery(ZmOrganizer.ID_BRIEFCASE);
 };
+
+
 
 /**
  * Listens for "search" button events.
@@ -411,54 +430,26 @@ function() {
  * 
  */
 AttachMailTabView.prototype.uploadFiles =
-function(attachmentDlg, docIds) {
-	if (!docIds) {
-		docIds = [];
+function(attachmentDlg, msgIds) {
+	if (!msgIds) {
+		msgIds = [];
 		var items = this.getSelectedMsgs();
 		if (!items || (items.length == 0)) {
 			return;
 		}
 		for (var i in items) {
-			docIds.push(items[i].id);
+			msgIds.push(items[i].id);
 		}
 	}
-
-	this._createHiddenAttachments(docIds);
 	if(attachmentDlg == undefined)//in 5.x this is undefined, so use the local one
 		attachmentDlg = this.attachDialog;
 
 	if (attachmentDlg._uploadCallback) {
-		attachmentDlg._uploadCallback.run(AjxPost.SC_OK, null, null);
+		attachmentDlg._uploadCallback.run(AjxPost.SC_OK, null, null,msgIds);
 	}
-	this._hiddenView.getHtmlElement().innerHTML = "";//reset
+    attachmentDlg.popdown();
 };
 
-/**
- * Creates the hidden attachments.
- * 
- */
-AttachMailTabView.prototype._createHiddenAttachments =
-function(items) {
-	var composeView = appCtxt.getAppViewMgr().getCurrentView();
-	this._hiddenView = new DwtComposite(appCtxt.getShell());
-	var html = new Array();
-	var j = 0;
-	var name = "";
-	if(composeView._sessionId == undefined)
-		name = ZmComposeView.FORWARD_MSG_NAME;//5.x
-	else
-		name = ZmComposeView.FORWARD_MSG_NAME +  composeView._sessionId;
-
-	for (var i = 0; i < items.length; i++) {
-		html[j++] = "<input type=checkbox name='";
-		html[j++] = name;
-		html[j++] = "' checked=true value='";
-		html[j++] = items[i];
-		html[j++] = "'/>";
-	}
-	this._hiddenView.getHtmlElement().innerHTML = html.join("");
-
-};
 
 /**
  * Shows the attach mail tree view.
@@ -489,7 +480,7 @@ function() {
 		account: this.prevAccount
 	};
 	this._setOverview(params);
-	this.setSize(Dwt.DEFAULT, "255");
+	this.setSize(Dwt.DEFAULT, "275");
 	this._currentQuery = this._getQueryFromFolder("2");
 	//this.treeView.setSelected("2");
 	setTimeout(AjxCallback.simpleClosure(this.treeView.setSelected, this.treeView, 2), 100);
@@ -614,6 +605,7 @@ function() {
  * @extends		ZmListView
  */
 ZmAttachMailListView = function(params) {
+	this._showCheckboxColSpan = appCtxt.get(ZmSetting.SHOW_SELECTION_CHECKBOX) ? 1 : 0;
 	ZmListView.call(this, params);
 	this._controller = new ZmAttachMailController();
 };
@@ -628,6 +620,7 @@ function(base, item, params) {
 
 ZmAttachMailListView.prototype._getCellContents =
 function(htmlArr, idx, item, field, colIdx, params) {
+
 	var fragment = item.fragment ? AjxStringUtil.htmlEncode(item.fragment.slice(0, 80)) : "";
 
 	var from = item.getAddress("FROM");
@@ -639,6 +632,7 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	var attachCell = "";
 	var cols = 2;
 	if (item.hasAttach){
+
 		attachCell = "<td width='16px'><div class='ImgAttachment'/></td>";
 		cols = 3;
 	}
@@ -647,6 +641,11 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	
 	var subject = item.subject ? AjxStringUtil.htmlEncode(item.subject.slice(0, 32)) : ZmMsg.noSubject;
 	htmlArr[idx++] = "<tr>";
+	if (this._showCheckboxColSpan == 1) {
+		htmlArr[idx++] = "<td rowspan=3 style='vertical-align:middle;' width=20><center>";
+		idx = this._getImageHtml(htmlArr, idx, "CheckboxUnchecked", this._getFieldId(item, ZmItem.F_SELECTION));
+		htmlArr[idx++] = "</center></td>";
+	}
 	htmlArr[idx++] = attachCell;
 	htmlArr[idx++] = "<td align=left><span class='AttachMailSubject'> " + subject + "</span></td>";
 
@@ -659,9 +658,7 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	htmlArr[idx++] = "</span></td></tr>";
 	
 	if (fragment != "") {
-		htmlArr[idx++] = "<tr><td align=left colspan="+cols+"><span class='AttachMailFrag'>";
-		htmlArr[idx++] =  AjxStringUtil.htmlEncode(item.fragment.slice(0, 40));
-		htmlArr[idx++] = "</span></td></tr>";
+		htmlArr[idx++] = "<tr><td align=left colspan="+cols+"><span class='AttachMailFrag'>" + fragment + "</span></td></tr>";
 	}
 	htmlArr[idx++] = "</table></div>";
 	
