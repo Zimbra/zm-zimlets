@@ -1,15 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011 VMware, Inc.
- * 
- * The contents of this file are subject to the Zimbra Public License
- * Version 1.3 ("License"); you may not use this file except in
+ * Copyright (C) 2005, 2006, 2007 Zimbra, Inc.
+ *
+ * The contents of this file are subject to the Yahoo! Public License
+ * Version 1.0 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ *
  * ***** END LICENSE BLOCK *****
  */
 
@@ -685,7 +687,8 @@ function(viewId) {
 		return;
 	}
 
-	if (viewId.indexOf("MSG") == 0) {
+	var viewType = appCtxt.getViewTypeFromId(viewId);
+	if (viewType != ZmId.VIEW_MSG) {
 		var infoBar = document.getElementById(["zv__MSG__",viewId,"_infoBar"].join(""));
 	} else {
 		var infoBar = document.getElementById(["zv__",viewId,"__MSG_infoBar"].join(""));
@@ -2438,7 +2441,8 @@ Com_Zimbra_SForce.prototype.initializeToolbar = function(app, toolbar, controlle
 		this.sforce_logindlg_showSendAndAddBtn = this.getUserProperty("sforce_logindlg_showSendAndAddBtn") == "true";
 	}
 
-	if (viewId.indexOf("COMPOSE") >= 0 && this.sforce_logindlg_showSendAndAddBtn) {
+	var viewType = appCtxt.getViewTypeFromId(viewId);
+	if (viewType == ZmId.VIEW_COMPOSE && this.sforce_logindlg_showSendAndAddBtn) {
 		this._initComposeSFToolbar(toolbar, controller);
 	}
 };
@@ -2465,7 +2469,7 @@ Com_Zimbra_SForce.prototype._initContactSFToolbar = function(toolbar, controller
 };
 
 Com_Zimbra_SForce.prototype._sfContactTbButtonHdlr = function(controller) {
-	var contact = controller._listView[controller._currentView].getSelection()[0];
+	var contact = controller.getListView().getSelection()[0];
 	this.contactDropped(contact);//should really show a dialog with two sections to sync
 
 };

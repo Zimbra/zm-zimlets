@@ -1,7 +1,7 @@
 <%--
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2007, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -18,7 +18,7 @@
 <%@ page language="java" import="java.net.*, java.util.*,com.zimbra.common.util.*, com.zimbra.cs.util.*, com.zimbra.cs.servlet.*"%>
 <%@ page language="java" import="java.io.*, org.apache.commons.httpclient.methods.multipart.*"%>
 <%@ page language="java" import="com.zimbra.cs.service.*" %>
-<%@ page language="java" import="com.zimbra.cs.zclient.*" %>
+<%@ page language="java" import="com.zimbra.client.*" %>
 
 <%@ page import="org.apache.commons.fileupload.*,org.apache.commons.fileupload.disk.*, org.apache.commons.io.*, java.util.*,
 java.io.File, java.lang.Exception" %>

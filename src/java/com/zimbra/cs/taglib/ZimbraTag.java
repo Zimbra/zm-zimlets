@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -65,7 +66,7 @@ public class ZimbraTag extends BodyTagSupport {
     
     private Account getRequestAccount(AuthToken token) throws ZimbraTagException, ServiceException {
     	Provisioning prov = Provisioning.getInstance();
-        Account acct = prov.get(Provisioning.AccountBy.id, token.getAccountId(), token);
+        Account acct = prov.get(Key.AccountBy.id, token.getAccountId(), token);
         if (acct == null) {
         	throw ZimbraTagException.AUTH_FAILURE("account not found "+token.getAccountId());
         }

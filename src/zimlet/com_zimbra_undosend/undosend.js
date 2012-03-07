@@ -1,13 +1,13 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010, 2011 VMware, Inc.
- * 
+ * Copyright (C) 2007, 2009, 2010 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * ***** END LICENSE BLOCK *****
@@ -51,7 +51,8 @@ function() {
  */
 UndoSendZimlet.prototype.initializeToolbar =
 function(app, toolbar, controller, viewId) {
-	if (viewId.indexOf("COMPOSE") >= 0) {
+	var viewType = appCtxt.getViewTypeFromId(viewId);
+	if (viewType == ZmId.VIEW_COMPOSE) {
 		var sendBtn = toolbar.getButton("SEND_MENU");
 		if(!sendBtn) {
 			sendBtn = toolbar.getButton("SEND");
@@ -101,11 +102,18 @@ function(controller) {
 	if (!this.appViewMgr) {
 		this.appViewMgr = appCtxt.getAppViewMgr();
 	}	
-	var viewId = this.appViewMgr._currentView;
+	var viewId = this.appViewMgr.getCurrentViewId();
 
 	if(!appCtxt.isChildWindow) {
-		if (this.appViewMgr._isTabView[viewId]) {
-			var tab = appCtxt.getAppChooser().getButton(this.appViewMgr._tabParams[viewId].id);
+		var tabBtnId;
+		if(this.appViewMgr && this.appViewMgr._isTabView && this.appViewMgr._isTabView[viewId]) {
+			tabBtnId = this.appViewMgr._tabParams[viewId].id;
+		} else if(this.appViewMgr._view && this.appViewMgr._view[viewId] && this.appViewMgr._view[viewId].tabParams) {
+			tabBtnId = this.appViewMgr._view[viewId].tabParams.id;
+		}
+
+		if (tabBtnId) {
+			var tab = appCtxt.getAppChooser().getButton(tabBtnId);
 			var title = this._getComposeTabTitle(viewId);//store the title as when we push the view back, it doesnt seem to work
 		}
 	}

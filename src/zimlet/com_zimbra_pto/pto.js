@@ -1,13 +1,13 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2011 VMware, Inc.
- * 
+ * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+ *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * ***** END LICENSE BLOCK *****
@@ -432,10 +432,10 @@ ZmPTOZimlet.prototype._addAutoCompleteHandler =
 function() {
     if (appCtxt.get(ZmSetting.CONTACTS_ENABLED) || appCtxt.get(ZmSetting.GAL_ENABLED)) {
         var params = {
-            dataClass: appCtxt.getAutocompleter(),
-            matchValue: ZmAutocomplete.AC_VALUE_EMAIL,
-            compCallback: (new AjxCallback(this, this._handleCompletionData, [this])),
-            keyUpCallback: (new AjxCallback(this, this._acKeyUpListener))
+            dataClass:		appCtxt.getAutocompleter(),
+            matchValue:		ZmAutocomplete.AC_VALUE_EMAIL,
+            keyUpCallback:	this._acKeyUpListener.bind(this),
+			contextId:		this.name
         };
         this._acAddrSelectList = new ZmAutocompleteListView(params);
         this._acAddrSelectList.handle(document.getElementById("ptoZimlet_ccManagerField"));
@@ -446,23 +446,6 @@ ZmPTOZimlet.prototype._acKeyUpListener =
 function(event, aclv, result) {
     //ZmSharePropsDialog._enableFieldsOnEdit(this);
     };
-
-ZmPTOZimlet.prototype._handleCompletionData =
-function(control, text, element) {
-    element.value = text;
-    try {
-        if (element.fireEvent) {
-            element.fireEvent("onchange");
-        } else if (document.createEvent) {
-            var ev = document.createEvent("UIEvents");
-            ev.initUIEvent("change", false, window, 1);
-            element.dispatchEvent(ev);
-        }
-    }
-    catch(ex) {
-        // ignore -- TODO: what to do with this error?
-        }
-};
 
 /**
  * Sends the email.

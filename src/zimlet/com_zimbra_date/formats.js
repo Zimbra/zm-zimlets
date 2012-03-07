@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2008, 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -14,6 +14,7 @@
  */
 Com_Zimbra_Date.DEFAULT_FORMATS = [
 	// conversion to UTC done with http://timeanddate.com/
+    "Dante Mateo Comfort",          "2011-03-01T17:26:00Z",
 	"Brooke Ellen Henrikson",		"2009-10-17T10:20:00Z",
 	"Nicholas Mateo Damon",			"2008-07-18T17:35:00Z",
 	"Shyar Parag Shah",				"2008-07-16T04:51:00Z",

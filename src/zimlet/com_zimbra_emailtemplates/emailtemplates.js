@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010, 2011 VMware, Inc.
+ * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -38,7 +38,8 @@ function(app, toolbar, controller, viewId) {
 		this._viewIdAndMenuMap = [];
 	}
 	this.viewId = viewId;
-	if (viewId.indexOf("COMPOSE") >= 0 || viewId == "APPT") {
+	this.viewType = controller.getCurrentViewType();
+	if (this.viewType == ZmId.VIEW_COMPOSE || this.viewType == ZmId.VIEW_APPOINTMENT) {
 		if (toolbar.getOp("EMAIL_TEMPLATES_ZIMLET_TOOLBAR_BUTTON")) {
 			return;
 		}
@@ -64,24 +65,7 @@ function(app, toolbar, controller, viewId) {
 		button.removeDropDownSelectionListener();
 		button.addSelectionListener(new AjxListener(this, this._addMenuItems, [button, menu]));
 		button.addDropDownSelectionListener(new AjxListener(this, this._addMenuItems, [button, menu]));
-
-		//force focus to-field when its not a reply
-		var composeView = controller._composeView;
-		this._forceFocusToField(composeView);
-		setTimeout(AjxCallback.simpleClosure(this._forceFocusToField, this, composeView), 3000);
 	}
-};
-
-/**
- *
- * @param composeView ZmComposeView
- */
-Com_Zimbra_EmailTemplates.prototype._forceFocusToField =
-function(composeView) {
-	if(!composeView || composeView._isReply() || !composeView._field || composeView._field[AjxEmailAddress.TO]) {
-		return;
-	}
-	appCtxt.getKeyboardMgr().grabFocus(composeView._field[AjxEmailAddress.TO]);
 };
 
 Com_Zimbra_EmailTemplates.prototype._addMenuItems =
@@ -108,7 +92,7 @@ function(removeChildren) {
 	var getHtml = appCtxt.get(ZmSetting.VIEW_AS_HTML);
 	var callbck = new AjxCallback(this, this._getRecentEmailsHdlr, removeChildren);
 	var _types = new AjxVector();
-	_types.add("MSG");
+	_types.add(ZmId.VIEW_MSG);
 
 	appCtxt.getSearchController().search({query: ["in:(\"",this._folderPath,"\")"].join(""), userText: true, limit:25,  searchFor: ZmId.SEARCH_MAIL,
 		offset:0, types:_types, noRender:true, getHtml: getHtml, callback:callbck, errorCallback:callbck});
@@ -126,7 +110,7 @@ function(removeChildren, result) {
 			this._addStandardMenuItems(menu);
 			return;
 		}
-		var array = result.getResponse().getResults("MSG").getVector().getArray();
+		var array = result.getResponse().getResults(ZmId.VIEW_MSG).getVector().getArray();
 		for (var i = 0; i < array.length; i++) {
 			var msg = array[i];
 			var id = msg.id;
@@ -307,7 +291,7 @@ Com_Zimbra_EmailTemplates.prototype._doInsert =
 function(controller, composeView, templateSubject, templateBody, currentBodyContent, insertMode) {
 	//insert subject
 	if (insertMode == "bodyAndSubject" || insertMode == "all") {
-		if (this.viewId == "APPT") {
+		if (this.viewType == ZmId.VIEW_APPOINTMENT) {
 			composeView._apptEditView._subjectField.setValue(templateSubject);
 		} else {
 			composeView._subjectField.value = templateSubject;
@@ -333,7 +317,7 @@ function(controller, composeView, templateSubject, templateBody, currentBodyCont
 			}
 		}
 
-		if (this.viewId == "APPT") {
+		if (this.viewType == ZmId.VIEW_APPOINTMENT) {
 			try{
 				composeView._apptEditView._attInputField.PERSON.setValue(toStr.concat(ccStr).join(";"));
 			} catch(e) {
@@ -354,7 +338,7 @@ function(controller, composeView, templateSubject, templateBody, currentBodyCont
 	if ((this._composeMode == DwtHtmlEditor.HTML)) {
 		saperator = "</br>";
 	}
-	if (this.viewId == "APPT") {
+	if (this.viewType == ZmId.VIEW_APPOINTMENT) {
 		//in appt, we append templateBody below currentBodyContent to facilitate things like conf-call templates
 		composeView.getHtmlEditor().setContent([currentBodyContent, saperator, templateBody].join(""));
 	} else {

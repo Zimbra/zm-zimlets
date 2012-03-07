@@ -1,15 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
+ *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2011 VMware, Inc.
- * 
- * The contents of this file are subject to the Zimbra Public License
- * Version 1.3 ("License"); you may not use this file except in
+ * Copyright (C) 2006, 2007 Zimbra, Inc.
+ *
+ * The contents of this file are subject to the Yahoo! Public License
+ * Version 1.0 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ *
  * ***** END LICENSE BLOCK *****
  *@Author Raja Rao DV
  */
@@ -123,8 +125,9 @@ ZmArchiveZimlet.prototype._hideMenuBtn = function(controller, menu) {
 ZmArchiveZimlet.prototype.initializeToolbar =
 		function(app, toolbar, controller, viewId) {
 			//conversation-list-view or conversation-view or traditional-view(aka message-view)
-			if (viewId == ZmId.VIEW_CONVLIST || viewId == ZmId.VIEW_CONV || viewId == ZmId.VIEW_TRAD ||
-					viewId.indexOf("MSG") == 0) {
+			var viewType = appCtxt.getViewTypeFromId(viewId);
+			if (viewType == ZmId.VIEW_CONVLIST || viewType == ZmId.VIEW_CONV || viewType == ZmId.VIEW_TRAD ||
+					viewType == ZmId.VIEW_MSG) {
 				var deleteBtn = toolbar.getButton(ZmOperation.DELETE) || toolbar.getButton(ZmOperation.DELETE_MENU);
 				if(deleteBtn) {
 					deleteBtn.getHtmlElement().style.display = "none";
@@ -147,14 +150,7 @@ ZmArchiveZimlet.prototype.initializeToolbar =
 					var button = toolbar.createOp(ZmArchiveZimlet.ARCHIVE_BUTTON_ID, buttonArgs);
 					button.addSelectionListener(new AjxListener(controller, controller._archiveViaZimletListener, [this]));
 					//add listener to listview so that we can enable button when multiple items are selected
-					var currentView = appCtxt.getCurrentView();
-					var listView;
-					if(currentView.getMailListView)  {
-						listView =   currentView.getMailListView();
-					}
-					if(!listView || !listView.addSelectionListener) {
-						listView = controller.getCurrentView() || controller.listView || controller._listView;
-					}
+					var listView = controller.getListView();
 					if (listView && listView.addSelectionListener) {
 						listView.addSelectionListener(new AjxListener(this, this._listActionListener, button));
 					}
@@ -281,7 +277,8 @@ ZmArchiveZimlet.prototype._createFldrErrCallback =
 			}
 			var msg;
 			if (params.name && (ex.code == ZmCsfeException.MAIL_ALREADY_EXISTS)) {
-				msg = AjxMessageFormat.format(ZmMsg.errorAlreadyExists, [params.name]);
+				var type = appCtxt.getFolderTree(appCtxt.getActiveAccount()).getFolderTypeByName(params.name);
+		        msg = AjxMessageFormat.format(ZmMsg.errorAlreadyExists, [params.name,type.toLowerCase()]);
 			} else if (params.url) {
 				var errorMsg = (ex.code == ZmCsfeException.SVC_RESOURCE_UNREACHABLE) ? ZmMsg.feedUnreachable : ZmMsg.feedInvalid;
 				msg = AjxMessageFormat.format(errorMsg, params.url);
