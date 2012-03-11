@@ -1,13 +1,13 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010 Zimbra, Inc.
- *
+ * Copyright (C) 2009, 2010, 2011 VMware, Inc.
+ * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- *
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * ***** END LICENSE BLOCK *****
@@ -49,28 +49,19 @@ function() {
 	this.stickyNotes_ToolbarBtn = this.getUserProperty("stickyNotes_ToolbarBtn") == "true";
 	this._createTagAndStoreId();
 	this._migrateOldData();
-	this._viewIdWithListenerAdded = [];
 };
 
 StickyNotesZimlet.prototype.onShowView =
 function(viewId, isNewView) {
-	var viewType = appCtxt.getViewTypeFromId(viewId);
-	if(viewType == ZmId.VIEW_CONTACT_SIMPLE || viewId == ZmId.VIEW_CAL) {
+	if(viewId == "CNS" || viewId == "CAL") {
 		var controller = appCtxt.getCurrentController();
 		try{
-			if(viewId == ZmId.VIEW_CAL) {//in calendar, there are multiple views and viewId doesnt match internal views
+			if(viewId == "CAL") {//in calendar, there are multiple views and viewId doesnt match internal views
 				for(var vid in controller._listView) {
-					if(!this._viewIdWithListenerAdded[vid]) {//add listeners only once
-						controller._listView[vid].addSelectionListener(new AjxListener(this, this._onContactOrApptView, [controller]));
-						this._viewIdWithListenerAdded[vid] = true;
-					}
+					controller._listView[vid].addSelectionListener(new AjxListener(this, this._onContactOrApptView, [controller]));
 				}
 			} else {
-				if(!this._viewIdWithListenerAdded[viewId]) {//add listeners only once
-					controller._listView[viewId].addSelectionListener(new AjxListener(this, this._onContactOrApptView, [controller]));
-					this._viewIdWithListenerAdded[viewId] = true;
-				}
-
+				controller._listView[viewId].addSelectionListener(new AjxListener(this, this._onContactOrApptView, [controller]));
 			}
 		} catch(e) {
 		}
@@ -347,9 +338,7 @@ function(app, toolbar, controller, view) {
 	if (!this.turnONstickynotesZimlet) {
 		return;
 	}
-	var viewType = appCtxt.getViewTypeFromId(view);
-	if (viewType == ZmId.VIEW_CONVLIST || viewType == ZmId.VIEW_CONV || viewType == ZmId.VIEW_TRAD ||
-			viewType == ZmId.VIEW_CONTACT_SIMPLE || viewType == ZmId.VIEW_CAL_DAY) {
+	if (view == ZmId.VIEW_CONVLIST || view == ZmId.VIEW_CONV || view == ZmId.VIEW_TRAD || view == "CNS" || view == "CLD") {
 		var buttonIndex = -1;
 		for (var i = 0, count = toolbar.opList.length; i < count; i++) {
 			if (toolbar.opList[i] == ZmOperation.PRINT) {
@@ -382,7 +371,7 @@ function(controller) {
 	if (!this.turnONstickynotesZimlet)
 		return;
 
-	var selectedItms = controller.getListView().getSelection();
+	var selectedItms = controller.getCurrentView().getSelection();
 	if (selectedItms.length > 0) {
 		this.srcMsgObj = selectedItms[0];
 		if (this.srcMsgObj.type == "CONV") {
@@ -414,9 +403,9 @@ function(msgObj) {
  */
 StickyNotesZimlet.prototype._createStickyNotes =
 function(obj) {
-	if (obj.type == ZmId.ITEM_CONV) {
+	if (obj.type == "CONV") {
 		this._itemId = obj.cid;
-	} else if (obj.type == ZmId.ITEM_MSG || obj.type == ZmId.ITEM_CONTACT || obj.type == ZmId.ITEM_APPOINTMENT) {
+	} else if (obj.type == "MSG" || obj.type == "CONTACT" || obj.type == "APPT") {
 		this._itemId = obj.id;
 	} else {
 		return;
@@ -438,9 +427,9 @@ function(msg) {
 	if (this.srcMsgObj.tags.length == 0) {
 		return;
 	}
-	if (msg.type == ZmId.ITEM_CONV) {
+	if (msg.type == "CONV") {
 		this._itemId = msg.cid;
-	} else if (msg.type == ZmId.ITEM_MSG) {
+	} else if (msg.type == "MSG") {
 		this._itemId = msg.id;
 	} else {
 		if (this.stickyNotesDisplayed) {
@@ -456,7 +445,7 @@ function(controller) {
 	if (!this.turnONstickynotesZimlet) {
 		return;
 	}
-	var selectedItms = controller.getListView().getSelection();
+	var selectedItms = controller.getCurrentView().getSelection();
 	if (selectedItms.length > 0) {
 		this.srcMsgObj = selectedItms[0];
 		this._itemId = this.srcMsgObj.id;

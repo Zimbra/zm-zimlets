@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2007, 2008, 2009, 2010, 2011 Zimbra, Inc.
+ * Copyright (C) 2007, 2008, 2009, 2010, 2011 VMware, Inc.
  * 
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -130,52 +130,35 @@ Com_Zimbra_DnD.prototype._initHTML5 = function () {
     
 };
 
-Com_Zimbra_DnD.prototype._setToolTip =
-function(){
-    if (!this.dndTooltipEl && !this.dndTooltipEl.style){
-        return;
-    }
-    var curView = appCtxt.getAppViewMgr().getCurrentView();
-    var controller = curView.getController();
-    if(!controller) { return; }
-
-    if (curView._attachCount > 0 || this.upLoadC > 0){
-          this.dndTooltipEl.innerHTML = "";
-          this.dndTooltipEl.style.display = "none";
-    } else {
-          this.dndTooltipEl.innerHTML = ZmMsg.dndTooltip;
-          this.dndTooltipEl.style.display = "block";
-    }
-};
-
 Com_Zimbra_DnD.prototype.onShowView =
 function(viewId, isNewView) {
     var isWindowsSafari = (AjxEnv.isWindows && !AjxEnv.isChrome && !AjxEnv.isFirefox);
     if(AjxEnv.isDesktop) {    //bug:
     	isWindowsSafari = false;
     }
-	var viewType = appCtxt.getViewTypeFromId(viewId);
     if(this.isHTML5 && !AjxEnv.isIE && !isWindowsSafari) {
-        if (viewType == ZmId.VIEW_COMPOSE) {
+        if (viewId == ZmId.VIEW_COMPOSE || viewId.indexOf(ZmId.VIEW_COMPOSE) != -1) {
             var curView = appCtxt.getAppViewMgr().getCurrentView();
             var el = curView.getHtmlElement();
             
             this._addHandlers(el);
-            this.dndTooltipEl = document.getElementById(el.id + '_zdnd_tooltip');
-            this._setToolTip();
+            var dndTooltip = this.dndTooltipEl = document.getElementById(el.id + '_zdnd_tooltip');
+            if (this.dndTooltipEl)
+            	this.dndTooltipEl.innerHTML = ZmMsg.dndTooltip;
+            if(dndTooltip && dndTooltip.style) dndTooltip.style.display = "block";
         }
     } else if ("createEvent" in document && document.getElementById("zdnd_files") && !AjxEnv.isIE && !isWindowsSafari) {
-        if (viewType == ZmId.VIEW_COMPOSE ||
-			viewType == ZmId.VIEW_BRIEFCASE_COLUMN ||
-			viewType == ZmId.VIEW_BRIEFCASE ||
-			viewType == ZmId.VIEW_BRIEFCASE_DETAIL) {
+        if (viewId == ZmId.VIEW_COMPOSE ||
+			viewId == ZmId.VIEW_BRIEFCASE_COLUMN ||
+			viewId == ZmId.VIEW_BRIEFCASE ||
+			viewId == ZmId.VIEW_BRIEFCASE_DETAIL || viewId.indexOf(ZmId.VIEW_COMPOSE) != -1) {
 
 			var ev = document.createEvent("Events");
 			ev.initEvent("ZimbraDnD", true, false);
 
 			var curView = appCtxt.getAppViewMgr().getCurrentView();
 
-			if (viewType == ZmId.VIEW_COMPOSE) {
+			if (viewId == ZmId.VIEW_COMPOSE || viewId.indexOf(ZmId.VIEW_COMPOSE) != -1) {
 				curView._resetBodySize();
 			}
             var el = curView.getHtmlElement();
@@ -186,11 +169,11 @@ function(viewId, isNewView) {
 
 Com_Zimbra_DnD.uploadDnDFiles =
 function() {
-	var viewType = appCtxt.getCurrentViewType();
-	if (viewType == ZmId.VIEW_COMPOSE ||
-		viewType == ZmId.VIEW_BRIEFCASE_COLUMN ||
-		viewType == ZmId.VIEW_BRIEFCASE ||
-		viewType == ZmId.VIEW_BRIEFCASE_DETAIL)
+	var viewId = appCtxt.getAppViewMgr().getCurrentViewId();
+	if (viewId == ZmId.VIEW_COMPOSE ||
+		viewId == ZmId.VIEW_BRIEFCASE_COLUMN ||
+		viewId == ZmId.VIEW_BRIEFCASE ||
+		viewId == ZmId.VIEW_BRIEFCASE_DETAIL || viewId.indexOf('COMPOSE') != -1)
 	{
 		var curView = appCtxt.getAppViewMgr().getCurrentView();
         /*if(window.newWindowCommand == 'compose'){
@@ -242,7 +225,6 @@ Com_Zimbra_DnD.prototype._onDrop = function(ev) {
             var file = files[j];
             var size = file.size || file.fileSize; /*Safari*/;
             if(size > appCtxt.get(ZmSetting.ATTACHMENT_SIZE_LIMIT)) {
-                this._setToolTip();
                 var msgDlg = appCtxt.getMsgDialog();
                 var errorMsg = AjxMessageFormat.format(ZmMsg.attachmentSizeError, AjxUtil.formatSize(appCtxt.get(ZmSetting.ATTACHMENT_SIZE_LIMIT)));
                 msgDlg.setMessage(errorMsg, DwtMessageDialog.WARNING_STYLE);
@@ -263,7 +245,6 @@ Com_Zimbra_DnD.prototype._onDrop = function(ev) {
             }
             this._uploadFiles(file, controller);
             this.dndTooltipEl.innerHTML = "<img src='/img/animated/ImgSpinner.gif' width='16' height='16' border='0' style='float:left;'/>&nbsp;<div style='display:inline;'>" + ZmMsg.attachingFiles + "</div>";
-            this.dndTooltipEl.style.display = "block";
         }
     }
 
@@ -308,7 +289,7 @@ Com_Zimbra_DnD.prototype._uploadFiles = function(file, controller) {
         var msgDlg = appCtxt.getMsgDialog();
         this.upLoadC = this.upLoadC - 1;
         msgDlg.setMessage(ZmMsg.importErrorUpload, DwtMessageDialog.CRITICAL_STYLE);
-        this._setToolTip();
+        this.dndTooltipEl.innerHTML = ZmMsg.dndTooltip;
         msgDlg.popup();
         return false;
     }
@@ -328,6 +309,7 @@ Com_Zimbra_DnD.prototype._handleErrorResponse = function(respCode) {
        warngDlg.setMessage(msg, style);
     }
     this.upLoadC = this.upLoadC - 1;
+    this.dndTooltipEl.innerHTML = ZmMsg.dndTooltip;
     warngDlg.popup();
 };
 
@@ -337,7 +319,6 @@ Com_Zimbra_DnD.prototype._handleResponse = function(req, controller) {
             var resp = eval("["+req.responseText+"]");
 
             this._handleErrorResponse(resp[0]);
-            this._setToolTip();
 
             if(resp.length > 2) {
                 var respObj = resp[2];
@@ -351,10 +332,11 @@ Com_Zimbra_DnD.prototype._handleResponse = function(req, controller) {
                 if(this.attachment_ids.length > 0 && this.upLoadC == 0) {
                     var attachment_list = this.attachment_ids.join(",");
                     this.attachment_ids = [];
-					var viewType = appCtxt.getCurrentViewType();
-                    if (viewType == ZmId.VIEW_COMPOSE) {
+                    var viewId = appCtxt.getAppViewMgr().getCurrentViewId();
+                    if (viewId == ZmId.VIEW_COMPOSE || viewId.indexOf(ZmId.VIEW_COMPOSE) != -1) {
                         controller.saveDraft(ZmComposeController.DRAFT_TYPE_MANUAL, attachment_list);
                     }
+                    this.dndTooltipEl.innerHTML = ZmMsg.dndTooltip;
                 }
             }
         }

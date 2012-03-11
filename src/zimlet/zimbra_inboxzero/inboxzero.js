@@ -1,3 +1,17 @@
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Zimbra Collaboration Suite Zimlets
+ * Copyright (C) 2010, 2011 VMware, Inc.
+ * 
+ * The contents of this file are subject to the Zimbra Public License
+ * Version 1.3 ("License"); you may not use this file except in
+ * compliance with the License.  You may obtain a copy of the License at
+ * http://www.zimbra.com/license.
+ * 
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
+ * ***** END LICENSE BLOCK *****
+ */
 InboxZero = function() {
     ZmZimletBase.call(this);
     this._msgResponseMap = {};
@@ -122,11 +136,7 @@ InboxZero.prototype.onMsgView = function(msg, oldMsg, msgView) {
 
                 var button = toolbar.getButton(zmop);
                 this._initControl(button, category);
-				var menu = this._createMenu(category, button);
-				if(menu) {
-					button.setMenu(menu);
-				}
-
+                button.setMenu(this._createMenu(category, button));
                 button.addSelectionListener(listener);
 
                 // set button to last used state
@@ -532,7 +542,7 @@ InboxZero.prototype._createFoldersDone = function(callback, resp) {
 
 InboxZero.prototype.__selectNext = function() {
     var controller = appCtxt.getCurrentController();
-    controller.getListView()._itemToSelect = controller._getNextItemToSelect();
+    controller._listView[controller._currentView]._itemToSelect = controller._getNextItemToSelect();
 };
 
 /**
