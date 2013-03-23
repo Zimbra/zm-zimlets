@@ -1,7 +1,6 @@
 <zimlet name="com_zimbra_edu" version="1.5" description="Helps view and manage courses.">
 <!--
  * ***** BEGIN LICENSE BLOCK *****
- * 
  * Zimbra Collaboration Suite Zimlets
  * Copyright (C) 2007, 2008, 2009, 2010, 2011 VMware, Inc.
  * 
@@ -12,7 +11,6 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
- * 
  * ***** END LICENSE BLOCK *****
 -->
 	<include>com_zimbra_edu.js</include>

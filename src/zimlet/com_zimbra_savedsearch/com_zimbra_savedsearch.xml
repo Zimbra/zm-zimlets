@@ -1,7 +1,6 @@
 <zimlet name="com_zimbra_savedsearch" version="0.2" label="Saved Search" description="Automatically creates a Saved Search after repeated searches.">
 <!--
  * ***** BEGIN LICENSE BLOCK *****
- * 
  * Zimbra Collaboration Suite Zimlets
  * Copyright (C) 2009, 2010, 2011 VMware, Inc.
  * 
@@ -12,7 +11,6 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
- * 
  * ***** END LICENSE BLOCK *****
 -->
   <include>savedsearch.js</include>

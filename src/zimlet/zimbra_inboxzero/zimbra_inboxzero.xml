@@ -1,7 +1,6 @@
 <zimlet name="zimbra_inboxzero" version="1.2" target="main" label="Inbox Zero" description="Adds Inbox Zero actions to message views. http://inboxzero.com/">
 <!--
  * ***** BEGIN LICENSE BLOCK *****
- * 
  * Zimbra Collaboration Suite Zimlets
  * Copyright (C) 2010, 2011 VMware, Inc.
  * 
@@ -12,7 +11,6 @@
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
- * 
  * ***** END LICENSE BLOCK *****
 -->
 	<include>inboxzero.js</include>
