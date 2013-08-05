@@ -1777,8 +1777,7 @@ SocialZimlet.prototype._postToTweetOrFB =
 			var noAccountSelected = true;
 
 			var message = this.updateField.value;
-
-			if (message === "" || message === this.getMessage("whatAreYouDoing")) {
+			if (message.length == 0) {
 				return;
 			}
 			if (message.toLowerCase().indexOf("d @") == 0) {
@@ -3414,15 +3413,15 @@ SocialZimlet.prototype._sortAndMergeAccountsAndSearches =
 					simpleArry.push(item);
 				}
 			}
-			simpleArry = simpleArry.sort(SocialZimlet.social_sortAccounts);
+			simpleArry = simpleArry.sort(social_sortAccounts);
 			return simpleArry;
 		};
 
-SocialZimlet.social_sortAccounts = function(a, b) {
+function social_sortAccounts(a, b) {
 	var x = parseInt(a.__pos);
 	var y = parseInt(b.__pos);
 	return ((x < y) ? 1 : ((x > y) ? -1 : 0));
-};
+}
 
 SocialZimlet.prototype._extractJSONResponse =
 		function(tableId, errorName, response) {

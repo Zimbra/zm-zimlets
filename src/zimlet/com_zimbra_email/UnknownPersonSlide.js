@@ -264,7 +264,7 @@ UnknownPersonSlide.prototype._handleContactDetails =
 function(response, contact) {
 	var attrs = null;
     var id = null;
-	if (response) {
+	if(response) {
 		var data = response.getResponse();
         var r = data.SearchGalResponse;
 		var cn = r.cn;
@@ -274,8 +274,7 @@ function(response, contact) {
 		}
     }
 
-	//the use of hashCopy is due to bug 81951 - Don't modify the contact attributes.
-    attrs = attrs || (contact && contact.attr && AjxUtil.hashCopy(contact.attr)) || {};
+    attrs = attrs || contact && contact.attr || {};
 
     attrs["fullName"] =  this.emailZimlet.fullName || attrs["fullName"] || contact && contact._fileAs;
     this._presentity = attrs["email"] = this.emailZimlet.emailAddress || attrs["email"];        // email is the presence identity
@@ -400,16 +399,25 @@ function(attrs) {
 
 UnknownPersonSlide.prototype._removeCustomAttrs =
 function(attrs) {
-	delete attrs["rightClickForMoreOptions"];
-	delete attrs["formattedEmail"];
-	delete attrs["address"];
-	delete attrs["presence"];
-
+	if(attrs["rightClickForMoreOptions"]) {
+		delete attrs["rightClickForMoreOptions"];
+	}
+	if(attrs["formattedEmail"]) {
+		delete attrs["formattedEmail"];
+	}
+	if(attrs["address"]) {
+		delete attrs["address"];
+	}
+    if(attrs["presence"]) {
+        delete attrs["presence"];
+    }
     /* See bug 77183. imagepart is not a generated attr so do not remove it
     if(attrs["imagepart"]) {
         delete attrs["imagepart"];
     }*/
-	delete attrs["imURI"];
+    if(attrs["imURI"]) {
+        delete attrs["imURI"];
+    }
 };
 
 UnknownPersonSlide.prototype._formatTexts =
@@ -435,12 +443,13 @@ function(attrs) {
 UnknownPersonSlide.prototype._setProfileImage =
 function(imgUrl) {
 	var div = document.getElementById(UnknownPersonSlide.PHOTO_PARENT_ID);
-	if (this.emailZimlet.emailAddress.indexOf(UnknownPersonSlide.DOMAIN) == -1 || !imgUrl || !div) {
+	div.width = div.style.width = UnknownPersonSlide.WIDTH;
+	div.height = div.style.height = UnknownPersonSlide.HEIGHT;
+
+	if (this.emailZimlet.emailAddress.indexOf(UnknownPersonSlide.DOMAIN) == -1 || !imgUrl) {
 		this._handleImgLoadFailure();
 		return;
 	}
-	div.width = div.style.width = UnknownPersonSlide.WIDTH;
-	div.height = div.style.height = UnknownPersonSlide.HEIGHT;
 
 	var img = new Image();
     img.src = imgUrl;

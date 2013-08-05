@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -22,11 +22,11 @@
     <contentObject>
         <matchOn>
             <regex attrs="ig">lab|user|remodel</regex> <!-- matches lab or user or remodel -->
-		</matchOn>
-		<toolTip>Menu Items Example</toolTip> <!-- the tool tip to display when content matches -->
-		<contextMenu>
-			<menuItem label="First Context Menu Item - Go to Yahoo!" icon="Search" id="SOME_MENU_ITEM_ID1" />
-			<menuItem label="Second Context Menu Item - Go to Yahoo! Sports" icon="NewContact" id="SOME_MENU_ITEM_ID2" />
-		</contextMenu>
-	</contentObject>
+        </matchOn>
+        <toolTip>Menu Items Example</toolTip> <!-- the tool tip to display when content matches -->
+        <contextMenu>
+            <menuItem label="First Context Menu Item - Go to Yahoo!" icon="Search" id="SOME_MENU_ITEM_ID1" />
+            <menuItem label="Second Context Menu Item - Go to Yahoo! Sports" icon="NewContact" id="SOME_MENU_ITEM_ID2" />
+        </contextMenu>
+    </contentObject>
 </zimlet>

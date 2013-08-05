@@ -75,15 +75,10 @@ function(line, startIndex) {
  */
 SearchHighlighterZimlet.prototype.generateSpan =
 function(html, idx, obj, spanId, context) {
-    var currentApp  = appCtxt.getCurrentApp();
-    if (currentApp && currentApp.isZmSearchApp){
-        var id = Dwt.getNextId();
-        this._spanIds.push(id);
-        html[idx++] = ["<span id= '",id,"'class='ZmSearchResult'>",AjxStringUtil.htmlEncode(obj),"</span>"].join("");
-    } else {
-        html[idx++] = AjxStringUtil.htmlEncode(obj);
-    }
-    return idx;
+	var id = Dwt.getNextId();
+	this._spanIds.push(id);
+	html[idx++] = ["<span id= '",id,"'class='ZmSearchResult'>",AjxStringUtil.htmlEncode(obj),"</span>"].join("");
+	return idx;
 };
 
 /**
@@ -140,33 +135,33 @@ function(searchStr) {
 			result2.push(word);
 		}
 	}
-	return SearchHighlighterZimlet.searchWordHighlighter_unique(result2);
+	return searchWordHighlighter_unique(result2);
 };
 
 /**
  * Utility function that returns unique elements
  * @param {array} b An Array w/ duplicate items
  */
-SearchHighlighterZimlet.searchWordHighlighter_unique = function(b) {
+function searchWordHighlighter_unique(b) {
 	var a = [], i, l = b.length;
 	for (i = 0; i < l; i++) {
-		if (!SearchHighlighterZimlet.searchWordHighlighter_arrayHasEl(a, b[i])) {
+		if (!searchWordHighlighter_arrayHasEl(a, b[i])) {
 			a.push(b[i]);
 		}
 	}
 	return a;
-};
+}
 /**
  *  A helper function
  */
-SearchHighlighterZimlet.searchWordHighlighter_arrayHasEl = function(array, val) {
+function searchWordHighlighter_arrayHasEl(array, val) {
 	for (var i = 0; i < array.length; i++) {
 		if (array[i] == val) {
 			return true;
 		}
 	}
 	return false;
-};
+}
  /**
  *  Creates list of regular expressions to match
  */

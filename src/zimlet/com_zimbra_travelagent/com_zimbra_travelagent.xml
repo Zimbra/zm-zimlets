@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2006, 2007, 2009, 2010, 2011, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -14,7 +14,10 @@
  *
  * ***** END LICENSE BLOCK *****
 -->
-<zimlet name="com_zimbra_travelagent" version="2.05" label="Travel Agent" description="Search travel reservations.">
+<zimlet name="com_zimbra_travelagent"
+        version="2.05"
+        label="Travel Agent"
+        description="Search travel reservations.">
     <include>com_zimbra_travelagent.js</include>
     <include>TravelAgentFlightFindView.js</include>
     <include>TravelAgentCarFindView.js</include>

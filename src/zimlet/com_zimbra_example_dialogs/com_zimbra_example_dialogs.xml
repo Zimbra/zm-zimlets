@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -14,10 +14,12 @@
  *
  * ***** END LICENSE BLOCK *****
 -->
-<zimlet name="com_zimbra_example_dialogs" version="1.0" description="Creates various dialogs">
+<zimlet name="com_zimbra_example_dialogs"
+        version="1.0"
+        description="Creates various dialogs">
     <include>com_zimbra_example_dialogs.js</include>
-	<handlerObject>com_zimbra_example_dialogs_HandlerObject</handlerObject>
-	<zimletPanelItem label="Dialogs Zimlet">
+    <handlerObject>com_zimbra_example_dialogs_HandlerObject</handlerObject>
+    <zimletPanelItem label="Dialogs Zimlet">
         <contextMenu>
             <menuItem label="Message Dialog (info)" icon="zimbraIcon" id="com_zimbra_dialogs_msgInfodlg"/>
             <menuItem label="Message Dialog (warn)" icon="zimbraIcon" id="com_zimbra_dialogs_msgWarndlg"/>

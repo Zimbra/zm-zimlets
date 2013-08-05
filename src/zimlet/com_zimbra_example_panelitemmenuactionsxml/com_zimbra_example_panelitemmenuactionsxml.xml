@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -20,13 +20,13 @@
     <zimletPanelItem label="Test Panel Item">
         <contextMenu>
             <menuItem label="Test menu 1.0" id="TEST_MENU_SOME_ID1">
-                <canvas type="window" width="300" height="300" />
-                <actionUrl method="get" target="http://www.yahoo.com" />
-            </menuItem>
-            <menuItem label="Test menu 2.0" id="TEST_MENU_SOME_ID2">
-                <actionUrl method="get" target="http://finance.yahoo.com" />
-            </menuItem>
-            <menuItem label="Test menu 3.0" id="TEST_MENU_SOME_ID3" />
-        </contextMenu>
-    </zimletPanelItem>
+				<canvas type="window" width="300" height="300" />
+				<actionUrl method="get" target="http://www.yahoo.com" />
+			</menuItem>
+			<menuItem label="Test menu 2.0" id="TEST_MENU_SOME_ID2">
+				<actionUrl method="get" target="http://finance.yahoo.com" />
+			</menuItem>
+			<menuItem label="Test menu 3.0" id="TEST_MENU_SOME_ID3" />
+		</contextMenu>
+	</zimletPanelItem>
 </zimlet>

@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2006, 2007, 2008, 2009 VMware, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -17,21 +17,22 @@
 <zimlet name="com_zimbra_jspsample"
         version="1.0"
         description="Sends properties to a JSP file">
-    <zimletPanelItem label="JSPSample">
-        <toolTipText>Drag-and-drop a message or folder to send properties to a JSP file.</toolTipText>
-        <dragSource type="ZmMailMsg">
-            <canvas type="dialog" width="600" height="350"/>
-            <actionUrl target="/service/zimlet/com_zimbra_jspsample/sample.jsp">
-                <param name="subject">${obj.subject}</param>
-                <param name="id">${obj.id}</param>
-            </actionUrl>
-        </dragSource>
-        <dragSource type="ZmConv">
-            <canvas type="dialog" width="600" height="350"/>
-            <actionUrl target="/service/zimlet/com_zimbra_jspsample/sample.jsp">
-                <param name="subject">${obj.subject}</param>
-                <param name="id">${obj.id}</param>
-            </actionUrl>
+
+	<zimletPanelItem label="JSPSample">
+		<toolTipText>Drag-and-drop a message or folder to send properties to a JSP file.</toolTipText>
+		<dragSource type="ZmMailMsg">
+			<canvas type="dialog" width="600" height="350"/>
+			<actionUrl target="/service/zimlet/com_zimbra_jspsample/sample.jsp">
+				<param name="subject">${obj.subject}</param>
+				<param name="id">${obj.id}</param>
+			</actionUrl>
+		</dragSource>
+		<dragSource type="ZmConv">
+			<canvas type="dialog" width="600" height="350"/>
+			<actionUrl target="/service/zimlet/com_zimbra_jspsample/sample.jsp">
+				<param name="subject">${obj.subject}</param>
+				<param name="id">${obj.id}</param>
+			</actionUrl>
 		</dragSource>
 		<dragSource type="ZmFolder">
 			<canvas type="dialog" width="600" height="350"/>

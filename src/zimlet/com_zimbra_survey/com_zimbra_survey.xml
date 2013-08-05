@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2011 VMware, Inc.
+ * Copyright (C) 2011, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -20,14 +20,14 @@
         description="${msg.description}">
     <include>com_zimbra_survey.js</include>
     <handlerObject>ZmSurveyZimlet</handlerObject>
-	<userProperties>
-		<!-- Number of days to wait before showing the suvey -->
-		<property type="string" name="ZmSurveyZimlet_InitialWaitDays" value="3"/>	
-		
-		<!-- Number of days to to wait after "Remind Me Later" button is pressed -->
-		<property type="string" name="ZmSurveyZimlet_RemindMeInDays" value="7"/>
-		
-		<!-- Survey URL -->
-		<property type="string" name="ZmSurveyZimlet_SurveyURL" value="https://www.surveymonkey.com/s/ZimbraDesktop"/>	
-	</userProperties>
+    <userProperties>
+        <!-- Number of days to wait before showing the suvey -->
+        <property type="string" name="ZmSurveyZimlet_InitialWaitDays" value="3"/>
+
+        <!-- Number of days to to wait after "Remind Me Later" button is pressed -->
+        <property type="string" name="ZmSurveyZimlet_RemindMeInDays" value="7"/>
+
+        <!-- Survey URL -->
+        <property type="string" name="ZmSurveyZimlet_SurveyURL" value="https://www.surveymonkey.com/s/ZimbraDesktop"/>
+    </userProperties>
 </zimlet>

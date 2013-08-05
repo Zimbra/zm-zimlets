@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -18,8 +18,8 @@
         version="1.0"
         description="Example SOAP request/response">
     <include>com_zimbra_example_soap.js</include>
-    <handlerObject>com_zimbra_example_soap_HandlerObject</handlerObject>
-    <zimletPanelItem label="Example SOAP Request/Response" icon="zimbraIcon">
+	<handlerObject>com_zimbra_example_soap_HandlerObject</handlerObject>
+	<zimletPanelItem label="Example SOAP Request/Response" icon="zimbraIcon">
         <toolTipText>Right-click for menu options</toolTipText>
         <contextMenu>
             <menuItem label="Submit SOAP Request (XML)" icon="zimbraIcon" id="menuId_soap_request_xml"/>

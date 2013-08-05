@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010, 2011 VMware, Inc.
+ * Copyright (C) 2009, 2010, 2011, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -19,14 +19,14 @@
         label="${msg.label}"
         description="${msg.description}">
     <include>emaildownloader.js</include>
-    <includeCSS>emaildownloader.css</includeCSS>
-    <handlerObject>com_zimbra_emaildownloader_HandlerObject</handlerObject>
-    <zimletPanelItem label="${msg.EmailDownloaderZimlet_panel_label}" icon="DownArrow">
+	<includeCSS>emaildownloader.css</includeCSS>
+	<handlerObject>com_zimbra_emaildownloader_HandlerObject</handlerObject>
+	<zimletPanelItem label="${msg.EmailDownloaderZimlet_panel_label}" icon="DownArrow">
         <toolTipText>${msg.EmailDownloader_panel_tooltip}</toolTipText>
-        <dragSource type="ZmConv" />
-        <dragSource type="ZmMailMsg"/>
-        <dragSource type="ZmContact" />
-        <dragSource type="ZmAppt" />
+		<dragSource type="ZmConv" />
+	    <dragSource type="ZmMailMsg"/>
+		<dragSource type="ZmContact" />
+		<dragSource type="ZmAppt" />
     </zimletPanelItem>
 </zimlet>
 
