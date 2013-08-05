@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -17,6 +17,6 @@
 <zimlet name="com_zimbra_example_tabiframe"
         version="1.0"
         description="Demos a tab that loads an iframe">
-    <include>com_zimbra_example_tabiframe.js</include>
-    <handlerObject>com_zimbra_example_tabiframe_HandlerObject</handlerObject>
+	<include>com_zimbra_example_tabiframe.js</include>
+	<handlerObject>com_zimbra_example_tabiframe_HandlerObject</handlerObject>
 </zimlet>

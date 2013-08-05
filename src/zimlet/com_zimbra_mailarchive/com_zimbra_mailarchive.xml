@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2011, 2013 VMware, Inc.
+ * Copyright (C) 2011, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -15,14 +15,11 @@
  * ***** END LICENSE BLOCK *****
 -->
 <zimlet name="com_zimbra_mailarchive"
-        version="0.6"
+        version="0.1"
         label="${msg.label}"
         description="${msg.description}"
         target="main view-window">
     <include>mailarchive.js</include>
     <includeCSS>mailarchive.css</includeCSS>
     <handlerObject>ZmArchiveZimlet</handlerObject>
-    <zimletPanelItem label="${msg.label}" icon="archiveZimletIcon">
-        <toolTipText>${msg.archivePanelToolTip}</toolTipText>
-    </zimletPanelItem>
 </zimlet>

@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -17,7 +17,7 @@
 <zimlet name="com_zimbra_example_paneldragsource"
         version="1.0"
         description="Demos panel zimlet that accepts drag source objects">
-	<include>com_zimbra_example_paneldragsource.js</include>
+    <include>com_zimbra_example_paneldragsource.js</include>
  	<handlerObject>com_zimbra_example_paneldragsource_HandlerObject</handlerObject>
 	<zimletPanelItem label="Test Panel with Drag Source">
 		<toolTipText>Drag and drop an object</toolTipText>

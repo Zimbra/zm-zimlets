@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -18,12 +18,12 @@
         version="0.9"
         label="${msg.label}"
         description="${msg.description}">
-	<include>searchhighlighter.js</include>
-	<handlerObject>com_zimbra_srchhltr_HandlerObject</handlerObject>
-	<contentObject>
-		<matchOn>
-			<regex></regex>
-		</matchOn>
+    <include>searchhighlighter.js</include>
+    <handlerObject>com_zimbra_srchhltr_HandlerObject</handlerObject>
+    <contentObject>
+        <matchOn>
+            <regex></regex>
+        </matchOn>
     </contentObject>
 </zimlet>
 

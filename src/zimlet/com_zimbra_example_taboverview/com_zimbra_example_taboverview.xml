@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2010 VMware, Inc.
+ * Copyright (C) 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -17,8 +17,8 @@
 <zimlet name="com_zimbra_example_taboverview"
         version="1.0"
         description="Creates a tab application">
-    <include>com_zimbra_example_taboverview.js</include>
-    <handlerObject>com_zimbra_example_taboverview_HandlerObject</handlerObject>
-    <zimletPanelItem label="Tab Overview">
-    </zimletPanelItem>
+	<include>com_zimbra_example_taboverview.js</include>
+	<handlerObject>com_zimbra_example_taboverview_HandlerObject</handlerObject>
+	<zimletPanelItem label="Tab Overview">
+	</zimletPanelItem>
 </zimlet>

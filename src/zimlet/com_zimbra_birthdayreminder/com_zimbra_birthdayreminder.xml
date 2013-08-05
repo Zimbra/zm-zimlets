@@ -2,7 +2,7 @@
  * ***** BEGIN LICENSE BLOCK *****
  *
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2009, 2010 VMware, Inc.
+ * Copyright (C) 2009, 2010, 2012 VMware, Inc.
  *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.3 ("License"); you may not use this file except in
@@ -21,7 +21,6 @@
     <include>birthdayreminder.js</include>
     <includeCSS>birthdayreminder.css</includeCSS>
     <handlerObject>com_zimbra_birthdayreminder_HandlerObject</handlerObject>
-
     <zimletPanelItem label="${msg.BirthdayReminder_label}" icon="birthdayreminder-panelIcon">
         <toolTipText>${msg.BirthdayReminder_panelTooltip}</toolTipText>
     </zimletPanelItem>

@@ -206,11 +206,6 @@ function() {
 	this._createBubbles();
 };
 
-EmailTooltipZimlet.prototype.onApptView =
-function() {
-	this._createBubbles();
-};
-
 EmailTooltipZimlet.prototype._createBubbles =
 function() {
 	DBG.println(AjxDebug.DBG3, "EmailTooltipZimlet._createBubble");
@@ -233,11 +228,8 @@ EmailTooltipZimlet.prototype._bubbleSelectionListener =
 function(ev) {
 
 	var bubble = ev.item;
-	if (ev.detail == DwtEvent.ONDBLCLICK) {
+	if (bubble && ev.detail === DwtEvent.ONDBLCLICK) {
 		this._composeListener(ev, bubble.address);
-	}
-	else if (this._bubbleList && this._bubbleList.selectAddressText) {
-		this._bubbleList.selectAddressText();
 	}
 };
 
