@@ -116,7 +116,7 @@ com_zimbra_socialFacebook.prototype._extendAccessToken = function(account) {
 	];
 	var urlParams = this._getFBParams(params);
 
-	this._doPOST(url, urlParams, this._extendAccessTokenHandleResponse.bind(this, account));
+	this._doPOST(url, urlParams, new AjxCallback(this, this._extendAccessTokenHandleResponse, account));
 };
 
 com_zimbra_socialFacebook.prototype._extendAccessTokenHandleResponse = function(account, response) {
