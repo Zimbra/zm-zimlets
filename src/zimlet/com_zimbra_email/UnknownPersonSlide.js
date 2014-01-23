@@ -438,11 +438,14 @@ function(attrs) {
 		attrs["fullName"] = "";
 	}
 	return attrs;
-}
+};
 
 UnknownPersonSlide.prototype._setProfileImage =
 function(imgUrl) {
 	var div = document.getElementById(UnknownPersonSlide.PHOTO_PARENT_ID);
+	if (!div || !this.emailZimlet.emailAddress) {
+		return;
+	}
 	div.width = div.style.width = UnknownPersonSlide.WIDTH;
 	div.height = div.style.height = UnknownPersonSlide.HEIGHT;
 
