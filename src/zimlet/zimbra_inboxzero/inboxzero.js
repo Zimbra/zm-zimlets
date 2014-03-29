@@ -106,7 +106,7 @@ InboxZero.prototype.onMsgView = function(msg, oldMsg, msgView) {
 
         // create controls
         var toolbar = this._toolbar;
-        if (!toolbar) {
+        if (!toolbar || toolbar._disposed) {
             var PREFIX = "INBOXZERO_";
 
             // init button list
