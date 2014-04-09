@@ -620,10 +620,20 @@ function() {
 //Salesforce Bar related(START)
 //-------------------------------------------------------------------------------------------
 Com_Zimbra_SForce.prototype.onMsgView =
-function(msg) {
+function(msg, oldMsg, msgView) {
+	this._handleMsgSelection(msg, oldMsg, msgView);
+};
+
+Com_Zimbra_SForce.prototype.onConvView =
+function(msg, oldMsg, msgView) {
+	this._handleMsgSelection(msg, oldMsg, msgView);
+};
+
+Com_Zimbra_SForce.prototype._handleMsgSelection =
+function(msg, oldMsg, msgView) {
 	this._initializeSalesForceForThisMsg(msg);
 	if (this.user && this.user != "" && this.passwd && this.passwd != "") {
-		this.noteDropped(msg, true);
+		this.noteDropped(msg, true, msgView);
 	}
 };
 
@@ -646,13 +656,12 @@ function(msg) {
 };
 
 Com_Zimbra_SForce.prototype._addSForceBar =
-function(recordsObj) {
+function(recordsObj, msgView) {
 	this._parseAndSetRecordsObj(recordsObj);
-	var viewId = appCtxt.getCurrentViewId();
-	if (viewId == "CLV" && appCtxt.getSettings().getSetting("READING_PANE_LOCATION").value == "off") {
-		setTimeout(AjxCallback.simpleClosure(this._do_addSForceBar, this, "CV"), 1000);
+	if (appCtxt.getCurrentViewType() === ZmId.VIEW_CONVLIST && appCtxt.getSettings().getSetting("READING_PANE_LOCATION").value === "off") {
+		setTimeout(AjxCallback.simpleClosure(this._do_addSForceBar, this, [msgView]), 1000);
 	} else {
-		this._do_addSForceBar(viewId);
+		this._do_addSForceBar(msgView);
 	}
 };
 
@@ -681,17 +690,20 @@ function(recordsObj) {
 };
 
 Com_Zimbra_SForce.prototype._do_addSForceBar =
-function(viewId) {
+function(msgView) {
 	if (this.sforce_logindlg_sbarShowOnlyOnResult && this.allRecords.length == 0 && !this._force_show_salesforceBar) {
 		return;
 	}
 
-	var viewType = appCtxt.getViewTypeFromId(viewId);
-	if (viewType != ZmId.VIEW_MSG) {
-		var infoBar = document.getElementById(["zv__MSG__",viewId,"_infoBar"].join(""));
-	} else {
-		var infoBar = document.getElementById(["zv__",viewId,"__MSG_infoBar"].join(""));
+	if (!msgView) {
+		return;
 	}
+	if (msgView._mode === ZmId.VIEW_CONV2) {
+		var infoBar = document.getElementById(msgView._viewId + "__header");
+	} else {
+		infoBar = document.getElementById(msgView._hdrTableId);
+	}
+
 	if (!infoBar) {
 		return;
 	}
@@ -738,7 +750,7 @@ function(viewId) {
 			}
 			doc.innerHTML = [contacts,andStr,leads," found"].join("");
 			doc.style.color = "#0033FF";
-			doc.style.fontWeight = "bold";
+			//doc.style.fontWeight = "bold";
 		} else {
 			doc.innerHTML = "";
 		}
@@ -785,12 +797,11 @@ function() {
 	if (!this._sforceImage_14) {
 		this._sforceImage_14 = ["<img  height=14px width=14px src=\"", this.getResource("img/sforce.gif") , "\"  />"].join("");
 	}
-	html[i++] = "<DIV class='overviewHeader'>";
-	html[i++] = "<table cellpadding=0 cellspacing=0 width=100%><tr><td width='500'>";
+	html[i++] = "<div><table width=100%><tr><td width='500'>";
 	html[i++] = ["<div style='cursor:pointer' id='sforce_bar_mainHandler'><table cellpadding=0 cellspacing=0><tr><td width=2px></td>",
 		"<td width=11px><div id='sforce_expandCollapseIconDiv' class='ImgHeaderCollapsed'></div></td><td width=2px></td>",
 		"<td>",this._sforceImage_14,"</td>",
-		"<td width=2px></td><td width='100'><label style='font-weight:bold;color:rgb(45, 45, 45);cursor:pointer'>Salesforce Bar</label></td>",
+		"<td width=2px></td><td width='100'><label style='color:rgb(45, 45, 45);cursor:pointer'>Salesforce Bar</label></td>",
 		"<td id='sforce_bar_msgCell'></td></tr></table></div></td>"].join("");
 	html[i++] = "<td>";
 	html[i++] = "<div id='sforce_bar_generalToolbar' style='display:none'>";
@@ -1656,7 +1667,7 @@ function(colName, ConProps) {
 //--------------------------------------------------------------------------------------------------------
 //Notes dropped... (START)
 //--------------------------------------------------------------------------------------------------------
-Com_Zimbra_SForce.prototype.noteDropped = function(note, showInBar) {
+Com_Zimbra_SForce.prototype. noteDropped = function(note, showInBar, msgView) {
 	if (!note) {
 		return;
 	}
@@ -1681,24 +1692,24 @@ Com_Zimbra_SForce.prototype.noteDropped = function(note, showInBar) {
 			//"(Select id,subject from ActivityHistories) ",
 			" from contact c where Email='", this._emailsForCurrentNote.join("' or Email='"), "'"].join("");
 
-		var callback = new AjxCallback(this, this._queryForLeadDetails, [showInBar]);
+		var callback = new AjxCallback(this, this._queryForLeadDetails, [showInBar, msgView]);
 		this.query(q, 10, callback);
 	}
 };
 
 Com_Zimbra_SForce.prototype._queryForLeadDetails =
-function (showInBar, zimlet, cRecords) {
+function (showInBar, msgView, zimlet, cRecords) {
 	var q = ["Select l.Id, l.Name,l.Title,l.Email,l.Phone,l.Company,l.Status,l.Street,l.State,l.PostalCode,l.Country, l.NumberOfEmployees,l.Website from Lead l where Email='", this._emailsForCurrentNote.join("' or Email='"), "'"].join("");
 
 	//var callback = new AjxCallback(this, this._handleAddNotesRecords, [showInBar]);
-	var callback = new AjxCallback(this, this._mergeLeadAndContactRecords, [showInBar, cRecords]);
+	var callback = new AjxCallback(this, this._mergeLeadAndContactRecords, [showInBar, cRecords, msgView]);
 	this.query(q, 10, callback);
 };
 
 Com_Zimbra_SForce.prototype._mergeLeadAndContactRecords =
-function (showInBar, cRecords, zimlet, lRecords) {
+function (showInBar, cRecords, msgView, zimlet, lRecords) {
 	var recordsObj = {cRecords:cRecords, lRecords:lRecords}
-	this._handleAddNotesRecords(showInBar, this, {cRecords:cRecords, lRecords:lRecords});
+	this._handleAddNotesRecords(showInBar, this, {cRecords:cRecords, lRecords:lRecords}, msgView);
 };
 
 Com_Zimbra_SForce.prototype._getValidAddressesForCurrentNote =
@@ -1776,13 +1787,13 @@ function(email) {
 };
 
 Com_Zimbra_SForce.prototype._handleAddNotesRecords =
-function(showInBar, zimlet, recordsObj) {
+function(showInBar, zimlet, recordsObj, msgView) {
 	if (!showInBar) {
 		this._parseAndSetRecordsObj(recordsObj);
 		this._setRecordsToNotesDlg();
 		this._setAddNotesHandlers();
 	} else {
-		this._addSForceBar(recordsObj);
+		this._addSForceBar(recordsObj, msgView);
 	}
 };
 
