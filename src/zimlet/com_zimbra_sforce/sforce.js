@@ -621,6 +621,16 @@ function() {
 //-------------------------------------------------------------------------------------------
 Com_Zimbra_SForce.prototype.onMsgView =
 function(msg, oldMsg, msgView) {
+	this._handleMsgSelection(msg, oldMsg, msgView);
+};
+
+Com_Zimbra_SForce.prototype.onConvView =
+function(msg, oldMsg, msgView) {
+	this._handleMsgSelection(msg, oldMsg, msgView);
+};
+
+Com_Zimbra_SForce.prototype._handleMsgSelection =
+function(msg, oldMsg, msgView) {
 	this._initializeSalesForceForThisMsg(msg);
 	if (this.user && this.user != "" && this.passwd && this.passwd != "") {
 		this.noteDropped(msg, true, msgView);
@@ -688,11 +698,12 @@ function(msgView) {
 	if (!msgView) {
 		return;
 	}
-	if (msgView._mode === ZmId.VIEW_CONVLIST) {
+	if (msgView._mode === ZmId.VIEW_CONV2 || msgView._mode === ZmId.VIEW_CONVLIST) {
 		var infoBar = document.getElementById(msgView._viewId + "__header");
 	} else {
-		infoBar = document.getElementById(msgView._infoBarId);
+		infoBar = document.getElementById(msgView._hdrTableId);
 	}
+
 	if (!infoBar) {
 		return;
 	}
