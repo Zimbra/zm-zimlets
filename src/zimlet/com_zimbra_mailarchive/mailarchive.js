@@ -160,15 +160,16 @@ function(app, toolbar, controller, viewId) {
 			// set when to enable or disable buttons based on the selection in the button api
 			var originalFunction = controller._resetOperations;
 			controller._resetOperations = function(parent, num) {
-				var showArchive = true;
-				var obj = parent.getOp(ZmArchiveZimlet.OP_ARCHIVE);
-				var msg = controller.getMsg();
-				
-				if (msg && obj && obj.archiveZimlet && msg.folderId == obj.archiveZimlet._archiveFolderId) {
-					showArchive = false;
+				var button = parent.getOp(ZmArchiveZimlet.OP_ARCHIVE);
+				if (!button) {
+					return;
 				}
+				var zimlet = button.archiveZimlet;
+				var archiveFolderId = zimlet._archiveFolderId;
+				var archiveEnabled = zimlet._isArchiveEnabled(controller, archiveFolderId, num);
+
 				originalFunction.apply(controller, arguments);
-				parent.enable(ZmArchiveZimlet.OP_ARCHIVE, num && showArchive);
+				parent.enable(ZmArchiveZimlet.OP_ARCHIVE, archiveEnabled);
 			};
 			
 			//add listener to listview so that we can enable button when multiple items are selected
@@ -213,6 +214,34 @@ function(app, toolbar, controller, viewId) {
 			button.setToolTipContent(tooltip);
 		}
 	}
+};
+
+
+ZmArchiveZimlet.prototype._isArchiveEnabled =
+function(controller, archiveFolderId, num) {
+	if (!num) { //need to check, since in ZmBaseController.prototype._setup num is passed as 0 but selection still returns the previous one.
+		return false;
+	}
+	var sel = controller.getSelection();
+	for (var i = 0; i < sel.length; i++) {
+		var item = sel[i];
+		if (item.isZmConv) {
+			var msgFolder = item.msgFolder;
+			if (!msgFolder) {
+				//this shouldn't happen, but just in case - don't disable the archive button.
+				return true;
+			}
+			for (var msgId in msgFolder) {
+				if (msgFolder[msgId] != archiveFolderId) {
+					return true;
+				}
+			}
+		}
+		else if (item.folderId != archiveFolderId) { //ZmMailMsg
+			return true;
+		}
+	}
+	return false;
 };
 
 ZmArchiveZimlet.prototype.enableComposeToolbarButtons =
