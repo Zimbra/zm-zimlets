@@ -15,6 +15,7 @@
 
 function Com_Zimbra_YMEmoticons() {
 	this.re = Com_Zimbra_YMEmoticons.REGEXP;
+    this.reCaseSensitive = Com_Zimbra_YMEmoticons.REGEXP_CASE_SENSITIVE;
 	this.hash = Com_Zimbra_YMEmoticons.SMILEYS;
 	this._isEnabled = true;
 };
@@ -65,9 +66,9 @@ function(msg, manager) {
 
 Com_Zimbra_YMEmoticons.prototype.match =
 function(line, startIndex) {
-	this.re.lastIndex = startIndex;
-	var m = this.re.exec(line);
-	//var m = line.match(this.re);
+    this.re.lastIndex = this.reCaseSensitive.lastIndex = startIndex;
+    var m =  this.re.exec(line) || this.reCaseSensitive.exec(line) ;
+
 	if (m) {
 		m.context = this.hash[m[1].toLowerCase()];
 		// preload
