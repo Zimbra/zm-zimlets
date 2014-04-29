@@ -172,7 +172,8 @@ AttachContactsZimlet.prototype._contactListSendListener = function() {
 };
 
 AttachContactsZimlet.prototype._getContactListIds = function() {
-	var controller = appCtxt.getCurrentController();
+	var controller = AjxDispatcher.run("GetContactListController");
+
 	this.contactIdsToAttach = [];
 	var listView = controller.getListView && controller.getListView();
 	if (listView) {
