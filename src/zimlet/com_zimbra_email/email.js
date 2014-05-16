@@ -328,7 +328,7 @@ function(object, context, x, y, span) {
 	                     DwtEvent.ONMOUSELEAVE : DwtEvent.ONMOUSEOUT),
 	                    new AjxListener(this, this.hoverOut));
 
-	var addr = (object instanceof AjxEmailAddress) ? object.address : object;
+	var addr = (object.isAjxEmailAddress) ? object.address : object;
 
 	addr = AjxStringUtil.parseMailtoLink(addr).to;
 	this.emailAddress = addr;
