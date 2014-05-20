@@ -15,7 +15,8 @@
 <zimlet name="com_zimbra_sforce"
         version="3.4"
         label="Salesforce"
-        description="Connects Zimbra to Salesforce">
+        description="Connects Zimbra to Salesforce"
+        target="main view-window">
     <contentObject>
         <matchOn>
             <regex attrs="ig">(?:(?:\bCase(?:)?:?\s*#?))(\d+)\b</regex>
