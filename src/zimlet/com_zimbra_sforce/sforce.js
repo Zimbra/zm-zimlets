@@ -2503,18 +2503,21 @@ Com_Zimbra_SForce.prototype._initComposeSFToolbar = function(toolbar, controller
 };
 
 Com_Zimbra_SForce.prototype._sendAddSForce = function(ev) {
-	var msg = this._composeView.getMsg();
 	this._send();
+};
+
+Com_Zimbra_SForce.prototype.onSendMsgSuccess = function(controller, msg) {
 	if (msg == undefined) {
 		appCtxt.getAppController().setStatusMsg("Sorry, could not grab email", ZmStatusView.LEVEL_WARNING);
 		return;
 	}
-	this._sforce._initializeSalesForceForThisMsg(msg);
-	if (this._sforce.user && this._sforce.user != "" && this._sforce.passwd && this._sforce.passwd != "") {
-		this._sforce.noteDropped(msg);
+	this._initializeSalesForceForThisMsg(msg);
+	if (this.user && this.user != "" && this.passwd && this.passwd != "") {
+		this.noteDropped(msg);
 	}
 	//this._sforce.noteDropped(msg);
 };
+
 //--------------------------------------------------------------------------------------------------------
 // Toolbar related..(END)
 //--------------------------------------------------------------------------------------------------------
