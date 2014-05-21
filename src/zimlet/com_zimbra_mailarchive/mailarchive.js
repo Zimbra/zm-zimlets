@@ -161,15 +161,13 @@ function(app, toolbar, controller, viewId) {
 			var originalFunction = controller._resetOperations;
 			controller._resetOperations = function(parent, num) {
 				var button = parent.getOp(ZmArchiveZimlet.OP_ARCHIVE);
-				if (!button) {
-					return;
+				if (button) {
+					var zimlet = button.archiveZimlet;
+					var archiveFolderId = zimlet._archiveFolderId;
+					var archiveEnabled = zimlet._isArchiveEnabled(controller, archiveFolderId, num);
+					parent.enable(ZmArchiveZimlet.OP_ARCHIVE, archiveEnabled);
 				}
-				var zimlet = button.archiveZimlet;
-				var archiveFolderId = zimlet._archiveFolderId;
-				var archiveEnabled = zimlet._isArchiveEnabled(controller, archiveFolderId, num);
-
 				originalFunction.apply(controller, arguments);
-				parent.enable(ZmArchiveZimlet.OP_ARCHIVE, archiveEnabled);
 			};
 			
 			//add listener to listview so that we can enable button when multiple items are selected
