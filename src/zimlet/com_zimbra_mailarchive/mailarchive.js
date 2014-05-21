@@ -160,14 +160,15 @@ function(app, toolbar, controller, viewId) {
 			// set when to enable or disable buttons based on the selection in the button api
 			var originalFunction = controller._resetOperations;
 			controller._resetOperations = function(parent, num) {
-				var button = parent.getOp(ZmArchiveZimlet.OP_ARCHIVE);
-				if (button) {
-					var zimlet = button.archiveZimlet;
-					var archiveFolderId = zimlet._archiveFolderId;
-					var archiveEnabled = zimlet._isArchiveEnabled(controller, archiveFolderId, num);
-					parent.enable(ZmArchiveZimlet.OP_ARCHIVE, archiveEnabled);
-				}
 				originalFunction.apply(controller, arguments);
+				var button = parent.getOp(ZmArchiveZimlet.OP_ARCHIVE);
+				if (!button) {
+					return;
+				}
+				var zimlet = button.archiveZimlet;
+				var archiveFolderId = zimlet._archiveFolderId;
+				var archiveEnabled = zimlet._isArchiveEnabled(controller, archiveFolderId, num);
+				parent.enable(ZmArchiveZimlet.OP_ARCHIVE, archiveEnabled);
 			};
 			
 			//add listener to listview so that we can enable button when multiple items are selected
