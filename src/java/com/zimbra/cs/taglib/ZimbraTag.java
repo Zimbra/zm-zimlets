@@ -2,12 +2,12 @@
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
  * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013 Zimbra Software, LLC.
- * 
+ *
  * The contents of this file are subject to the Zimbra Public License
  * Version 1.4 ("License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  * http://www.zimbra.com/license.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied.
  * ***** END LICENSE BLOCK *****
@@ -16,7 +16,6 @@ package com.zimbra.cs.taglib;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
@@ -30,7 +29,6 @@ import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.servlet.ZimbraServlet;
 
 public class ZimbraTag extends BodyTagSupport {
 
@@ -47,7 +45,7 @@ public class ZimbraTag extends BodyTagSupport {
 
     private AuthToken getAuthToken() throws ZimbraTagException, ServiceException {
         HttpServletRequest req = (HttpServletRequest)pageContext.getRequest();
-        
+
         AuthToken token = null;
         try {
             token = AuthProvider.getAuthToken(req, false);
@@ -57,13 +55,16 @@ public class ZimbraTag extends BodyTagSupport {
             throw ZimbraTagException.AUTH_FAILURE("cannot parse authtoken");
         }
 
-        if (token.isExpired() || !token.isRegistered()) {
+        if (token.isExpired()) {
             throw ZimbraTagException.AUTH_FAILURE("authtoken expired");
         }
-        
+
+        if(!token.isRegistered()) {
+            throw ZimbraTagException.AUTH_FAILURE("this auth token is not valid anymore");
+        }
         return token;
     }
-    
+
     private Account getRequestAccount(AuthToken token) throws ZimbraTagException, ServiceException {
     	Provisioning prov = Provisioning.getInstance();
         Account acct = prov.get(Key.AccountBy.id, token.getAccountId(), token);
@@ -73,6 +74,7 @@ public class ZimbraTag extends BodyTagSupport {
         return acct;
     }
 
+    @Override
     public int doStartTag() throws JspTagException {
         try {
             AuthToken authToken = getAuthToken();
@@ -92,6 +94,7 @@ public class ZimbraTag extends BodyTagSupport {
         return SKIP_BODY;
     }
 
+    @Override
     public int doEndTag() throws JspTagException {
         try {
             AuthToken authToken = getAuthToken();
