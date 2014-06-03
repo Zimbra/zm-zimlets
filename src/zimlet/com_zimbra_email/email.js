@@ -207,7 +207,7 @@ function(object, context, span, spanId) {
 
 	this._hoverOver =  false;
 	this.tooltip.setSticky(true);
-	return;
+
 	setTimeout(AjxCallback.simpleClosure(this.popDownIfMouseNotOnSlide, this), 700);
 	//override to ignore hoverout. 
 };
