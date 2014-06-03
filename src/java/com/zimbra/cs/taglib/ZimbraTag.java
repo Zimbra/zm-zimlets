@@ -60,7 +60,7 @@ public class ZimbraTag extends BodyTagSupport {
         }
 
         if(!token.isRegistered()) {
-            throw ZimbraTagException.AUTH_FAILURE("this auth token is not valid anymore");
+            throw ZimbraTagException.AUTH_FAILURE("authtoken is invalid");
         }
         return token;
     }
