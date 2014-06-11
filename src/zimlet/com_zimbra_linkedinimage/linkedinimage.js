@@ -39,6 +39,7 @@ LinkedInImageZimlet.prototype.init = function() {
 	this._itemsLeftToClear = 0;
 	this._updateActionMenu();
 	this._loadLinkedIn();
+	this.secureMode = (window.location.protocol === 'https:');
 };
 
 LinkedInImageZimlet.prototype.doubleClicked =
@@ -118,7 +119,7 @@ function(contact) {
 		return;
 	}
 	IN.API.PeopleSearch()
-	.fields("pictureUrl")
+	.fields("pictureUrl;secure=" + this.secureMode)
 	.params({"first-name": firstName, "last-name": lastName, count: 1, sort: "distance"})
 	.result(this._handleLinkedInImageSearchResponse.bind(this, contact))
 	.error(this._handleLinkedInImageSearchError.bind(this, contact));
