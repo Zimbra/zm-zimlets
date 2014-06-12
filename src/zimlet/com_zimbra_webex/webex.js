@@ -736,7 +736,7 @@ WebExZimlet.prototype._getCreateOrModifyMeetingRequest = function(params, callba
 	if (!pwd || pwd == "" || pwd == "N/A" || pwd == "null") {
 		var pwdStr = "";
 	} else {
-		var pwdStr = ["<accessControl><meetingPassword>", pwd, "</meetingPassword></accessControl>"].join("");
+		var pwdStr = ["<accessControl><meetingPassword>", AjxStringUtil.xmlEncode(pwd), "</meetingPassword></accessControl>"].join("");
 	}
 	var sendWebExEmailStr = "";
 	//if(params.sendWebExEmail) { //used for one-click meetings
@@ -755,7 +755,7 @@ WebExZimlet.prototype._getCreateOrModifyMeetingRequest = function(params, callba
         "<telephony><telephonySupport>@callintype@</telephonySupport>",
         "<enableTSP>@tspEnabled@</enableTSP>",
         "@tspAccountIndex@",
-        "<extTelephonyDescription>", this._getWebExBodyString(null, "FIELD", true, true),
+        "<extTelephonyDescription>", AjxStringUtil.xmlEncode(this._getWebExBodyString(null, "FIELD", true, true)),
         "</extTelephonyDescription></telephony>",
         sendWebExEmailStr,
         meetingKeyStr,
