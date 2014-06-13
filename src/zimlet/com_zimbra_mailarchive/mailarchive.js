@@ -64,7 +64,7 @@ function(zimlet, ev) {
 		zimlet._chooseArchiveFolder(postCallback);
 	}
 	else {
-		postCallback.run(zimlet._archiveFolder, zimlet, false);	
+		postCallback(zimlet._archiveFolder, zimlet, false);
 	}
 };
 
@@ -116,7 +116,7 @@ function(postCallback, organizer) {
 	this.metaData.set("archiveZimlet", keyVal, null, this._saveAccPrefsHandler.bind(this), null, true);
 
 	if (postCallback) {
-		postCallback.run(organizer, this, true);
+		postCallback(organizer, this, true);
 	}
 };
 
@@ -134,7 +134,7 @@ function(app, toolbar, controller, viewId) {
 	if (appCtxt.isChildWindow) {
 		return;
 	}
-	var viewType = appCtxt.getViewTypeFromId(viewId);
+	var viewType = appCtxt.getViewTypeFromId ? appCtxt.getViewTypeFromId(viewId) : appCtxt.getCurrentViewId();
 	if (viewType == ZmId.VIEW_CONVLIST || viewType == ZmId.VIEW_CONV || viewType == ZmId.VIEW_TRAD || viewType == ZmId.VIEW_MSG) {
 		var buttonIndex = 0;
 		for (var i = 0, count = toolbar.opList.length; i < count; i++) {
@@ -172,7 +172,8 @@ function(app, toolbar, controller, viewId) {
 			};
 			
 			//add listener to listview so that we can enable button when multiple items are selected
-			var listView = controller.getListView();
+            var listView =  controller.getListView ? controller.getListView() : controller.getList();
+
 			if (listView && listView.addSelectionListener) {
 				listView.addSelectionListener(new AjxListener(this, this._listActionListener, button));
 			}
