@@ -125,8 +125,7 @@ function(controller) {
 
 	//clear auto-save timer to ensure there are no left-over drafts
 	if(controller._autoSaveTimer) {
-		clearInterval(controller._autoSaveTimer);
-		controller._autoSaveTimer = null;
+		controller._autoSaveTimer.kill();
 	}
 
 	if(!appCtxt.isChildWindow) {
@@ -218,6 +217,7 @@ function(controller, viewId, timerSpanId) {
  */
 UndoSendZimlet.prototype._undoSend =
 function(controller, viewId) {
+	controller._initAutoSave();
 	this._viewIdAndStatusesMap[viewId].undoLinkClicked = true;
 	clearInterval(this.timer);
 	this._hideAlertView();
