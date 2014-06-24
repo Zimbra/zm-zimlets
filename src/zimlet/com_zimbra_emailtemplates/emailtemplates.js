@@ -101,7 +101,7 @@ function(removeChildren) {
 	_types.add(ZmId.VIEW_MSG);
 
 	appCtxt.getSearchController().search({query: ["in:(\"",this._folderPath,"\")"].join(""), userText: true, limit:25,  searchFor: ZmId.SEARCH_MAIL,
-		offset:0, types:_types, noRender:true, getHtml: getHtml, callback:callbck, errorCallback:callbck});
+		offset:0, types:_types, forceTypes: true, noRender:true, getHtml: getHtml, callback:callbck, errorCallback:callbck});
 };
 
 Com_Zimbra_EmailTemplates.prototype._getRecentEmailsHdlr =
