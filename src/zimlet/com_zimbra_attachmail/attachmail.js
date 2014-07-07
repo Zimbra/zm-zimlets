@@ -591,8 +591,12 @@ function(query, forward) {
  * 
  * @extends		ZmListController
  */
-ZmAttachMailController = function(container, app) {
+ZmAttachMailController = function(view) {
 	if (arguments.length == 0) { return; }
+	ZmListController.call(this, null, null);
+	this._currentViewId = "ZmAttachMailListView";
+	this._view = {};
+	this._view[this._currentViewId] = view;
 
 };
 
@@ -611,9 +615,9 @@ function() {
  * @extends		ZmListView
  */
 ZmAttachMailListView = function(params) {
-	this._showCheckboxColSpan = appCtxt.get(ZmSetting.SHOW_SELECTION_CHECKBOX) ? 1 : 0;
+	this._showCheckboxColSpan = appCtxt.get(ZmSetting.SHOW_SELECTION_CHECKBOX);
 	ZmListView.call(this, params);
-	this._controller = new ZmAttachMailController();
+	this._controller = new ZmAttachMailController(this);
 };
 
 ZmAttachMailListView.prototype = new ZmListView;
@@ -647,7 +651,7 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	
 	var subject = item.subject ? AjxStringUtil.htmlEncode(item.subject.slice(0, 32)) : ZmMsg.noSubject;
 	htmlArr[idx++] = "<tr>";
-	if (this._showCheckboxColSpan == 1) {
+	if (this._showCheckboxColSpan) {
 		htmlArr[idx++] = "<td rowspan=3 style='vertical-align:middle;' width='20'><center>";
 		idx = this._getImageHtml(htmlArr, idx, "CheckboxUnchecked", this._getFieldId(item, ZmItem.F_SELECTION));
 		htmlArr[idx++] = "</center></td>";
