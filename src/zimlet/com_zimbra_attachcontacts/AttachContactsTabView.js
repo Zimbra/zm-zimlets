@@ -180,7 +180,7 @@ function(ev) {
 	dwtev.setFromDhtmlEvent(ev);
 	var rowEl = dwtev.target;
 	var rowWasClicked = true;
-	if(rowEl.className == "ImgCheckboxunChecked" || rowEl.className == "ImgCheckboxChecked") {
+	if(rowEl.className == "ImgCheckboxUnchecked" || rowEl.className == "ImgCheckboxChecked") {
 		 rowWasClicked = false;
 	}
 	while (!Dwt.hasClass(rowEl, 'AttachContactRow') && rowEl.id != this._folderListId) {
@@ -195,7 +195,7 @@ function(ev) {
 	var checkboxEl = document.getElementById("attachContactsZimlet_checkbox_"+itemId);
 
 	if(checkboxEl && !rowWasClicked) {
-		if(checkboxEl.className == "ImgCheckboxunChecked") {
+		if(checkboxEl.className == "ImgCheckboxUnchecked") {
 			this._setCheckBoxSelection(checkboxEl, true);
 		} else if(checkboxEl.className == "ImgCheckboxChecked" ) {
 			this._setCheckBoxSelection(checkboxEl, false);
@@ -241,7 +241,7 @@ function(checkboxEl, selected) {
 		return;
 	}
 	if(!selected) {
-		checkboxEl.className =  "ImgCheckboxunChecked";
+		checkboxEl.className =  "ImgCheckboxUnchecked";
 	} else {
 		checkboxEl.className = "ImgCheckboxChecked";
 	}
@@ -381,7 +381,7 @@ function(items) {
 
 				html[idx++] = "<td width='1px'><div  id='";
                 html[idx++] = chkId;
-                html[idx++] = "' class='ImgCheckboxunChecked'></div></td>";
+                html[idx++] = "' class='ImgCheckboxUnchecked'></div></td>";
 
 
                 html[idx++] = "<td width='1px'>";
