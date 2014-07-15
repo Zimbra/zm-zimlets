@@ -88,6 +88,8 @@ function(msg) {
  */
 UndoSendZimlet.prototype._sendButtonListener =
 function(controller) {
+	controller.saveDraft(ZmComposeController.DRAFT_TYPE_AUTO);
+
 	if (this._alertViewDisplayed) {
 		this._showErrorMsg(this.getMessage("UndoSendZimlet_pleaseWait"));
 		return;
