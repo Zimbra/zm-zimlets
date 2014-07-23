@@ -157,8 +157,6 @@ function(ev) {
 		isRightClick = (ev.button == 2);
 	}
 	if(isRightClick) {
-		DwtUiEvent.setBehaviour(ev, true, false);
-		this.emailZimlet.contextMenu.popup(100, this.emailZimlet.x, this.emailZimlet.y);
 		return;
 	}
 
@@ -167,9 +165,9 @@ function(ev) {
 	dwtev.setFromDhtmlEvent(ev);
 	var el = dwtev.target;
 	if(el.id == "UnknownPersonSlide_EmailAnchorId") {
-		this.emailZimlet._composeListener(null, this.emailZimlet.emailAddress);
+		this._composeListener(null, this.emailZimlet.emailAddress);
 	} else if(el.id == "UnknownPersonSlide_NameAnchorId") {
-		this.emailZimlet._contactListener(true);
+		this._contactListener(true);
 	}
     else if (el.id == "UnknownPersonSlide_mobilePhoneAnchorId" &&
 		appCtxt.getSettings()._hasVoiceFeature()) {
@@ -219,14 +217,14 @@ function() {
 UnknownPersonSlide.prototype._handleMailSlideSelect =
     function() {
         this.emailZimlet.popdown();
-        this.emailZimlet._composeListener(null, this.emailZimlet.emailAddress);
+        this._composeListener(null, this.emailZimlet.emailAddress);
     };
 
 UnknownPersonSlide.prototype._handleCalendarSlideSelect =
     function() {
         this.emailZimlet.popdown();
         var appt = new ZmAppt();
-        var c =  this.emailZimlet._getActionedContact() || new AjxEmailAddress(this.emailZimlet.emailAddress);
+        var c =  this._getActionedContact() || new AjxEmailAddress(this.emailZimlet.emailAddress);
         appt.setAttendees(c, ZmCalBaseItem.PERSON);
         AjxDispatcher.run("GetCalController").newAppointment(appt, null, null, null);
     };
@@ -457,6 +455,75 @@ function(imgUrl) {
 	var timeoutCallback = new AjxCallback(this, this._handleImgLoadFailure);
 	this.emailZimlet.showLoadingAtId(timeoutCallback, UnknownPersonSlide.PHOTO_PARENT_ID);
 };
+
+UnknownPersonSlide.prototype._contactListener =
+	function() {
+		this.emailZimlet.popdown();
+		var loadCallback = new AjxCallback(this, this._handleLoadContact);
+		AjxDispatcher.require(["ContactsCore", "Contacts"], false, loadCallback, null, true);
+	};
+
+UnknownPersonSlide.prototype._handleLoadContact =
+	function() {
+		var contact = this._getActionedContact(true);
+
+		var isDirty = this._isNewContact;
+
+		if (window.parentAppCtxt) {
+			var capp = window.parentAppCtxt.getApp(ZmApp.CONTACTS);
+			capp.getContactController().show(contact, isDirty);
+		} else {
+			AjxDispatcher.run("GetContactController").show(contact, isDirty);
+		}
+	};
+
+UnknownPersonSlide.prototype._composeListener =
+	function(ev, addr) {
+
+		this.emailZimlet.popdown();
+
+		var obj = this.emailZimlet._actionObject;
+		addr = addr ? this.emailZimlet._getAddress(addr) : (obj ? this.emailZimlet._getAddress(obj) : "");
+
+		var params = {};
+		var inNewWindow = (!appCtxt.get(ZmSetting.NEW_WINDOW_COMPOSE) && ev && ev.shiftKey) ||
+			(appCtxt.get(ZmSetting.NEW_WINDOW_COMPOSE) && ev && !ev.shiftKey);
+
+		params.action = ZmOperation.NEW_MESSAGE;
+		params.inNewWindow = inNewWindow;
+		if (!params.toOverride) {
+			params.toOverride = addr + AjxEmailAddress.SEPARATOR;
+		}
+		if (obj && obj.isAjxEmailAddress && obj.address == addr) {
+			params.toOverride = obj;
+		}
+
+		AjxDispatcher.run("Compose", params );
+	};
+
+UnknownPersonSlide.prototype._getActionedContact =
+	function(create) {
+		// actionObject can be a ZmContact, a String, or a generic Object (phew!)
+		var contact;
+		var addr = this.emailZimlet._actionObject;
+		if (addr) {
+			if (addr.isZmContact) {
+				contact = this._actionObject;
+			} else if (AjxUtil.isString(addr)) {
+				addr = this.emailZimlet._getAddress(addr);
+				contact = AjxDispatcher.run("GetContacts").getContactByEmail(addr);
+			} else {
+				contact = AjxDispatcher.run("GetContacts").getContactByEmail(addr.address);
+			}
+		}
+		this._isNewContact = false;
+		if (contact == null && create) {
+			this._isNewContact = true;
+			contact = new ZmContact(null);
+			contact.initFromEmail(addr);
+		}
+		return contact;
+	};
 
 /***
  * <person id ="p1"  >
