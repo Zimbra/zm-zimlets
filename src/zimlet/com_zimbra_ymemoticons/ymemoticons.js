@@ -29,6 +29,14 @@ function Com_Zimbra_YMEmoticons() {
 Com_Zimbra_YMEmoticons.prototype = new ZmZimletBase;
 Com_Zimbra_YMEmoticons.prototype.constructor = Com_Zimbra_YMEmoticons;
 
+Com_Zimbra_YMEmoticons.prototype.init =
+function(){
+	var smileyObj;
+	for (var smiley in this.hash) {
+		smileyObj = this.hash[smiley];
+		smileyObj.alt = this.getMessage(smileyObj.alt);
+	}
+};
 Com_Zimbra_YMEmoticons.prototype.createComposeButton =
 function(toolbar) {
 	var htmlEditor = toolbar.parent;
@@ -179,7 +187,7 @@ function() {
 	this._preferenceView = new DwtComposite(this.getShell());
 	this._preferenceView.getHtmlElement().style.overflow = "auto";
 	this._preferenceView.getHtmlElement().innerHTML = this._createPrefView();
-	this._preferenceDialog = this._createDialog({title: "Yahoo! Emoticons Preferences", view: this._preferenceView, standardButtons: [DwtDialog.OK_BUTTON], id: "YahooEmoticonsPrefs"});
+	this._preferenceDialog = this._createDialog({title: this.getMessage("yahoo_emoticons_pref_dialog_title"), view: this._preferenceView, standardButtons: [DwtDialog.OK_BUTTON], id: "YahooEmoticonsPrefs"});
 	this._preferenceDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._okPreferenceBtnListener));
 
 	if (!this.enableInMail) {
@@ -194,7 +202,8 @@ Com_Zimbra_YMEmoticons.prototype._createPrefView =
 function() {
 	return [
 		"<div class='ymemoticonsPrefDialog'>",
-		"<input id='yemoticons_enableInMail_div' type='checkbox'/>Enable Emoticons In Mail",
+		"<input id='yemoticons_enableInMail_div' type='checkbox'/>",
+		this.getMessage("enableInMail"),
 		"</div>"
 	].join("");
 };
