@@ -41,6 +41,6 @@
         </contextMenu>
     </zimletPanelItem>
     <userProperties>
-        <property type="string" name="webexZimlet_companyId" value="vmware"/>
+        <property type="string" name="webexZimlet_companyId" value="zimbra"/>
     </userProperties>
 </zimlet>
