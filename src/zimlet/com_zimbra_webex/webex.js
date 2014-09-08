@@ -1295,6 +1295,7 @@ function() {
 	
 	
 	this._addressPrefsViewPage = [];
+	this._accntPrefsHelpObjsHash = [];
 	this._tabKeys = [];
 	for (var ii = 1; ii < 6; ii++) {
 		this._addressPrefsViewPage[ii] = new DwtTabViewPage(this._addPrefsDlgViewTabView, "", Dwt.STATIC_STYLE, "WebExZimlet_addressPage" + ii);
@@ -1613,7 +1614,7 @@ function(menuId, val) {
  */
 WebExZimlet.prototype._createAccPrefsView = function(tabIndex) {
 	this._accntPrefsObjsHash = [];
-	this._accntPrefsHelpObjsHash = [];
+
 	var html = [];
 	if (!AjxEnv.isIE) {//w/o this, stupid IE will break
 		html.push("<table width='100%'><tr><td>");
