@@ -296,6 +296,11 @@ function(object, ev, noRightClick) {
 	var x = ev ? ev.docX : this.x;
 	var y = ev ? ev.docY : this.y;
 	this.noRightClick = noRightClick;
+	
+	var shell = DwtShell.getShell(window);
+	var manager = shell.getHoverMgr();
+	manager.setHoverOutDelay(500);
+	
 	return this.handleHover(object, null, x, y);
 };
 
