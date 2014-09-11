@@ -1,0 +1,68 @@
+.zss-tree-container{
+	height: 93%;
+}
+
+.zss-file-explorer,
+.zss-folder-explorer{
+	overflow: auto !important;
+	height: 100%;
+	border-top: 1px solid #E0E0E0;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+/* If choose folder, then remove bottom border to prevent two lines from showing*/
+.is-chooseFolderMode .zss-file-explorer,
+.is-chooseFolderMode .zss-folder-explorer{
+	border-bottom: 0;
+}
+.zss-file-explorer {
+	border-left: 1px solid #E0E0E0;
+}
+.zss-file-explorer .DwtTreeItemLevel1ChildDiv,
+.zss-folder-explorer .DwtTreeItemLevel1ChildDiv{
+	padding-left: 16px;
+}
+
+.zss-file {
+	padding: 1px 0;
+	height: auto;
+}
+
+.zss-ghost-file{
+	visibility: hidden;
+}
+
+.zss-loader,.zss-no-result{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: white;
+	text-align: center;
+}
+.zss-loader span,
+.zss-no-result span {
+	margin-top: -7px;
+	left: 0;
+	position: absolute;
+	top: 50%;
+	width: 100%;
+}
+
+.zss-file .zss-file{
+	padding: 0.5em 0 0;
+}
+
+.zss-refresh-button .ZButtonTable{
+	border: 0;
+}
+
+
+/*FILE DETAILS*/
+.zss-file-name{
+	margin-bottom: 2px;
+}
+.zss-file-details{
+	font-size: 10px;
+}
