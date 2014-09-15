@@ -194,11 +194,10 @@ function(files,resp) {
 				}
 			}
 			
+			//save file list to metadata
 			metaData.set("zssLinkList", keyVals, null, null, null, false);
 			
-			//now set metadata about secucity 
-			//TODO: add a checkbox "set secure" to the file selector and set this value based on the checkbox
-			
+			//now set metadata about security 
 			linkSecurityMeta["secureFiles"] = secureFiles.join(",");
 			linkSecurityMeta["publicFiles"] = publicFiles.join(",");
 			metaData.set("zssLinkSecurity", linkSecurityMeta, null, null, null, false);
