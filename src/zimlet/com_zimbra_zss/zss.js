@@ -139,13 +139,14 @@ function(files) {
 			//tinymce modifies the source when using mceInsertContent
 			ed.execCommand('mceInsertRawHTML', false, div, {skip_undo : 1});
 		}
-	}
-	else {
+	} else {
 		for(var i = 0, len = files.length; i < len; i++) {
 			view.getHtmlEditor().setContent(editorContent + "\n" + files[i].name + " : " + files[i].path + "\n");
 		}
 	}	
 
+	this.addGeneratedLinksToMsgMetadata(files);
+	
 	function generateHTML(file){
 		var thumbnail = file.content.file.thumbnail.uri;
 		var fileName = file.content.file.name;
@@ -161,6 +162,51 @@ function(files) {
 		return div;
 	}
 };
+
+//save metadata info about the links to message draft
+ZssZimlet.prototype.addGeneratedLinksToMsgMetadata = 
+function(files) {
+	//first we have to save the draft and get a messageID
+	var view = appCtxt.getCurrentView();
+	var callback = new AjxCallback(this, this._handleSaveDraftCallback,[files]);
+	
+	// Need to save the msg as draft to add the attachment
+	view._controller.saveDraft(ZmComposeController.DRAFT_TYPE_MANUAL, null, null, callback, null);
+}
+
+ZssZimlet.prototype._handleSaveDraftCallback =
+function(files,resp) {
+	//Enable attach button.
+	if(files && resp) {
+		var response = resp.getResponse();
+		if(response && response.m && response.m.length && response.m[0] && response.m[0].id) {
+			
+			var metaData = new ZmMetaData(appCtxt.getActiveAccount(), response.m[0].id);
+			var keyVals = [];
+			var linkSecurityMeta = [];
+			var secureFiles = [];
+			var publicFiles = [];
+			for(var i = 0, len = files.length; i < len; i++) {
+				if(files[i] && files[i].content && files[i].content.file && files[i].content.file.content && files[i].content.file.name && files[i].content.file.content.uri) {
+					keyVals[files[i].content.file.name] = files[i].content.file.content.uri;
+					//TODO: check if file is being attached as secure link or as public link and add to appropriate array 
+					secureFiles.push(files[i].content.file.name);
+				}
+			}
+			
+			metaData.set("zssLinkList", keyVals, null, null, null, false);
+			
+			//now set metadata about secucity 
+			//TODO: add a checkbox "set secure" to the file selector and set this value based on the checkbox
+			
+			linkSecurityMeta["secureFiles"] = secureFiles.join(",");
+			linkSecurityMeta["publicFiles"] = publicFiles.join(",");
+			metaData.set("zssLinkSecurity", linkSecurityMeta, null, null, null, false);
+		}
+	}
+	//Add error handling here.
+};
+
 
 // send file details to the server to download it and create an attachmentId.
 ZssZimlet.prototype.addFilesAsAttachment =
@@ -229,13 +275,6 @@ function (response) {
 	}
 	return attachmentIds.join(",");
 }
-
-ZssZimlet.prototype._handleSaveDraftCallback =
-function(response) {
-	//Enable attach button.
-	//Add error handling here.
-};
-
 
 ZssZimlet.prototype._addGeneratedAttachmentIdsToMsgError =
 function(response) {
