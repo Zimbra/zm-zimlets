@@ -72,9 +72,9 @@ com_zimbra_zss_Explorer.prototype._adjustTreeHeights = function(){
 	var availableContentHeight = containerDimensions.y;
 	
 	// Use this height calculation if add as attachment checkbox is added again.
-	// var height = this.isFolderExplorer ? availableContentHeight - 20 : availableContentHeight - 42;
+	var height = this.isFolderExplorer ? availableContentHeight - 20 : availableContentHeight - 42;
 	
-	var height = availableContentHeight - 20;
+	// var height = availableContentHeight - 20;
 	this._fileFolderTreeContainer.style.height = height + "px";
 	this._folderTreeWrapper.style.height = height + "px";
 	this._fileTreeWrapper.style.height = height + "px";

@@ -17,7 +17,7 @@ ZssZimlet.prototype.init = function(){
 		menuItemTxt: this.getMessage('menuItem'),
 		noFilesFound: this.getMessage('noFilesFound'),
 		fetchingContentMsg: this.getMessage('fetchingContent'),
-		addFilesAsAttachment: this.getMessage('addFileAsAttachment'),
+		addFilesAsSecureLink: this.getMessage('addFileAsSecureLink'),
 		attachingFileNotification : this.getMessage('attachingFileNotification'),
 		selectFilesDialogTitle : this.getMessage('selectFilesDialogTitle'),
 		chooseFolderDialogTitle : this.getMessage('chooseFolderDialogTitle'),
@@ -57,8 +57,7 @@ ZssZimlet.prototype.showVaultFileChooser =
 function() {
 	if(this.dialog){
 		this.fileExplorer.clearSelection();
-		//FUNC: uncomment this if add as attachment is enabled
-		// this.addAsAttachmentCheckbox.setSelected(false);
+		this.addFilesAsSecureLink.setSelected(true);
 		this.dialog.popup();
 		return;
 	}	
@@ -91,14 +90,15 @@ function() {
 		});
 	}
 	
-	//FUNC: uncomment this if add as attachment is enabled
-	// this.addAsAttachmentCheckbox = new DwtCheckbox({
-	// 	parent: this.dialogView,
-	// 	style: DwtCheckbox.TEXT_RIGHT,
-	// 	name: 'zss_add_as_attachment',
-	// 	id: Dwt.getNextId()
-	// });
-	// this.addAsAttachmentCheckbox.setText(this.messages.addFilesAsAttachment);
+	// FUNC: uncomment this if add as attachment is enabled
+	this.addFilesAsSecureLink = new DwtCheckbox({
+		parent: this.dialogView,
+		style: DwtCheckbox.TEXT_RIGHT,
+		name: 'zss_secure_link',
+		checked: true,
+		id: Dwt.getNextId()
+	});
+	this.addFilesAsSecureLink.setText(this.messages.addFilesAsSecureLink);
 
 	//show the dialog
 	this.dialog.popup();
@@ -112,22 +112,21 @@ function() {
 	this.dialog.popdown();
 	var selectedFiles = this.fileExplorer.getSelection();
 	if( selectedFiles.length ) {
-		//FUNC: uncomment this if add as attachment is enabled
-		//var insertAsAttachment = this.addAsAttachmentCheckbox.isSelected();
+		var addFilesAsSecureLink = this.addFilesAsSecureLink.isSelected();
 		
 		var insertAsAttachment = false;
 		if(insertAsAttachment) {
 			this.addFilesAsAttachment(selectedFiles);
 		}
 		else {
-			this.addFilesAsLinkInMsg(selectedFiles);
+			this.addFilesAsLinkInMsg(selectedFiles, addFilesAsSecureLink);
 		}
 	}
 };
 
 // add the file path as a link
 ZssZimlet.prototype.addFilesAsLinkInMsg =
-function(files) {
+function(files, addFilesAsSecureLink) {
 	var view = appCtxt.getCurrentView();
 	var editor = view.getHtmlEditor();
 	var editorContent =  editor.getContent();
@@ -145,7 +144,7 @@ function(files) {
 		}
 	}	
 
-	this.addGeneratedLinksToMsgMetadata(files);
+	this.addGeneratedLinksToMsgMetadata(files, addFilesAsSecureLink);
 	
 	function generateHTML(file){
 		var thumbnail = file.content.file.thumbnail.uri;
@@ -165,17 +164,17 @@ function(files) {
 
 //save metadata info about the links to message draft
 ZssZimlet.prototype.addGeneratedLinksToMsgMetadata = 
-function(files) {
+function(files, addFilesAsSecureLink) {
 	//first we have to save the draft and get a messageID
 	var view = appCtxt.getCurrentView();
-	var callback = new AjxCallback(this, this._handleSaveDraftCallback,[files]);
+	var callback = new AjxCallback(this, this._handleSaveDraftCallback,[files, addFilesAsSecureLink]);
 	
 	// Need to save the msg as draft to add the attachment
 	view._controller.saveDraft(ZmComposeController.DRAFT_TYPE_MANUAL, null, null, callback, null);
 }
 
 ZssZimlet.prototype._handleSaveDraftCallback =
-function(files,resp) {
+function(files, addFilesAsSecureLink, resp) {
 	//Enable attach button.
 	if(files && resp) {
 		var response = resp.getResponse();
@@ -190,7 +189,12 @@ function(files,resp) {
 				if(files[i] && files[i].content && files[i].content.file && files[i].content.file.content && files[i].content.file.name && files[i].content.file.content.uri) {
 					keyVals[files[i].content.file.name] = files[i].content.file.content.uri;
 					//TODO: check if file is being attached as secure link or as public link and add to appropriate array 
-					secureFiles.push(files[i].content.file.name);
+					if( addFilesAsSecureLink ) {
+						secureFiles.push(files[i].content.file.name);
+					}
+					else {
+						publicFiles.push(files[i].content.file.name);
+					}
 				}
 			}
 			
