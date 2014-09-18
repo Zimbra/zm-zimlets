@@ -90,7 +90,6 @@ function() {
 		});
 	}
 	
-	// FUNC: uncomment this if add as attachment is enabled
 	this.addFilesAsSecureLink = new DwtCheckbox({
 		parent: this.dialogView,
 		style: DwtCheckbox.TEXT_RIGHT,
@@ -188,7 +187,6 @@ function(files, addFilesAsSecureLink, resp) {
 			for(var i = 0, len = files.length; i < len; i++) {
 				if(files[i] && files[i].content && files[i].content.file && files[i].content.file.content && files[i].content.file.name && files[i].content.file.content.uri) {
 					keyVals[files[i].content.file.name] = files[i].content.file.content.uri;
-					//TODO: check if file is being attached as secure link or as public link and add to appropriate array 
 					if( addFilesAsSecureLink ) {
 						secureFiles.push(files[i].content.file.name);
 					}
