@@ -98,7 +98,7 @@ function() {
 		id: Dwt.getNextId()
 	});
 	this.addFilesAsSecureLink.setText(this.messages.addFilesAsSecureLink);
-
+	
 	//show the dialog
 	this.dialog.popup();
 };
@@ -164,50 +164,22 @@ function(files, addFilesAsSecureLink) {
 //save metadata info about the links to message draft
 ZssZimlet.prototype.addGeneratedLinksToMsgMetadata = 
 function(files, addFilesAsSecureLink) {
-	//first we have to save the draft and get a messageID
+	//hang an object off of this view so that when a draft is saved or the message is sent, we can add ZSS URLs to custom mime headers
 	var view = appCtxt.getCurrentView();
-	var callback = new AjxCallback(this, this._handleSaveDraftCallback,[files, addFilesAsSecureLink]);
-	
-	// Need to save the msg as draft to add the attachment
-	view._controller.saveDraft(ZmComposeController.DRAFT_TYPE_MANUAL, null, null, callback, null);
-}
-
-ZssZimlet.prototype._handleSaveDraftCallback =
-function(files, addFilesAsSecureLink, resp) {
-	//Enable attach button.
-	if(files && resp) {
-		var response = resp.getResponse();
-		if(response && response.m && response.m.length && response.m[0] && response.m[0].id) {
-			
-			var metaData = new ZmMetaData(appCtxt.getActiveAccount(), response.m[0].id);
-			var keyVals = [];
-			var linkSecurityMeta = [];
-			var secureFiles = [];
-			var publicFiles = [];
-			for(var i = 0, len = files.length; i < len; i++) {
-				if(files[i] && files[i].content && files[i].content.file && files[i].content.file.content && files[i].content.file.name && files[i].content.file.content.uri) {
-					keyVals[files[i].content.file.name] = files[i].content.file.content.uri;
-					if( addFilesAsSecureLink ) {
-						secureFiles.push(files[i].content.file.name);
-					}
-					else {
-						publicFiles.push(files[i].content.file.name);
-					}
-				}
+	view.__needToAddZSSHeaders = true;
+	if(!view.__zss_metadata) {
+		view.__zss_metadata = {secureFiles:[],publicFiles:[]};
+	}
+	for(var i = 0, len = files.length; i < len; i++) {
+		if(files[i] && files[i].path && files[i].content && files[i].content.file && files[i].content.file.name) {
+			if( addFilesAsSecureLink ) {
+				view.__zss_metadata.secureFiles.push(files[i].path);
+			} else {
+				view.__zss_metadata.publicFiles.push(files[i].path);
 			}
-			
-			//save file list to metadata
-			metaData.set("zssLinkList", keyVals, null, null, null, false);
-			
-			//now set metadata about security 
-			linkSecurityMeta["secureFiles"] = secureFiles.join(",");
-			linkSecurityMeta["publicFiles"] = publicFiles.join(",");
-			metaData.set("zssLinkSecurity", linkSecurityMeta, null, null, null, false);
 		}
 	}
-	//Add error handling here.
-};
-
+}
 
 // send file details to the server to download it and create an attachmentId.
 ZssZimlet.prototype.addFilesAsAttachment =
@@ -397,4 +369,33 @@ ZssZimlet.prototype._handleSaveAttachmentToVaultError =
 function(error) {
 	//handle save to vault error
 	console.log(error);
+};
+
+/**
+ * Called by the framework just before the email is sent or saved to drafts.
+ * @param {array} customMimeHeaders An array of custom-header objects.
+ * 				  Each item in the array MUST be an object that has "name" and "_content" properties.
+ */
+ZssZimlet.prototype.addCustomMimeHeaders =
+function(customMimeHeaders) {
+	var view = appCtxt.getCurrentView();
+	if(view.__needToAddZSSHeaders) {
+		if(!view.__presendHeaderAdded) {
+			customMimeHeaders.push({name:"X-Zimbra-Presend", _content:"zss"});
+			view.__presendHeaderAdded = true;
+		}
+		if(view.__zss_metadata.secureFiles) {
+			for(var i = 0; i < view.__zss_metadata.secureFiles.length; i++) {
+				customMimeHeaders.push({name:"X-ZSS-SecureFile", _content:view.__zss_metadata.secureFiles[i]});
+			}
+		}
+		if(view.__zss_metadata.publicFiles) {
+			for(var i = 0; i < view.__zss_metadata.publicFiles.length; i++) {
+				customMimeHeaders.push({name:"X-ZSS-PublicFile", _content:view.__zss_metadata.publicFiles[i]});
+			}
+		}
+	}
+	//reset
+	view.__needToAddZSSHeaders = false;
+	view.__zss_metadata = {secureFiles:[],publicFiles:[]};
 };
