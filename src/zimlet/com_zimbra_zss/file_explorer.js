@@ -212,9 +212,6 @@ com_zimbra_zss_Explorer.prototype.displayRootContainerContents = function(conten
 
 com_zimbra_zss_Explorer.prototype.getContainerContents = function(path,parentContainer) {
 	var dataInCache = this.mezeoCache[path + "/contents"];
-	if(!this.isFolderExplorer) {
-		this.clearSelection();
-	}
 	this._showFetchContentsNotification();
 	if(!dataInCache) {
 		this.queryServer(path + "/contents", new AjxCallback(this, this._handleGetContainerContents, { parent: parentContainer, refetched: false } ));
@@ -239,7 +236,11 @@ com_zimbra_zss_Explorer.prototype._addTreeItem = function(mezeoItem, parent) {
 	var item = mezeoItem.headerItem ? 
 				new DwtHeaderTreeItem(treeItemProperties)
 				: new DwtTreeItem(treeItemProperties);
-
+	
+	if(mezeoItem.isSelected)	{
+		item.setChecked(true);
+	}
+	
 	item.setData(this.dataKey,{
 		type: mezeoItem.type,
 		path: mezeoItem.path,
@@ -290,7 +291,8 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 						path: content.file.uri,
 						type: this.MEZEO_FILE,
 						icon: "GenericDoc",
-						content: content
+						content: content,
+						isSelected: this._isFileSelected(content.file.uri)
 					}, this.fileExplorer);
 					item.enableSelection(false);
 				}
@@ -306,6 +308,14 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 		}
 	}
 }
+com_zimbra_zss_Explorer.prototype._isFileSelected = function (fileUri){
+	for(var i = 0, len = this.selectedItems.length; i < len; i++){
+		if(this.selectedItems[i].path === fileUri){
+			return true;
+		}
+	}
+	return false;
+};
 
 com_zimbra_zss_Explorer.prototype._clearTreeItems = function(parent){
 	while(parent.getChildren().length){
