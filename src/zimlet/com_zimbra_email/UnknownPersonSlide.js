@@ -234,11 +234,11 @@ function() {
 	this._slide.setInfoMessage(this.emailZimlet.getMessage("loading"));
 
     var contactList = AjxDispatcher.run("GetContacts");
-    var contact = contactList ? contactList.getContactByEmail(this.emailZimlet.emailAddress) : null;
-    if (contact || !appCtxt.get(ZmSetting.GAL_ENABLED)) {
-        this._handleContactDetails(null, contact);
-    }
-	else { //not in address book - search in the GAL
+    var localContact = contactList ? contactList.getContactByEmail(this.emailZimlet.emailAddress) : null;
+    if (!appCtxt.get(ZmSetting.GAL_ENABLED)) {
+        this._handleContactDetails(localContact);
+    } else {
+    	//search in the GAL
 		var jsonObj, request, soapDoc;
 		jsonObj = {SearchGalRequest:{_jsns:"urn:zimbraAccount"}};
 		request = jsonObj.SearchGalRequest;
@@ -246,7 +246,7 @@ function() {
 		request.name = this.emailZimlet.emailAddress;
 		request.offset = 0;
 		request.limit = 3;
-		var callback = new AjxCallback(this, this._handleContactDetails);
+		var callback = new AjxCallback(this, this._handleContactDetails, localContact);
 		appCtxt.getAppController().sendRequest({jsonObj:jsonObj,asyncMode:true,callback:callback, noBusyOverlay:true});
 	}
 
@@ -258,7 +258,7 @@ function() {
 // If contact is not undefined, the call is from AB
 
 UnknownPersonSlide.prototype._handleContactDetails =
-function(response, contact) {
+function(contact, response) {
 	var attrs = null;
     var id = null;
 	if (response) {
@@ -271,8 +271,13 @@ function(response, contact) {
 		}
     }
 
-	//the use of hashCopy is due to bug 81951 - Don't modify the contact attributes.
-    attrs = attrs || (contact && contact.attr && AjxUtil.hashCopy(contact.attr)) || {};
+	if (attrs && contact && contact.attr) {
+		//add or overwrite any attributes that are present in the local contact's info
+		attrs = AjxUtil.hashUpdate(attrs, contact.attr, true);
+	} else {
+		//the use of hashCopy is due to bug 81951 - Don't modify the contact attributes.
+		attrs = attrs || (contact && contact.attr && AjxUtil.hashCopy(contact.attr)) || {};
+	}
 
     attrs["fullName"] =  this.emailZimlet.fullName || attrs["fullName"] || contact && contact._fileAs;
     this._presentity = attrs["email"] = this.emailZimlet.emailAddress || attrs["email"];        // email is the presence identity
