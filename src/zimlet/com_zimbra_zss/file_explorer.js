@@ -71,7 +71,7 @@ com_zimbra_zss_Explorer.prototype._adjustTreeHeights = function(){
 	var containerDimensions = this.rootContainer.getSize();
 	var availableContentHeight = containerDimensions.y;
 	
-	var height = this.isFolderExplorer ? availableContentHeight - 20 : availableContentHeight - 42;
+	var height = this.isFolderExplorer ? availableContentHeight - 25 : availableContentHeight - 52;
 	
 	this._fileFolderTreeContainer.style.height = height + "px";
 	this._folderTreeWrapper.style.height = height + "px";
@@ -82,7 +82,7 @@ com_zimbra_zss_Explorer.prototype._adjustTreeWidths = function(){
 	var containerDimensions = this.rootContainer.getSize(),
 		availableContentWidth = containerDimensions.x;
 	this.folderExplorer.setSize(availableContentWidth * .32, this._folderTreeWrapper.style.height);
-	this.fileExplorer.setSize(availableContentWidth * .68, this._fileTreeWrapper.style.height);
+	this.fileExplorer.setSize(availableContentWidth * .65, this._fileTreeWrapper.style.height);
 }
 
 com_zimbra_zss_Explorer.prototype._addGhostFile = function(){
@@ -285,12 +285,14 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 					}, parent);
 				}
 				if(content.file){
+					var fileTypeInfo = ZmMimeTable.getInfo(content.file.mime_type);
+
 					var item = this._addTreeItem({
 						className: "zss-file DwtTreeItem",
 						name: this._createFileHtml(content.file),
 						path: content.file.uri,
 						type: this.MEZEO_FILE,
-						icon: "GenericDoc",
+						icon: fileTypeInfo.image,
 						content: content,
 						isSelected: this._isFileSelected(content.file.uri)
 					}, this.fileExplorer);
