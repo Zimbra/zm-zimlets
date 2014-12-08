@@ -36,6 +36,7 @@ ZssZimlet.prototype.init = function(){
 	
 	this.messages = {
 		menuItemTxt: this.getMessage('menuItem'),
+		attachBtnText: this.getMessage('attachBtnText'),
 		noFilesFound: this.getMessage('noFilesFound'),
 		fetchingContentMsg: this.getMessage('fetchingContent'),
 		addFilesAsSecureLink: this.getMessage('addFileAsSecureLink'),
@@ -86,18 +87,20 @@ function() {
 	this.dialogView = new DwtComposite(this.getShell());
 	this.dialogView.setSize(560, 320); //set width and height
 	this.dialogView.getHtmlElement().style.overflow = "hidden"; //adds scrollbar
-	
+	var attachButton = new DwtDialog_ButtonDescriptor(DwtDialog.OK_BUTTON, this.messages.attachBtnText , DwtDialog.ALIGN_RIGHT);
+	var cancelButton = new DwtDialog_ButtonDescriptor(DwtDialog.CANCEL_BUTTON, DwtDialog.MSG_KEY[DwtDialog.CANCEL_BUTTON] , DwtDialog.ALIGN_RIGHT);
 	
 	this.dialog = this._createDialog({
 							title: this.messages.selectFilesDialogTitle,
-							view:this.dialogView, 	
-							standardButtons:[
-								DwtDialog.OK_BUTTON, 
-								DwtDialog.CANCEL_BUTTON
+							view:this.dialogView,
+							standardButtons: DwtDialog.NO_BUTTONS,
+							extraButtons:[
+								attachButton,
+								cancelButton
 							]
-						});
+					});
 
-	this.dialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._processSelectedVaultFile));
+	this.dialog.setButtonListener(attachButton.id, new AjxListener(this, this._processSelectedVaultFile));
 
 	if(!this.fileExplorer){
 		this.fileExplorer = new com_zimbra_zss_Explorer({
