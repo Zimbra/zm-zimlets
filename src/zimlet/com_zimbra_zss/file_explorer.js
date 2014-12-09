@@ -8,6 +8,7 @@ function com_zimbra_zss_Explorer(initObj) {
 	this.noFilesMsg = initObj.noFilesMsg;
 	this.fetchingContentMsg = initObj.fetchingContentMsg;
 	this.refreshFolderBtnText = initObj.refreshFolderBtnText;
+	this.unprovisionedAccountMsg = initObj.unprovisionedAccountMsg;
 
 	this.selectedItems = [];
 
@@ -179,12 +180,21 @@ com_zimbra_zss_Explorer.prototype._folderTreeViewListener  = function(ev){
 		selectedItem.setExpanded(true,false,false);
 	}
 };
+
 com_zimbra_zss_Explorer.prototype.displayRootContainerContents = function(contents) {
 	this._hideFetchContentsNotification();
 	//Adjust the tree widths to accommodate results.
 	this._adjustTreeWidths();
-	
 
+	if(!contents.success){
+		// HANDLE additional Errcodes if required
+		if(contents.status === 403){
+			appCtxt.getAppController().setStatusMsg(this.unprovisionedAccountMsg, ZmStatusView.LEVEL_CRITICAL);
+			this.parentDialog.popdown();
+			return;
+		}
+	}
+	
 	contents =  JSON.parse(contents.text);
 	if(contents) {
 		if(contents.cloud && contents.cloud.locations) {
