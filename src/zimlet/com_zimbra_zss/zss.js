@@ -45,7 +45,8 @@ ZssZimlet.prototype.init = function(){
 		chooseFolderDialogTitle : this.getMessage('chooseFolderDialogTitle'),
 		fileSavedToVault: this.getMessage('fileSavedToVault'),
 		saveToVaultLink: this.getMessage('saveToVaultLink'),
-		refreshFolderBtnText: this.getMessage('refreshFolderBtnText')
+		refreshFolderBtnText: this.getMessage('refreshFolderBtnText'),
+		unprovisionedAccountMsg: this.getMessage('unprovisionedAccount')
 	};
 	
 
@@ -109,8 +110,8 @@ function() {
 			dialog: this.dialog,
 			noFilesMsg: this.messages.noFilesFound,
 			fetchingContentMsg: this.messages.fetchingContentMsg,
-			refreshFolderBtnText: this.messages.refreshFolderBtnText
-
+			refreshFolderBtnText: this.messages.refreshFolderBtnText,
+			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg
 		});
 	}
 	
@@ -355,7 +356,8 @@ function(attachmentId, part, name) {
 			isFolderExplorer: true,
 			noFilesMsg: self.messages.noFilesFound,
 			fetchingContentMsg: self.messages.fetchingContentMsg,
-			refreshFolderBtnText: self.messages.refreshFolderBtnText
+			refreshFolderBtnText: self.messages.refreshFolderBtnText,
+			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg
 		});
 	}
 	self.folderChooserDialog.popup();
