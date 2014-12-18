@@ -357,7 +357,7 @@ function(attachmentId, part, name) {
 			noFilesMsg: self.messages.noFilesFound,
 			fetchingContentMsg: self.messages.fetchingContentMsg,
 			refreshFolderBtnText: self.messages.refreshFolderBtnText,
-			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg
+			unprovisionedAccountMsg: self.messages.unprovisionedAccountMsg
 		});
 	}
 	self.folderChooserDialog.popup();
