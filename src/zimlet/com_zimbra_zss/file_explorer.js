@@ -383,10 +383,7 @@ com_zimbra_zss_Explorer.prototype.queryServer = function(extServerUrl, callback,
 	var hdrs = [];
 	hdrs["X-Client-Specification"] = 3; //must pass the length of data
 	hdrs["X-Cloud-Depth"] = 1;
-	// url encode the external server url
-	// since it will part of the query params for the proxy servet
-	var encodedExtServerUrl = AjxStringUtil.urlComponentEncode(extServerUrl);
 	
 	// submit the URL and asynchronous response (using callback)
-	AjxRpc.invoke(null, encodedExtServerUrl, hdrs, callback, true);
+	AjxRpc.invoke(null, extServerUrl, hdrs, callback, true);
 };
