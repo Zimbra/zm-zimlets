@@ -170,8 +170,8 @@ function(files, addFilesAsSecureLink) {
 			ed.execCommand('mceInsertRawHTML', false, div, {skip_undo : 1});
 		}
 	} else {
-		for(var i = 0, len = files.length; i < len; i++) {
-			view.getHtmlEditor().setContent(editorContent + "\n" + files[i].name + " : " + files[i].path + "\n");
+		for (var i = 0; i < files.length; i++) {
+			view.getHtmlEditor().setContent(editorContent + "\n[ " + files[i].path + " | " + files[i].name + " ] \n");
 		}
 	}	
 
@@ -185,14 +185,11 @@ function(files, addFilesAsSecureLink) {
 		var fileIcon = self.icons[fileTypeInfo.image];
 		// var fileIcon = self.getFileTypeIcon(file.content.file.name);
 
-		var div = '<div style="background-color:rgb(245, 245, 245); padding:10px 14px; margin-right:10px; color:rgb(34, 34, 34);display:inline-block;margin-left:10px; '; 
-			div+='font-family:arial; font-style:normal; font-weight:bold; font-size:13px; cursor:default; border:1px solid rgb(221, 221, 221); float:left;text-align: center; max-width: 105px;">';
-			div+='<a href="' + filePath + '/inline/" target="_blank"><img style="margin-bottom:7px; border:none;" height="64" src="' + fileIcon + '"></a>';
-			div+='<div dir="ltr" title="' + fileName + '" style="color:rgb(17, 85, 204); text-decoration:initial; vertical-align:bottom;">';
-			div+='<a href="' + filePath + '/inline/" target="_blank" style=" display:block; overflow:hidden; text-overflow:ellipsis; text-align:center; cursor:pointer;padding:1px 0; border:none; font-weight:normal;">' + fileName + '</a></div>';
-			div+='</div><div style="clear:both"><br/></div>';
-
-		return div;
+		return '<a href="' + filePath + '/inline/" target="_blank title="' + fileName + '"'
+				+ ' style="padding: 10px 0px; margin-right: 10px; color: rgb(0, 90, 149); display: inline-block; margin-left: 10px; font-family: arial; font-style: normal; font-weight: normal; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); text-align: center; max-width: 105px; text-decoration: none; background-color: rgb(245, 245, 245);">'
+				+ '<img style="margin:0 20px 7px; border:none;" height="64" src="' + fileIcon + '">'
+				+ fileName
+				+ '</a>';
 	}
 };
 
