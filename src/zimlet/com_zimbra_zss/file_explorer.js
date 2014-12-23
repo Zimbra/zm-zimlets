@@ -181,18 +181,30 @@ com_zimbra_zss_Explorer.prototype._folderTreeViewListener  = function(ev){
 	}
 };
 
+com_zimbra_zss_Explorer.prototype.processResponseForErrors = function(response){
+	// HANDLE additional Errcodes if required
+	if(response.status === 403){
+		appCtxt.getAppController().setStatusMsg(this.unprovisionedAccountMsg, ZmStatusView.LEVEL_CRITICAL);
+	}
+
+	if(response.status === 404){
+		appCtxt.getAppController().setStatusMsg(this.serviceUnavailableMsg, ZmStatusView.LEVEL_CRITICAL);
+	}
+
+	else{
+		appCtxt.getAppController().setStatusMsg(this.genericFailureMsg, ZmStatusView.LEVEL_CRITICAL);
+	}
+};
+
 com_zimbra_zss_Explorer.prototype.displayRootContainerContents = function(contents) {
 	this._hideFetchContentsNotification();
 	//Adjust the tree widths to accommodate results.
 	this._adjustTreeWidths();
 
 	if(!contents.success){
-		// HANDLE additional Errcodes if required
-		if(contents.status === 403){
-			appCtxt.getAppController().setStatusMsg(this.unprovisionedAccountMsg, ZmStatusView.LEVEL_CRITICAL);
-			this.parentDialog.popdown();
-			return;
-		}
+		this.processResponseForErrors(contents);
+		this.parentDialog.popdown();
+		return;
 	}
 	
 	contents =  JSON.parse(contents.text);
@@ -263,6 +275,13 @@ com_zimbra_zss_Explorer.prototype._addTreeItem = function(mezeoItem, parent) {
 
 com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraData, contents) {
 	this._hideFetchContentsNotification();
+	//Error handling
+	if(!contents.success){
+		this.processResponseForErrors(contents);
+		this.parentDialog.popdown();
+		return;
+	}
+
 	var parent = extraData.parent,
 		refetched = extraData.refetched;
 	this._clearTreeItems(this.fileExplorer);

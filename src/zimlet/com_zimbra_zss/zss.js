@@ -46,7 +46,9 @@ ZssZimlet.prototype.init = function(){
 		fileSavedToVault: this.getMessage('fileSavedToVault'),
 		saveToVaultLink: this.getMessage('saveToVaultLink'),
 		refreshFolderBtnText: this.getMessage('refreshFolderBtnText'),
-		unprovisionedAccountMsg: this.getMessage('unprovisionedAccount')
+		unprovisionedAccountMsg: this.getMessage('unprovisionedAccount'),
+		serviceUnavailableMsg: this.getMessage('serviceUnavailable'),
+		genericFailureMsg: this.getMessage('genericFailure')
 	};
 	
 
@@ -111,7 +113,9 @@ function() {
 			noFilesMsg: this.messages.noFilesFound,
 			fetchingContentMsg: this.messages.fetchingContentMsg,
 			refreshFolderBtnText: this.messages.refreshFolderBtnText,
-			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg
+			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg,
+			serviceUnavailableMsg: this.messages.serviceUnavailableMsg,
+			genericFailureMsg: this.messages.genericFailureMsg
 		});
 	}
 	
@@ -357,7 +361,9 @@ function(attachmentId, part, name) {
 			noFilesMsg: self.messages.noFilesFound,
 			fetchingContentMsg: self.messages.fetchingContentMsg,
 			refreshFolderBtnText: self.messages.refreshFolderBtnText,
-			unprovisionedAccountMsg: self.messages.unprovisionedAccountMsg
+			unprovisionedAccountMsg: self.messages.unprovisionedAccountMsg,
+			serviceUnavailableMsg: self.messages.serviceUnavailableMsg,
+			genericFailureMsg: this.messages.genericFailureMsg
 		});
 	}
 	self.folderChooserDialog.popup();
