@@ -3,7 +3,6 @@
     <include>zss.js</include>
     <includeCSS>com_zimbra_zss.css</includeCSS>
     <handlerObject>com_zimbra_zss_HandlerObject</handlerObject>
-    <zimletPanelItem label="${msg.zimletLabel}"/>
     <userProperties>
         <property type="string" name="zss_url" value="/zss"/>
     </userProperties>
