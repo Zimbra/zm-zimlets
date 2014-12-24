@@ -360,7 +360,7 @@ function(attachmentId, part, name) {
 			refreshFolderBtnText: self.messages.refreshFolderBtnText,
 			unprovisionedAccountMsg: self.messages.unprovisionedAccountMsg,
 			serviceUnavailableMsg: self.messages.serviceUnavailableMsg,
-			genericFailureMsg: this.messages.genericFailureMsg
+			genericFailureMsg: self.messages.genericFailureMsg
 		});
 	}
 	self.folderChooserDialog.popup();
