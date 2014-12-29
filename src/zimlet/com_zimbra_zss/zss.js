@@ -170,8 +170,29 @@ function(files, addFilesAsSecureLink) {
 			ed.execCommand('mceInsertRawHTML', false, div, {skip_undo : 1});
 		}
 	} else {
-		for (var i = 0; i < files.length; i++) {
-			view.getHtmlEditor().setContent(editorContent + "\n[ " + files[i].path + " | " + files[i].name + " ] \n");
+		var textArea = document.getElementById(editor.getEditor().id);
+		var content = "";
+
+		for(var i = 0, len = files.length; i < len; i++) {
+			content += "\n[ " + files[i].path + " | " +  files[i].content.file.name + " ] \n";
+		}
+		// IE Support
+		if (document.selection) {
+			textArea.focus();
+			sel = document.selection.createRange();
+			sel.text = myValue;
+		}
+		// others
+		else if (textArea.selectionStart || textArea.selectionStart == '0') {
+			var startPos = textArea.selectionStart;
+			var endPos = textArea.selectionEnd;
+			var currentContent = textArea.value;
+			// create a string with new text inserted at the caret position.
+			var updatedContent = currentContent.substring(0, startPos)
+								+ content
+								+ currentContent.substring(endPos, currentContent.length);
+			
+			editor.setContent(updatedContent);
 		}
 	}	
 
