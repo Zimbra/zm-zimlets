@@ -161,19 +161,23 @@ function(files, addFilesAsSecureLink) {
 	var editor = view.getHtmlEditor();
 	var editorContent =  editor.getContent();
 
-	var isHtml = view && view.getComposeMode() === "text/html";
+	var isHtml = view.getComposeMode() === "text/html";
 	if (isHtml) {
-		var ed = editor.getEditor();
-		for(var i = 0, len = files.length; i < len; i++) {
-			var div = generateHTML(files[i]);
+
+		var html = "";
+		for (var i = 0; i < files.length; i++) {
+			html += generateHTML(files[i]);
 			//tinymce modifies the source when using mceInsertContent
-			ed.execCommand('mceInsertRawHTML', false, div, {skip_undo : 1});
+		}
+		if (files.length) {
+			var ed = editor.getEditor();
+			ed.execCommand('mceInsertRawHTML', false, html, {skip_undo : 1});
 		}
 	} else {
 		var textArea = document.getElementById(editor.getEditor().id);
 		var content = "";
 
-		for(var i = 0, len = files.length; i < len; i++) {
+		for (var i = 0; i < files.length; i++) {
 			content += "\n[ " + files[i].path + " | " +  files[i].content.file.name + " ] \n";
 		}
 		// IE Support
