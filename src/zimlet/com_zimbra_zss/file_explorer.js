@@ -9,6 +9,9 @@ function com_zimbra_zss_Explorer(initObj) {
 	this.fetchingContentMsg = initObj.fetchingContentMsg;
 	this.refreshFolderBtnText = initObj.refreshFolderBtnText;
 	this.unprovisionedAccountMsg = initObj.unprovisionedAccountMsg;
+	this.serviceUnavailableMsg = initObj.serviceUnavailableMsg;
+	this.serviceTimedOutMsg = initObj.serviceTimedOutMsg;
+	this.genericFailureMsg = initObj.genericFailureMsg;
 
 	this.selectedItems = [];
 
@@ -185,15 +188,20 @@ com_zimbra_zss_Explorer.prototype.processResponseForErrors = function(response){
 	// HANDLE additional Errcodes if required
 	if(response.status === 403){
 		appCtxt.getAppController().setStatusMsg(this.unprovisionedAccountMsg, ZmStatusView.LEVEL_CRITICAL);
+		return;
 	}
 
 	if(response.status === 404){
 		appCtxt.getAppController().setStatusMsg(this.serviceUnavailableMsg, ZmStatusView.LEVEL_CRITICAL);
+		return;
 	}
 
-	else{
-		appCtxt.getAppController().setStatusMsg(this.genericFailureMsg, ZmStatusView.LEVEL_CRITICAL);
+	if(response.status === 504){
+		appCtxt.getAppController().setStatusMsg(this.serviceTimedOutMsg, ZmStatusView.LEVEL_CRITICAL);
+		return;
 	}
+
+	appCtxt.getAppController().setStatusMsg(this.genericFailureMsg, ZmStatusView.LEVEL_CRITICAL);
 };
 
 com_zimbra_zss_Explorer.prototype.displayRootContainerContents = function(contents) {
