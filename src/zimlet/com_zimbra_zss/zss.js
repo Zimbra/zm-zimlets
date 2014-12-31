@@ -48,6 +48,7 @@ ZssZimlet.prototype.init = function(){
 		refreshFolderBtnText: this.getMessage('refreshFolderBtnText'),
 		unprovisionedAccountMsg: this.getMessage('unprovisionedAccount'),
 		serviceUnavailableMsg: this.getMessage('serviceUnavailable'),
+		serviceTimedOutMsg: this.getMessage('serviceTimedOut'),
 		genericFailureMsg: this.getMessage('genericFailure')
 	};
 	
@@ -91,7 +92,7 @@ function() {
 	this.dialogView.setSize(560, 320); //set width and height
 	this.dialogView.getHtmlElement().style.overflow = "hidden"; //adds scrollbar
 	var attachButton = new DwtDialog_ButtonDescriptor(DwtDialog.OK_BUTTON, this.messages.attachBtnText , DwtDialog.ALIGN_RIGHT);
-	var cancelButton = new DwtDialog_ButtonDescriptor(DwtDialog.CANCEL_BUTTON, DwtDialog.MSG_KEY[DwtDialog.CANCEL_BUTTON] , DwtDialog.ALIGN_RIGHT);
+	var cancelButton = new DwtDialog_ButtonDescriptor(DwtDialog.CANCEL_BUTTON, AjxMsg[DwtDialog.MSG_KEY[DwtDialog.CANCEL_BUTTON]] , DwtDialog.ALIGN_RIGHT);
 	
 	this.dialog = this._createDialog({
 							title: this.messages.selectFilesDialogTitle,
@@ -115,6 +116,7 @@ function() {
 			refreshFolderBtnText: this.messages.refreshFolderBtnText,
 			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg,
 			serviceUnavailableMsg: this.messages.serviceUnavailableMsg,
+			serviceTimedOutMsg: this.messages.serviceTimedOutMsg,
 			genericFailureMsg: this.messages.genericFailureMsg
 		});
 	}
@@ -385,6 +387,7 @@ function(attachmentId, part, name) {
 			refreshFolderBtnText: self.messages.refreshFolderBtnText,
 			unprovisionedAccountMsg: self.messages.unprovisionedAccountMsg,
 			serviceUnavailableMsg: self.messages.serviceUnavailableMsg,
+			serviceTimedOutMsg: self.messages.serviceTimedOutMsg,
 			genericFailureMsg: self.messages.genericFailureMsg
 		});
 	}
