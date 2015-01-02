@@ -7,7 +7,6 @@ function com_zimbra_zss_Explorer(initObj) {
 	
 	this.noFilesMsg = initObj.noFilesMsg;
 	this.fetchingContentMsg = initObj.fetchingContentMsg;
-	this.refreshFolderBtnText = initObj.refreshFolderBtnText;
 	this.unprovisionedAccountMsg = initObj.unprovisionedAccountMsg;
 	this.serviceUnavailableMsg = initObj.serviceUnavailableMsg;
 	this.serviceTimedOutMsg = initObj.serviceTimedOutMsg;
@@ -29,14 +28,6 @@ function com_zimbra_zss_Explorer(initObj) {
 com_zimbra_zss_Explorer.prototype._initUI = 
 function() {
 	this._createHtml();
-
-	this.refreshButton = new DwtButton({
-								parent: this.rootContainer,
-								className: "zss-refresh-button"
-							});
-	this.refreshButton.setText(this.refreshFolderBtnText);
-	this.refreshButton.setImage("Refresh");
-	this.refreshButton.reparentHtmlElement(document.getElementById(this._refreshButtonTreeCellId));
 
 	this.folderExplorer = new DwtTree({
 		parent: this.rootContainer,
@@ -67,7 +58,6 @@ function() {
 com_zimbra_zss_Explorer.prototype._addEventHandlers = function(){
 	this.folderExplorer.addSelectionListener(new AjxListener(this, this._folderTreeViewListener));
 	this.fileExplorer.addSelectionListener(new AjxListener(this, this._fileTreeViewListener));
-	this.refreshButton.addSelectionListener(new AjxListener(this, this._refreshFolders));
 }
 
 com_zimbra_zss_Explorer.prototype._adjustTreeHeights = function(){
@@ -75,7 +65,7 @@ com_zimbra_zss_Explorer.prototype._adjustTreeHeights = function(){
 	var containerDimensions = this.rootContainer.getSize();
 	var availableContentHeight = containerDimensions.y;
 	
-	var height = this.isFolderExplorer ? availableContentHeight - 25 : availableContentHeight - 52;
+	var height = this.isFolderExplorer ? availableContentHeight - 3 : availableContentHeight - 27;
 	
 	this._fileFolderTreeContainer.style.height = height + "px";
 	this._folderTreeWrapper.style.height = height + "px";
@@ -122,17 +112,12 @@ com_zimbra_zss_Explorer.prototype._createHtml = function() {
 	this._treeWrapperTableId = Dwt.getNextId();
 	this._folderTreeCellId = Dwt.getNextId();
 	this._fileTreeCellId = Dwt.getNextId();
-	this._refreshButtonTreeCellId = Dwt.getNextId();
 
 	var html = [];
 	var idx = 0;
 	var wrapperCssClass = this.isFolderExplorer? "is-chooseFolderMode" : "";	
 	
 	html[idx++] = '<table id="' + this._treeWrapperTableId + '" class="zss-tree-container ' + wrapperCssClass + '" width="100%">';
-	html[idx++] = '<tr>';
-	html[idx++] = '<td valign="top" id="' + this._refreshButtonTreeCellId + '">';
-	html[idx++] = '</td>';
-	html[idx++] = '</tr>';
 	html[idx++] = '<tr>';
 	html[idx++] = '<td valign="top" id="' + this._folderTreeCellId + '">';
 	html[idx++] = '</td>';
@@ -286,7 +271,6 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 	//Error handling
 	if(!contents.success){
 		this.processResponseForErrors(contents);
-		this.parentDialog.popdown();
 		return;
 	}
 
@@ -394,6 +378,11 @@ com_zimbra_zss_Explorer.prototype.onSelectItem = function(file,selected){
 com_zimbra_zss_Explorer.prototype.getSelection = function(){
 	// var selectedFiles = this.fileExplorer.getSelection();
 	return this.selectedItems;
+}
+
+com_zimbra_zss_Explorer.prototype.reload = function(){
+	this.clearSelection();
+	this._refreshFolders();
 }
 
 com_zimbra_zss_Explorer.prototype.clearSelection = function(){
