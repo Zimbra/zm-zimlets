@@ -45,7 +45,6 @@ ZssZimlet.prototype.init = function(){
 		chooseFolderDialogTitle : this.getMessage('chooseFolderDialogTitle'),
 		fileSavedToVault: this.getMessage('fileSavedToVault'),
 		saveToVaultLink: this.getMessage('saveToVaultLink'),
-		refreshFolderBtnText: this.getMessage('refreshFolderBtnText'),
 		unprovisionedAccountMsg: this.getMessage('unprovisionedAccount'),
 		serviceUnavailableMsg: this.getMessage('serviceUnavailable'),
 		serviceTimedOutMsg: this.getMessage('serviceTimedOut'),
@@ -82,7 +81,7 @@ function(menu, controller) {
 ZssZimlet.prototype.showVaultFileChooser =
 function() {
 	if(this.dialog){
-		this.fileExplorer.clearSelection();
+		this.fileExplorer.reload();
 		this.addFilesAsSecureLink.setSelected(true);
 		this.dialog.popup();
 		return;
@@ -113,7 +112,6 @@ function() {
 			dialog: this.dialog,
 			noFilesMsg: this.messages.noFilesFound,
 			fetchingContentMsg: this.messages.fetchingContentMsg,
-			refreshFolderBtnText: this.messages.refreshFolderBtnText,
 			unprovisionedAccountMsg: this.messages.unprovisionedAccountMsg,
 			serviceUnavailableMsg: this.messages.serviceUnavailableMsg,
 			serviceTimedOutMsg: this.messages.serviceTimedOutMsg,
@@ -355,7 +353,7 @@ function(attachmentId, part, name) {
 	var self = appCtxt._zimletMgr.getZimletByName('com_zimbra_zss').handlerObject;
  	
  	if(self.folderChooserDialog){
-		self.folderExplorer.clearSelection();
+		self.folderExplorer.reload();
 		self.folderChooserDialog.popup();
 		return;
 	}	
@@ -384,7 +382,6 @@ function(attachmentId, part, name) {
 			isFolderExplorer: true,
 			noFilesMsg: self.messages.noFilesFound,
 			fetchingContentMsg: self.messages.fetchingContentMsg,
-			refreshFolderBtnText: self.messages.refreshFolderBtnText,
 			unprovisionedAccountMsg: self.messages.unprovisionedAccountMsg,
 			serviceUnavailableMsg: self.messages.serviceUnavailableMsg,
 			serviceTimedOutMsg: self.messages.serviceTimedOutMsg,
