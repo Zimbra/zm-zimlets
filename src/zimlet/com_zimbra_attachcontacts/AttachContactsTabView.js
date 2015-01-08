@@ -560,7 +560,7 @@ function(params) {
 	this._overview = overview;
 	Dwt.byId(this._folderTreeCellId).appendChild(overview.getHtmlElement());
 	this.treeView = overview.getTreeView("ADDRBOOK");
-	Dwt.byId(this._folderTreeCellId).onclick = AjxCallback.simpleClosure(this._treeListener, this);
+	this.treeView.addSelectionListener(this._treeListener.bind(this));
 	this._hideRoot(this.treeView);
 };
 
