@@ -46,6 +46,7 @@
 	<property name="generated.java.dir" location="${generated.dir}/src/java" />
 
 	<property name="zimlets-zss" value="com_zimbra_zss"/>
+	<property name="zimlets-converse" value="com_zimbra_converse"/>
 	<property name="zimlets" value="com_zimbra_mailarchive,com_zimbra_phone,com_zimbra_url,com_zimbra_email,com_zimbra_date,com_zimbra_ymemoticons,com_zimbra_attachmail,com_zimbra_attachcontacts,com_zimbra_srchhighlighter,com_zimbra_webex"/>
 	<property name="zimlets-offline" value=""/>
 	<property name="zimlets-example" value="com_zimbra_example_*"/>
@@ -140,6 +141,15 @@
 	<target name="reload-zimlets" depends="deploy-zimlets,restart-webserver" description="Reload Zimlets"/>
 	<target name="reload-zimlets-extra" depends="deploy-zimlets-extra,restart-webserver" description="Reload Zimlets Extra"/>
     <target name="reload-zimlets-experimental" depends="deploy-zimlets-experimental,restart-webserver" description="Reload Zimlets Experimental"/>
+
+   <target name="package-converse-zimlet" depends="build-init,compile">
+            <foreach list="${zimlets-converse}" target="package-zimlet" param="zimlet">
+                <param name="tempdir" value="${generated.dir}/zimlets" />
+                <param name="destdir" value="${dist.zimlet.dir}" />
+                <param name="zimlet.version" value="${zimlet.version}" />
+                <param name="TS" value="${TS}" />
+            </foreach>
+    </target>
 
 	<target name="package-zss-zimlet" depends="build-init,compile">
 			<foreach list="${zimlets-zss}" target="package-zimlet" param="zimlet">

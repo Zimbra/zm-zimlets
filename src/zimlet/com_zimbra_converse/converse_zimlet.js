@@ -16,10 +16,8 @@ ConverseZimlet.prototype.init = function () {
 	this._makeSpaceForConverseBar();
 	//get pre-bind credentials
 	var jsonObj = {GetBOSHSessionRequest:{_jsns:"urn:zimbraMail"}};
-	var callback = new AjxCallback(this, this._getSessionCallack);
-	appCtxt.getAppController().sendRequest({jsonObj:jsonObj, asyncMode:true, errorCallback:callback, callback:callback});
+	appCtxt.getAppController().sendRequest({jsonObj:jsonObj, asyncMode:true, errorCallback:this._getSessionErrorCallack.bind(this), callback:this._getSessionCallack.bind(this)});
 };
-
 
 ConverseZimlet.prototype._getSessionCallack = function(response) {
 	var resp = response.getResponse();
@@ -32,7 +30,7 @@ ConverseZimlet.prototype._getSessionCallack = function(response) {
 	require(['converse'], function (converse) {
 		converse.initialize({
 			prebind: true,
-			bosh_service_url: url,
+			bosh_service_url: "/http-bind/",
 			show_controlbox_by_default:true,
 			jid: jid,
 			sid: sid,
@@ -41,6 +39,10 @@ ConverseZimlet.prototype._getSessionCallack = function(response) {
 	});
 }
 
+ConverseZimlet.prototype._getSessionErrorCallack = function() {
+	appCtxt.getAppController().setStatusMsg(this.getMessage("prebind_error"), ZmStatusView.LEVEL_WARNING);
+	return true;
+}
 define("jquery", [], function () { return jQuery; });
 
 /**
