@@ -353,6 +353,7 @@ function(attachmentId, part, name) {
 	var self = appCtxt._zimletMgr.getZimletByName('com_zimbra_zss').handlerObject;
  	
  	if(self.folderChooserDialog){
+		self.folderChooserDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(self, self._useSelectedVaultContainer, attachment));
 		self.folderExplorer.reload();
 		self.folderChooserDialog.popup();
 		return;
