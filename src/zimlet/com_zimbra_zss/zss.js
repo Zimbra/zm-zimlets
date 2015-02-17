@@ -51,7 +51,7 @@ ZssZimlet.prototype.init = function(){
 		genericFailureMsg: this.getMessage('genericFailure')
 	};
 	
-
+	this._viewIdToZssHeaderMap = {};
 	// Add Save Attachment to Vault options in email
 	if (appCtxt.get(ZmSetting.MAIL_ENABLED)) {
 		AjxPackage.require({name:"MailCore", callback:new AjxCallback(this, this.addAttachmentHandler)});
@@ -222,20 +222,23 @@ function(files, addFilesAsSecureLink) {
 ZssZimlet.prototype.addGeneratedLinksToMsgMetadata = 
 function(files, addFilesAsSecureLink) {
 	//hang an object off of this view so that when a draft is saved or the message is sent, we can add ZSS URLs to custom mime headers
-	var view = appCtxt.getCurrentView();
-	view.__needToAddZSSHeaders = true;
-	if(!view.__zss_metadata) {
-		view.__zss_metadata = {secureFiles:[],publicFiles:[]};
-	}
+	var currentViewId = appCtxt.getCurrentViewId();
+	var attachmentHeader = this._viewIdToZssHeaderMap[currentViewId] || 
+							{	
+								_needToAddZSSHeaders: true,
+								_zss_metadata : {secureFiles: [], publicFiles: []}
+							}; 
+
 	for(var i = 0, len = files.length; i < len; i++) {
 		if(files[i] && files[i].path && files[i].content && files[i].content.file && files[i].content.file.name) {
-			if( addFilesAsSecureLink ) {
-				view.__zss_metadata.secureFiles.push(files[i].path);
+			if ( addFilesAsSecureLink ) {
+				attachmentHeader._zss_metadata.secureFiles.push(files[i].path);
 			} else {
-				view.__zss_metadata.publicFiles.push(files[i].path);
+				attachmentHeader._zss_metadata.publicFiles.push(files[i].path);
 			}
 		}
 	}
+	this._viewIdToZssHeaderMap[currentViewId] = attachmentHeader;
 }
 
 // send file details to the server to download it and create an attachmentId.
@@ -439,24 +442,36 @@ function(error) {
  */
 ZssZimlet.prototype.addCustomMimeHeaders =
 function(customMimeHeaders) {
-	var view = appCtxt.getCurrentView();
-	if(view.__needToAddZSSHeaders) {
-		if(!view.__presendHeaderAdded) {
-			customMimeHeaders.push({name:"X-Zimbra-Presend", _content:"zss"});
-			view.__presendHeaderAdded = true;
-		}
-		if(view.__zss_metadata.secureFiles) {
-			for(var i = 0; i < view.__zss_metadata.secureFiles.length; i++) {
-				customMimeHeaders.push({name:"X-ZSS-SecureFile", _content:view.__zss_metadata.secureFiles[i]});
-			}
-		}
-		if(view.__zss_metadata.publicFiles) {
-			for(var i = 0; i < view.__zss_metadata.publicFiles.length; i++) {
-				customMimeHeaders.push({name:"X-ZSS-PublicFile", _content:view.__zss_metadata.publicFiles[i]});
-			}
-		}
+	var viewRefId,
+		headerContents,
+		undoSendInstance = appCtxt._zimletMgr.getZimletByName('com_zimbra_undosend');
+
+	if (undoSendInstance) {
+		//Check if the undosend zimlet has triggered the send message operation, if yes, then fetch the viewId from undosend zimlet (stored as _sendMailComposeViewId on send)
+		viewRefId = undoSendInstance.handlerObject._sendMailViewId;
+		headerContents = viewRefId ? this._viewIdToZssHeaderMap[viewRefId] : null;
 	}
-	//reset
-	view.__needToAddZSSHeaders = false;
-	view.__zss_metadata = {secureFiles:[],publicFiles:[]};
+	//If the undosend zimlet is not responsible for the message send operation then get the current View id.
+	if (!headerContents) {
+		viewRefId = appCtxt.getCurrentViewId();
+		headerContents = this._viewIdToZssHeaderMap[viewRefId];
+	}
+
+	if (headerContents && headerContents._needToAddZSSHeaders) {
+		if (!headerContents.__presendHeaderAdded) {
+			customMimeHeaders.push({name:"X-Zimbra-Presend", _content:"zss"});
+			headerContents.__presendHeaderAdded = true;
+		}
+		if (headerContents._zss_metadata.secureFiles) {
+			for(var i = 0; i < headerContents._zss_metadata.secureFiles.length; i++) {
+				customMimeHeaders.push({name:"X-ZSS-SecureFile", _content:headerContents._zss_metadata.secureFiles[i]});
+			}
+		}
+		if (headerContents._zss_metadata.publicFiles) {
+			for(var i = 0; i < headerContents._zss_metadata.publicFiles.length; i++) {
+				customMimeHeaders.push({name:"X-ZSS-PublicFile", _content:headerContents._zss_metadata.publicFiles[i]});
+			}
+		}
+		delete this._viewIdToZssHeaderMap[viewRefId];
+	}
 };
