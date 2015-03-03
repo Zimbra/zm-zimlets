@@ -382,7 +382,7 @@ function(attachmentId, part, name) {
 		self.folderExplorer = new com_zimbra_zss_Explorer({
 			rootContainer : self.dialogFolderView,
 			vaultPath: self.vaultPath,
-			dialog: self.dialog,
+			dialog: self.folderChooserDialog,
 			isFolderExplorer: true,
 			noFilesMsg: self.messages.noFilesFound,
 			fetchingContentMsg: self.messages.fetchingContentMsg,
