@@ -23,6 +23,7 @@ function com_zimbra_zss_Explorer(initObj) {
 	this.mezeoCache = {};
 
 	this.loadRootContainer();
+	this.parentDialog.setButtonEnabled(DwtDialog.OK_BUTTON, false);
 }
 
 com_zimbra_zss_Explorer.prototype._initUI = 
@@ -369,10 +370,11 @@ com_zimbra_zss_Explorer.prototype.onSelectItem = function(file,selected){
 		for(var i = 0, len = this.selectedItems.length; i < len; i++) {
 			if(this.selectedItems[i].path === file.path) {
 				this.selectedItems.splice(i,1);
-				return;
+				break;
 			}
 		}
 	}
+	this.parentDialog.setButtonEnabled(DwtDialog.OK_BUTTON, this.selectedItems.length > 0);
 }
 
 com_zimbra_zss_Explorer.prototype.getSelection = function(){
@@ -391,6 +393,7 @@ com_zimbra_zss_Explorer.prototype.clearSelection = function(){
 		this.selectedItems[i].self.setChecked(false);
 	}
 	this.selectedItems = [];
+	this.parentDialog.setButtonEnabled(DwtDialog.OK_BUTTON, false);
 }
 
 
