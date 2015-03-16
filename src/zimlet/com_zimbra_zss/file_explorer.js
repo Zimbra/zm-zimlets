@@ -148,25 +148,29 @@ com_zimbra_zss_Explorer.prototype.loadRootContainer = function() {
 
 com_zimbra_zss_Explorer.prototype._fileTreeViewListener  = function(ev){
 	var selectedItem = ev.item;
-	var data = selectedItem.getData(this.dataKey);
+	if (selectedItem) {
+		var data = selectedItem.getData(this.dataKey);
 
-	if(ev.detail === DwtTree.ITEM_CHECKED) {
-		this.onSelectItem(data, selectedItem.getChecked());
+		if(ev.detail === DwtTree.ITEM_CHECKED) {
+			this.onSelectItem(data, selectedItem.getChecked());
+		}
 	}
 }
 
 com_zimbra_zss_Explorer.prototype._folderTreeViewListener  = function(ev){
 	var selectedItem = ev.item;
-	var data = selectedItem.getData(this.dataKey);
+	if (selectedItem) {
+		var data = selectedItem.getData(this.dataKey);
 
-	if(ev.detail === DwtTree.ITEM_SELECTED ) {
-		if(this.isFolderExplorer) {
-			this.onSelectItem(data, true);
+		if(ev.detail === DwtTree.ITEM_SELECTED ) {
+			if(this.isFolderExplorer) {
+				this.onSelectItem(data, true);
+			}
+			this.getContainerContents(data.path, selectedItem);
 		}
-		this.getContainerContents(data.path, selectedItem);
-	}
-	else if(ev.detail === DwtTree.ITEM_EXPANDED){
-		selectedItem.setExpanded(true,false,false);
+		else if(ev.detail === DwtTree.ITEM_EXPANDED){
+			selectedItem.setExpanded(true,false,false);
+		}
 	}
 };
 
