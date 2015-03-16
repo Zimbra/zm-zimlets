@@ -67,27 +67,31 @@ function() {
 Com_Zimbra_SForceSearchDlg.prototype._searchDlgOkBtnListner =
 function() {
 	var someRadioSelected = false;
-	for(var i =0; i < this.searchResultRadioIds.length; i++) {
-		var id = this.searchResultRadioIds[i].id;
-		var name = this.searchResultRadioIds[i].name;
-		if(document.getElementById(id).checked) {
-			someRadioSelected = true;
-			if(this.updateSelectMenu) {
-				this._updateSelectmenu(name, id);
-				break;
-			} else {
-				document.getElementById(this.targetDivId).innerHTML =  name;
-				this.resultObjId = id;//store id in resultObjId variable
-				document.getElementById(this.targetDivId).refObjIdValue = id;//set custom parameter
-				document.getElementById(this.clearLinkId).style.display = "block";
-				break;
+	var targetDiv = document.getElementById(this.targetDivId);
+	if(this.searchResultRadioIds && this.searchResultRadioIds.length){
+		for(var i =0; i < this.searchResultRadioIds.length; i++) {
+			var id = this.searchResultRadioIds[i].id;
+			var name = this.searchResultRadioIds[i].name;
+			if(document.getElementById(id).checked) {
+				someRadioSelected = true;
+				if(this.updateSelectMenu) {
+					this._updateSelectmenu(name, id);
+					break;
+				} else {
+					targetDiv.innerHTML =  name;
+					this.resultObjId = id;//store id in resultObjId variable
+					targetDiv.refObjIdValue = id;//set custom parameter
+					document.getElementById(this.clearLinkId).style.display = "block";
+					break;
+				}
 			}
 		}
 	}
-	if(!someRadioSelected) {
-		document.getElementById(this.targetDivId).innerHTML =  "";
+	
+	if(!someRadioSelected && targetDiv) {
+		targetDiv.innerHTML =  "";
 		this.resultObjId = "";//store id in resultObjId variable
-		document.getElementById(this.targetDivId).refObjIdValue = "";//set custom parameter
+		targetDiv.refObjIdValue = "";//set custom parameter
 		document.getElementById(this.clearLinkId).style.display = "none";
 	}	
 	this.updateSelectMenu = false;//reset
