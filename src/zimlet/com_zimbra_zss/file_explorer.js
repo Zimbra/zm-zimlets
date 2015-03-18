@@ -23,6 +23,7 @@ function com_zimbra_zss_Explorer(initObj) {
 	this.mezeoCache = {};
 
 	this.loadRootContainer();
+	this.formatter = new AjxDateFormat("MMM dd yyyy h:mm a");
 	this.parentDialog.setButtonEnabled(DwtDialog.OK_BUTTON, false);
 }
 
@@ -331,7 +332,6 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 				this._addGhostFile();
 				this._showNoFilesFoundMessage();				
 			}
-
 			parent.setExpanded(true,false,false);
 		}
 	}
@@ -354,10 +354,10 @@ com_zimbra_zss_Explorer.prototype._clearTreeItems = function(parent){
 com_zimbra_zss_Explorer.prototype._createFileHtml = function(file) {
 	var html = [],
 		i = 0;
- 	
+
  	html[i++] = "<div class='zss-file-name'>" + file.name +"</div>";
  	html[i++] = "<div class='zss-file-details'>";
- 	html[i++] = "<span class='zss-file-size'>" + AjxUtil.formatSize(file.bytes, true, null) +"</span>";
+ 	html[i++] = "<span class='zss-file-size'>" + this.formatter.format(new Date(file.created * 1000)) + "</span>";
  	html[i++] = "</div>";
 
  	return html.join("");
