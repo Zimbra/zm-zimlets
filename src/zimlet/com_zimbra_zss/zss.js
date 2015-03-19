@@ -9,27 +9,6 @@ com_zimbra_zss_HandlerObject.prototype.constructor = com_zimbra_zss_HandlerObjec
 
 
 var ZssZimlet = com_zimbra_zss_HandlerObject;
-ZssZimlet.prototype.icons = (function(){
-	var documentIcon = "service/zimlet/com_zimbra_zss/img/document_48.png",
-		genericDocIcon = "service/zimlet/com_zimbra_zss/img/generic_48.png";	
-	return {
-		Doc: documentIcon,
-		MSWordDoc: documentIcon,
-		ExeDoc: "service/zimlet/com_zimbra_zss/img/system_48.png",
-		GenericDoc: genericDocIcon,
-		MSVisioDoc: genericDocIcon,
-		MessageDoc: genericDocIcon,
-		MSProjectDoc: genericDocIcon,
-		UnknownDoc: genericDocIcon,
-		ImageDoc: "service/zimlet/com_zimbra_zss/img/image_media_48.png",
-		AudioDoc: "service/zimlet/com_zimbra_zss/img/audio_media_48.png",
-		MSPowerpointDoc: "service/zimlet/com_zimbra_zss/img/presentation_48.png",
-		HtmlDoc: "service/zimlet/com_zimbra_zss/img/programming_48.png",
-		VideoDoc: "service/zimlet/com_zimbra_zss/img/video_media_48.png",
-		MSExcelDoc: "service/zimlet/com_zimbra_zss/spreadsheet_48.png",
-		ZipDoc: "service/zimlet/com_zimbra_zss/img/archive_48.png"
-	}
-}());
 
 ZssZimlet.prototype.init = function(){
 	this.vaultPath = this.getUserProperty("zss_url");
@@ -171,7 +150,10 @@ function(files, addFilesAsSecureLink) {
 		}
 		if (files.length) {
 			var ed = editor.getEditor();
+			var origPasteImageFlag = ed.settings.paste_data_images;
+			ed.settings.paste_data_images = true;
 			ed.execCommand('mceInsertRawHTML', false, html, {skip_undo : 1});
+			ed.settings.paste_data_images = origPasteImageFlag;
 		}
 	} else {
 		var textArea = document.getElementById(editor.getEditor().id);
@@ -207,11 +189,11 @@ function(files, addFilesAsSecureLink) {
 		var fileName = file.content.file.name;
 		var filePath = file.content.file.content.uri;
 		var fileTypeInfo = ZmMimeTable.getInfo(file.content.file.mime_type);
-		var fileIcon = self.icons[fileTypeInfo.image];
+		var fileIcon = fileTypeInfo.dataUri;
 		// var fileIcon = self.getFileTypeIcon(file.content.file.name);
 
 		return '<a href="' + filePath + '/inline/" target="_blank" title="' + fileName + '"'
-				+ ' style="padding: 10px 0px; margin-right: 10px; color: rgb(0, 90, 149); display: inline-block; margin-left: 10px; font-family: arial; font-style: normal; font-weight: normal; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); text-align: center; max-width: 105px; text-decoration: none; background-color: rgb(245, 245, 245);">'
+				+ ' style="padding: 10px 0px; margin-right: 10px; color: rgb(0, 90, 149); display: inline-block; margin-left: 10px; font-family: arial; font-style: normal; font-weight: normal; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); text-align: center; max-width: 105px; text-decoration: none; background-color: rgb(245, 245, 245); word-break: break-all; word-wrap: break-word;">'
 				+ '<img style="margin:0 20px 7px; border:none;" height="64" src="' + fileIcon + '"/>'
 				+ fileName
 				+ '</a>';
