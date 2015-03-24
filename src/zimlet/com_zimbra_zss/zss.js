@@ -193,7 +193,7 @@ function(files, addFilesAsSecureLink) {
 		// var fileIcon = self.getFileTypeIcon(file.content.file.name);
 
 		return '<a href="' + filePath + '/inline/" target="_blank" title="' + fileName + '"'
-				+ ' style="padding: 10px 0px; margin-right: 10px; color: rgb(0, 90, 149); display: inline-block; margin-left: 10px; font-family: arial; font-style: normal; font-weight: normal; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); text-align: center; max-width: 105px; text-decoration: none; background-color: rgb(245, 245, 245); word-break: break-all; word-wrap: break-word;">'
+				+ ' style="padding: 10px 0px; margin-right: 10px; color: rgb(0, 90, 149); display: inline-block; margin-left: 10px; font-family: arial; font-style: normal; font-weight: normal; font-size: 13px; cursor: default; border: 1px solid rgb(221, 221, 221); text-align: center; max-width: 105px; text-decoration: underline; background-color: rgb(245, 245, 245); word-break: break-all; word-wrap: break-word;">'
 				+ '<img style="margin:0 20px 7px; border:none;" height="64" src="' + fileIcon + '"/>'
 				+ fileName
 				+ '</a>';
