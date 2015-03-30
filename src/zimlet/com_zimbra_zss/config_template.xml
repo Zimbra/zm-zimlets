@@ -20,6 +20,6 @@
 -->
 <zimletConfig name="com_zimbra_zss" version="1.0">
     <global>
-        <property name="allowedDomains">mezeodev1.zimbra.com</property>
+        <property name="allowedDomains">fileshare.zimbra.com</property>
     </global>
 </zimletConfig>
