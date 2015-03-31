@@ -153,8 +153,18 @@ com_zimbra_zss_Explorer.prototype._fileTreeViewListener  = function(ev){
 		var data = selectedItem.getData(this.dataKey);
 
 		if(ev.detail === DwtTree.ITEM_CHECKED) {
+			this._markItem(selectedItem);
 			this.onSelectItem(data, selectedItem.getChecked());
 		}
+	}
+}
+
+com_zimbra_zss_Explorer.prototype._markItem = function(item) {
+	if (item.getChecked()) {
+		item.addClassName('zss-file-selected');
+	}
+	else {
+		item.delClassName('zss-file-selected');	
 	}
 }
 
@@ -324,6 +334,7 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 						isSelected: this._isFileSelected(content.file.uri)
 					}, this.fileExplorer);
 					item.enableSelection(false);
+					this._markItem(item);
 				}
 			}
 			//Show No files found
