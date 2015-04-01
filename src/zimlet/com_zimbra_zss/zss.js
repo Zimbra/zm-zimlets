@@ -457,8 +457,3 @@ function(customMimeHeaders) {
 		delete this._viewIdToZssHeaderMap[viewRefId];
 	}
 };
-
-ZssZimlet.prototype.onSendMsgSuccess = function(controller, msg) {
-	console.log(controller);
-	console.log(msg);
-}
