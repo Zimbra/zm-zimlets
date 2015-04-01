@@ -322,7 +322,7 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 					}, parent);
 				}
 				if(content.file){
-					var fileTypeInfo = ZmMimeTable.getInfo(content.file.mime_type);
+					var fileTypeInfo = ZmMimeTable.getInfo(content.file.mime_type, true);
 
 					var item = this._addTreeItem({
 						className: "zss-file DwtTreeItem",
@@ -366,7 +366,7 @@ com_zimbra_zss_Explorer.prototype._createFileHtml = function(file) {
 	var html = [],
 		i = 0;
 
- 	html[i++] = "<div class='zss-file-name'>" + file.name +"</div>";
+ 	html[i++] = "<div class='zss-file-name'>" + AjxStringUtil.htmlEncode(file.name) +"</div>";
  	html[i++] = "<div class='zss-file-details'>";
  	html[i++] = "<span class='zss-file-size'>" + this.formatter.format(new Date(file.created * 1000)) + "</span>";
  	html[i++] = "</div>";

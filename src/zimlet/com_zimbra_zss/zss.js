@@ -186,9 +186,9 @@ function(files, addFilesAsSecureLink) {
 	
 	function generateHTML(file){
 		var thumbnail = file.content.file.thumbnail.uri;
-		var fileName = file.content.file.name;
+		var fileName = AjxStringUtil.htmlEncode(file.content.file.name);
 		var filePath = file.content.file.content.uri;
-		var fileTypeInfo = ZmMimeTable.getInfo(file.content.file.mime_type);
+		var fileTypeInfo = ZmMimeTable.getInfo(file.content.file.mime_type, true);
 		var fileIcon = fileTypeInfo.dataUri;
 		// var fileIcon = self.getFileTypeIcon(file.content.file.name);
 
@@ -457,3 +457,8 @@ function(customMimeHeaders) {
 		delete this._viewIdToZssHeaderMap[viewRefId];
 	}
 };
+
+ZssZimlet.prototype.onSendMsgSuccess = function(controller, msg) {
+	console.log(controller);
+	console.log(msg);
+}
