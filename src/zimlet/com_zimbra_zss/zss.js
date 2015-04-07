@@ -1,3 +1,31 @@
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Zimbra Collaboration Suite Zimlets
+ * Copyright (C) 2014, 2015 Zimbra, Inc.
+ * 
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at: http://www.zimbra.com/license
+ * The License is based on the Mozilla Public License Version 1.1 but Sections 14 and 15 
+ * have been added to cover use of software over a computer network and provide for limited attribution 
+ * for the Original Developer. In addition, Exhibit A has been modified to be consistent with Exhibit B. 
+ * 
+ * Software distributed under the License is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing rights and limitations under the License. 
+ * The Original Code is Zimbra Open Source Web Client. 
+ * The Initial Developer of the Original Code is Zimbra, Inc. 
+ * All portions of the code are Copyright (C) 2014, 2015 Zimbra, Inc. All Rights Reserved. 
+ * ***** END LICENSE BLOCK *****
+ */
+
+/**
+ * Extends the mail client fuctionality to allow the user to insert links to sync and share files into a message body and 
+ * save attachments to a sync znd share folder.
+ *
+ * REQUIRES: AjxStringUtil, AjxCallback, AjxListener, AjxPackage, AjxMsg, AjxDispatcher, AjxMessageFormat
+ */
+
 //Zimlet Class
 function com_zimbra_zss_HandlerObject() {
 	
@@ -27,7 +55,8 @@ ZssZimlet.prototype.init = function(){
 		unprovisionedAccountMsg: this.getMessage('unprovisionedAccount'),
 		serviceUnavailableMsg: this.getMessage('serviceUnavailable'),
 		serviceTimedOutMsg: this.getMessage('serviceTimedOut'),
-		genericFailureMsg: this.getMessage('genericFailure')
+		genericFailureMsg: this.getMessage('genericFailure'),
+		duplicateFileMessage: this.getMessage('duplicateFileMessage')
 	};
 	
 	this._viewIdToZssHeaderMap = {};
@@ -340,6 +369,7 @@ function(attachmentId, part, name) {
  	if(self.folderChooserDialog){
 		self.folderChooserDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(self, self._useSelectedVaultContainer, attachment));
 		self.folderExplorer.reload();
+		self.folderExplorer.setAttachmentToBeSaved(attachment);
 		self.folderChooserDialog.popup();
 		return;
 	}	
@@ -374,13 +404,30 @@ function(attachmentId, part, name) {
 			genericFailureMsg: self.messages.genericFailureMsg
 		});
 	}
+
+	self.folderExplorer.setAttachmentToBeSaved(attachment);
 	self.folderChooserDialog.popup();
 };
 
 ZssZimlet.prototype._useSelectedVaultContainer =
 function(attachment) {
-	this.folderChooserDialog.popdown();
 	var selectedContainer = this.folderExplorer.getSelection();
+
+	if (this.folderExplorer.selectedFolderHasDuplicateFile) {
+		var confirmDialog = appCtxt.getConfirmationDialog();
+		var msg = AjxMessageFormat.format(this.messages.duplicateFileMessage,[attachment.name, selectedContainer[0].content.container.name]);
+		var callback = this._saveAttachmentToVault.bind(this, selectedContainer, attachment);
+		confirmDialog.popup(msg, callback);
+	}
+	else {
+		this._saveAttachmentToVault(selectedContainer, attachment)
+	}
+	
+};
+
+ZssZimlet.prototype._saveAttachmentToVault =
+function(selectedContainer, attachment) {
+	this.folderChooserDialog.popdown();
 	if(selectedContainer.length) {
 		// Send the details to the server to save the attachment to the selected vault container.
 		var jsonObj = {SaveAttachmentToMezeoRequest: {"_jsns": "urn:zimbraMail"}};
