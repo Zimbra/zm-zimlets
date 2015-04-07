@@ -1,3 +1,32 @@
+/*
+ * ***** BEGIN LICENSE BLOCK *****
+ * Zimbra Collaboration Suite Zimlets
+ * Copyright (C) 2014, 2015 Zimbra, Inc.
+ * 
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at: http://www.zimbra.com/license
+ * The License is based on the Mozilla Public License Version 1.1 but Sections 14 and 15 
+ * have been added to cover use of software over a computer network and provide for limited attribution 
+ * for the Original Developer. In addition, Exhibit A has been modified to be consistent with Exhibit B. 
+ * 
+ * Software distributed under the License is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing rights and limitations under the License. 
+ * The Original Code is Zimbra Open Source Web Client. 
+ * The Initial Developer of the Original Code is Zimbra, Inc. 
+ * All portions of the code are Copyright (C) 2014, 2015 Zimbra, Inc. All Rights Reserved. 
+ * ***** END LICENSE BLOCK *****
+ */
+
+/**
+ * Provides file/folder browser for sync and share. Allows user to select folder for saving attachments and 
+ * also allows selection of files to be inserted as links in message body.
+ * 
+ * REQUIRES: AjxStringUtil, AjxCallback, AjxListener, AjxRpc, AjxDateFormat
+ */
+
+
 function com_zimbra_zss_Explorer(initObj) {
 	this.rootContainer = initObj.rootContainer;
 	this.isFolderExplorer = initObj.isFolderExplorer;
@@ -292,8 +321,11 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 
 	var parent = extraData.parent,
 		refetched = extraData.refetched;
+	
+	this.selectedFolderHasDuplicateFile = false;
+	
 	this._clearTreeItems(this.fileExplorer);
-	// this._clearTreeItems(parent);
+
 	var mezeoContainer, filesTree;
 	var contentsJson =  JSON.parse(contents.text);
 
@@ -335,6 +367,12 @@ com_zimbra_zss_Explorer.prototype._handleGetContainerContents = function(extraDa
 					}, this.fileExplorer);
 					item.enableSelection(false);
 					this._markItem(item);
+
+					if (this.isFolderExplorer) {
+						if (content.file.name.toLowerCase() === this.attachmentToBeSaved.name.toLowerCase()) {
+							this.selectedFolderHasDuplicateFile = true;
+						}	
+					}
 				}
 			}
 			//Show No files found
@@ -392,6 +430,13 @@ com_zimbra_zss_Explorer.prototype.onSelectItem = function(file,selected){
 	this.parentDialog.setButtonEnabled(DwtDialog.OK_BUTTON, this.selectedItems.length > 0);
 }
 
+
+
+com_zimbra_zss_Explorer.prototype.setAttachmentToBeSaved = function(attachment) {
+	this.attachmentToBeSaved = attachment;
+}
+
+
 com_zimbra_zss_Explorer.prototype.getSelection = function(){
 	// var selectedFiles = this.fileExplorer.getSelection();
 	return this.selectedItems;
@@ -400,6 +445,10 @@ com_zimbra_zss_Explorer.prototype.getSelection = function(){
 com_zimbra_zss_Explorer.prototype.reload = function(){
 	this.clearSelection();
 	this._refreshFolders();
+
+	if (this.isFolderExplorer) {
+		this.selectedFolderHasDuplicateFile = false;
+	}
 }
 
 com_zimbra_zss_Explorer.prototype.clearSelection = function(){
