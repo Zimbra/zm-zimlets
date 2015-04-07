@@ -455,8 +455,12 @@ function(imgUrl) {
 	div.height = div.style.height = UnknownPersonSlide.HEIGHT;
 
 	var img = new Image();
-    img.src = imgUrl;
 	img.onload = AjxCallback.simpleClosure(this._handleImageLoad, this, img);
+	img.onerror = function() {
+		this.onerror = null;
+		this.src = ZmZimbraMail.DEFAULT_CONTACT_ICON;
+	};
+	img.src = imgUrl;
 	var timeoutCallback = new AjxCallback(this, this._handleImgLoadFailure);
 	this.emailZimlet.showLoadingAtId(timeoutCallback, UnknownPersonSlide.PHOTO_PARENT_ID);
 };
