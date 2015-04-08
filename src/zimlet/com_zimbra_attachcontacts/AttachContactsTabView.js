@@ -351,8 +351,7 @@ function(items) {
 			var rowClass = (isRowOdd) ? "RowOdd AttachContactRow" : "RowEven AttachContactRow";
 			isRowOdd = !isRowOdd;
 
-			var primary = [contact.getAttr(ZmContact.F_firstName), contact.getAttr(ZmContact.F_middleName), contact.getAttr(ZmContact.F_lastName), contact.getAttr(ZmContact.F_company) ? "("+contact.getAttr(ZmContact.F_company)+")" : null];
-			var name = AjxUtil.collapseList(primary).join(" ") || ZmContact.computeFileAs(contact);
+			var name = ZmContact.computeFileAs(contact);
 
 			var fields;
 
