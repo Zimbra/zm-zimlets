@@ -412,17 +412,18 @@ function(attachmentId, part, name) {
 ZssZimlet.prototype._useSelectedVaultContainer =
 function(attachment) {
 	var selectedContainer = this.folderExplorer.getSelection();
-
-	if (this.folderExplorer.selectedFolderHasDuplicateFile) {
-		var confirmDialog = appCtxt.getConfirmationDialog();
-		var msg = AjxMessageFormat.format(this.messages.duplicateFileMessage,[attachment.name, selectedContainer[0].content.container.name]);
-		var callback = this._saveAttachmentToVault.bind(this, selectedContainer, attachment);
-		confirmDialog.popup(msg, callback);
-	}
-	else {
-		this._saveAttachmentToVault(selectedContainer, attachment)
-	}
-	
+	if (selectedContainer.length) {
+		if (this.folderExplorer.selectedFolderHasDuplicateFile) {
+			var confirmDialog = appCtxt.getConfirmationDialog();
+			var containerName = selectedContainer[0].content.name || selectedContainer[0].content.container.name;
+			var msg = AjxMessageFormat.format(this.messages.duplicateFileMessage,[attachment.name, containerName]);
+			var callback = this._saveAttachmentToVault.bind(this, selectedContainer, attachment);
+			confirmDialog.popup(msg, callback);
+		}
+		else {
+			this._saveAttachmentToVault(selectedContainer, attachment)
+		}
+	}	
 };
 
 ZssZimlet.prototype._saveAttachmentToVault =
