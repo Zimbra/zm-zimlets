@@ -150,7 +150,7 @@
 	</target>
 
 	<target name="jar" depends="compile">
-		<jar destfile="${dist.lib.dir}/zimbrataglib.jar" basedir="${build.classes.dir}" excludes="**/zimlet/**" />
+		<jar destfile="${dist.lib.dir}/zimlettaglib.jar" basedir="${build.classes.dir}" excludes="**/zimlet/**" />
 	</target>
 
 	<target name="reload-zimlets" depends="deploy-zimlets,restart-webserver" description="Reload Zimlets"/>
