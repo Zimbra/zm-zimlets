@@ -488,10 +488,7 @@ function(customMimeHeaders) {
 	}
 
 	if (headerContents && headerContents._needToAddZSSHeaders) {
-		if (!headerContents.__presendHeaderAdded) {
-			customMimeHeaders.push({name:"X-Zimbra-Presend", _content:"zss"});
-			headerContents.__presendHeaderAdded = true;
-		}
+		customMimeHeaders.push({name:"X-Zimbra-Presend", _content:"zss"});
 		if (headerContents._zss_metadata.secureFiles) {
 			for(var i = 0; i < headerContents._zss_metadata.secureFiles.length; i++) {
 				customMimeHeaders.push({name:"X-ZSS-SecureFile", _content:headerContents._zss_metadata.secureFiles[i]});
@@ -502,6 +499,12 @@ function(customMimeHeaders) {
 				customMimeHeaders.push({name:"X-ZSS-PublicFile", _content:headerContents._zss_metadata.publicFiles[i]});
 			}
 		}
-		delete this._viewIdToZssHeaderMap[viewRefId];
 	}
 };
+
+ZssZimlet.prototype.onSendMsgSuccess = function(controller, msg, draftType) {
+	if ((draftType && draftType === ZmComposeController.DRAFT_TYPE_NONE) 
+		|| (!msg.flags || msg.flags.indexOf('d') === -1)) {
+		delete this._viewIdToZssHeaderMap[controller.viewId];
+	}
+}
