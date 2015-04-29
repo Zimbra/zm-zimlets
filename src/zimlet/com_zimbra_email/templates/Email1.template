@@ -30,8 +30,4 @@
 	<$ if (data.address) { $>
 		<div><label><$= AjxStringUtil.htmlEncode(data.address) $> (<$= ZmMsg.work $>)</label></div>
 	<$ } $>
-    <$ if (data.imURI) { $>
-       <div><label> <$= data.imURI $> (<$= ZmMsg.imShort $>)</label></div>
-    <$ } $>
-
 </template>

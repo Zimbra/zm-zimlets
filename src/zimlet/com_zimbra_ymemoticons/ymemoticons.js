@@ -120,22 +120,6 @@ function(html, idx, obj, spanId, context) {
 	return idx;
 };
 
-Com_Zimbra_YMEmoticons.prototype.onNewChatWidget =
-function(widget) {
-	var manager = widget.getObjectManager();
-	manager.addHandler(this);
-	manager.sortHandlers();
-
-	var toolBar = widget.getEditor().getBasicToolBar();
-	var button = new YMEmoticonsPickerButton({parent: toolBar, className: "ZToolbarButton", index: 0});
-	button.dontStealFocus();
-	button.setToolTipContent(ZmMsg.emoticons);
-	button.setData(ZmLiteHtmlEditor._VALUE, ZmLiteHtmlEditor.SMILEY);
-	button.setEmoticon(":)");
-	button.addSelectionListener(new AjxListener(this, this._smileyListener, [widget]));
-	toolBar.addSeparator(null, 1);
-};
-
 Com_Zimbra_YMEmoticons.prototype._smileyListener =
 function(widget, ev){
 	this._composeToolbarSmileyListener(widget.getEditor(), ev);

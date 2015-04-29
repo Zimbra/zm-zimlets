@@ -29,8 +29,6 @@ var EmailTooltipZimlet = com_zimbra_email_handlerObject;
 
 
 // static content
-EmailTooltipZimlet.IM_NEW_IM = "im new im";
-EmailTooltipZimlet.IM_NEW_BUDDY = "im new buddy";
 EmailTooltipZimlet.NEW_FILTER = "__new__";
 EmailTooltipZimlet.MAILTO_RE = /^mailto:[\x27\x22]?([^@?&\x22\x27]+@[^@?&]+\.[^@?&\x22\x27]+)[\x27\x22]?/;
 EmailTooltipZimlet.tooltipWidth = 280;
@@ -40,9 +38,6 @@ EmailTooltipZimlet.prototype.init =
 function() {
 	if (appCtxt.get(ZmSetting.CONTACTS_ENABLED)) {
 		AjxDispatcher.require(["ContactsCore", "Contacts"]);
-		if (appCtxt.get(ZmSetting.IM_ENABLED)) {
-			this._presenceCache = [];
-		}
 	}
 	this._prefDialog = new EmailToolTipPrefDialog(this);
 
@@ -70,65 +65,19 @@ function() {
 	this._prefDialog.popup();
 };
 
-EmailTooltipZimlet.prototype._getRoster =
-function() {
-	if (!this._roster && appCtxt.get(ZmSetting.IM_ENABLED) &&
-		!(!appCtxt.get(ZmSetting.IM_PREF_AUTO_LOGIN) &&
-		  !appCtxt.getApp(ZmApp.IM).hasRoster())) // If not AUTO_LOGIN enabled, don't LOGIN
-	{
-		this._roster = AjxDispatcher.run("GetRoster");
-		var list = this._roster.getRosterItemList();
-		list.addChangeListener(new AjxListener(this, this._rosterChangeListener));
-	}
-	return this._roster;
-};
-
-EmailTooltipZimlet.prototype._rosterChangeListener =
-function(ev) {
-	if (ev.event != ZmEvent.E_MODIFY) { return; }
-
-	var fields = ev.getDetail("fields");
-	var doPresence = ZmRosterItem.F_PRESENCE in fields;
-	if (doPresence) {
-		var buddies = ev.getItems();
-		var hash = {};
-		for (var i = buddies.length; --i >= 0;) {
-			var b = buddies[i];
-			hash[b.getAddress()] = b;
-		}
-		var cache = this._presenceCache;
-		for (var i = cache.length; --i >= 0;) {
-			var el = cache[i];
-			var b = hash[el.im_addr];
-			if (b) {
-				// try to update presence state
-				var img = document.getElementById(el.img_id);
-				if (img && b.getPresence().getShow() == ZmRosterPresence.SHOW_ONLINE) {
-					AjxImg.setImage(img, b.getPresence().getIcon(true), true);
-				} else {
-					// no longer visible, remove from cache?
-					// cache.splice(i, 1);
-					// better not: will fail if we collapse/expand headers
-				}
-			}
-		}
-	}
-};
-
 EmailTooltipZimlet.prototype._getHtmlContent =
 function(html, idx, obj, context, spanId, options) {
 	if (obj instanceof AjxEmailAddress) {
 		var context = window.parentAppCtxt || window.appCtxt;
 		var contactsApp = context.getApp(ZmApp.CONTACTS);
 		var contact = contactsApp && contactsApp.getContactByEmail(obj.address); // contact in cache?
-		var buddy = this._getBuddy(contact, obj.address);
 		if (contactsApp && !contact && contact !== null) {
 			// search for contact
 			var respCallback = new AjxCallback(this, this._handleResponseGetContact, [html, idx, obj, spanId, options]);
 			contactsApp.getContactByEmail(obj.address, respCallback);
 		}
 		// return content for what we have now (may get updated after search)
-		return this._updateHtmlContent(html, idx, obj, contact, buddy, spanId, options);
+		return this._updateHtmlContent(html, idx, obj, contact, spanId, options);
 	} else {
 		html[idx++] = AjxStringUtil.htmlEncode(obj);
 		return idx;
@@ -136,40 +85,14 @@ function(html, idx, obj, context, spanId, options) {
 };
 
 /**
- * Returns content for this object's <span> element based on a contact and/or buddy.
+ * Returns content for this object's <span> element based on a contact.
  * If given a spanId, it will instead replace the content of the <span>, for example,
  * with the results of a search.
  */
 EmailTooltipZimlet.prototype._updateHtmlContent =
-function(html, idx, obj, contact, buddy, spanId, options) {
+function(html, idx, obj, contact, spanId, options) {
 
-	var content;
-	var pres = buddy && buddy.getPresence();
-	if (pres && pres.getShow() == ZmRosterPresence.SHOW_ONLINE) {
-		var pres_id = Dwt.getNextId();
-
-		content = [
-			AjxStringUtil.htmlEncode(buddy.getDisplayName()),
-			AjxImg.getImageHtml(pres.getIcon(true), "display:inline; padding-left:13px", "id=" + pres_id)
-		].join("");
-
-		var params = {
-			contact : contact,
-			buddy   : buddy,
-			im_addr : buddy.getAddress(),
-			img_id  : pres_id
-		};
-		this._presenceCache.push(params);
-
-		if (this._presenceCache.length > 50) {
-			// 50 should be enough.. maybe should be even smaller?
-			this._presenceCache.splice(0, 1);
-		}
-
-		this._getRoster();
-	} else {
-		content = AjxStringUtil.htmlEncode(obj.toString(options && options.shortAddress));
-	}
+	var content = AjxStringUtil.htmlEncode(obj.toString(options && options.shortAddress));
 
 	var span = spanId && document.getElementById(spanId);
 	if (span) {
@@ -183,26 +106,8 @@ function(html, idx, obj, contact, buddy, spanId, options) {
 EmailTooltipZimlet.prototype._handleResponseGetContact =
 function(html, idx, obj, spanId, options, contact) {
 	if (contact) {
-		var buddy = this._getBuddy(contact, obj.address);
-		this._updateHtmlContent(html, idx, obj, contact, buddy, spanId, options);
+		this._updateHtmlContent(html, idx, obj, contact, spanId, options);
 	}
-};
-
-EmailTooltipZimlet.prototype._getBuddy =
-function(contact, address) {
-
-	if (appCtxt.isChildWindow) { return; }
-
-	var buddy;
-	if (appCtxt.get(ZmSetting.IM_ENABLED) && !(!appCtxt.get(ZmSetting.IM_PREF_AUTO_LOGIN) &&
-		!appCtxt.getApp(ZmApp.IM).hasRoster())) {	// If not AUTO_LOGIN enabled, don't LOGIN
-
-		buddy = contact && contact.getBuddy();
-		if (!buddy) {
-			buddy = AjxDispatcher.run("GetRoster").getRosterItem(address);
-		}
-	}
-	return buddy;
 };
 
 EmailTooltipZimlet.prototype.hoverOut =
