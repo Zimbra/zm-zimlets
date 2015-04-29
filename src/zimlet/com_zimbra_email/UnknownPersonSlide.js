@@ -364,7 +364,7 @@ function(attrs) {
 
     var im = attrs["imAddress"] || attrs["imAddress1"]  || attrs["imAddress2"]  || attrs["imAddress3"];
     if (im) {
-        imParts = im.split(":");
+        var imParts = im.split(":");
         if (imParts.length == 2){
 			var imProtocol = imParts[0];
 			im = im.split(":")[1];
