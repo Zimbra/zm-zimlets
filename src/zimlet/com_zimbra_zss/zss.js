@@ -73,6 +73,7 @@ ZssZimlet.prototype.initializeAttachPopup =
 function(menu, controller) {
 	var mi = controller._createAttachMenuItem(menu,this.messages.menuItemTxt,
 			new AjxListener(this, this.showVaultFileChooser));
+	mi.setEnabled(!appCtxt.isWebClientOffline());
 };
 
 
@@ -347,6 +348,10 @@ ZssZimlet.prototype.addAttachmentHandler = function()
 };
 ZssZimlet.prototype.addVaultLink = 
 function(attachment) {
+	if (appCtxt.isWebClientOffline()) {
+		return null;
+	}
+
 	var zimletInstance = appCtxt._zimletMgr.getZimletByName('com_zimbra_zss').handlerObject;
 	var html =
 			"<a href='#' class='AttLink' style='text-decoration:underline;' " +
