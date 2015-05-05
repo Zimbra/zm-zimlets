@@ -31,7 +31,6 @@
     </zimletPanelItem>
 
     <userProperties>
-        <property type="string" name="undeSend_howMuchDelay" value="7"/>
+        <property type="string" name="undoSend_howMuchDelay" value="7"/>
     </userProperties>
 </zimlet>
-
