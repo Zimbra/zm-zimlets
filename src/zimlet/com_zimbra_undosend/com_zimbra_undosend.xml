@@ -19,7 +19,7 @@
  * ***** END LICENSE BLOCK *****
 -->
 <zimlet name="com_zimbra_undosend"
-        version="1.4"
+        version="2.0"
         label="${msg.label}"
         description="${msg.description}"
         target="main compose-window">
