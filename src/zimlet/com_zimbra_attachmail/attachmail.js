@@ -55,6 +55,11 @@ function(contentDiv) {
     }
 };
 
+AttachMailZimlet.prototype.onDisposeComposeController =
+function() {
+	this.AMV._overview._controller.dispose();
+};
+
 AttachMailZimlet.prototype.showAttachmentDialog =
 function() {
 
