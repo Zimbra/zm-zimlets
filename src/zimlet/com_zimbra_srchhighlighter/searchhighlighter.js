@@ -184,7 +184,14 @@ function() {
 		this._regexps = [];
 		try {
 			for (var i = 0; i < words.length; i++) {
-				this._regexps.push(new RegExp(words[i], "ig"));
+				var word = words[i];
+				if (word.startsWith("*")) {
+					word = word.substr(1);
+				}
+				if (word.endsWith("*")) {
+					word = word.substr(0, word.length - 1);
+				}
+				this._regexps.push(new RegExp(word, "ig"));
 			}
 		} catch(e) {
 			appCtxt.getAppController().setStatusMsg([this.getMessage("SearchHighlighterZimlet_ZimletError"), " ", e].join(""), ZmStatusView.LEVEL_WARNING);
