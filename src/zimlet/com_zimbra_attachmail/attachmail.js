@@ -372,6 +372,7 @@ AttachMailTabView.prototype.processDocsResponse =
 function(params) {
 	var msgs = params.searchResponse.m;
 	var mailList = new ZmMailList(ZmItem.MSG, this._currentSearch);
+	mailList.clear();
 	mailList.setHasMore(params.searchResponse.more);
 	if (msgs == undefined)
 		return mailList;
@@ -460,7 +461,6 @@ function(attachmentDlg, msgIds) {
     attachmentDlg.popdown();
 };
 
-
 /**
  * Shows the attach mail tree view.
  * 
@@ -513,6 +513,7 @@ function(params) {
 		overview =  opc.createOverview(ovParams);
 		overview.account = this.prevAccount;    //need to set account here before set overview so that account switch from selection list will be used to get tree data.
 		overview.set(params.treeIds);
+		overview.clearChangeListener(params.treeIds);
 	} else if (params.account) {
 		overview.account = params.account;
 	}
@@ -599,6 +600,7 @@ function(query, forward) {
 ZmAttachMailController = function(view) {
 	if (arguments.length == 0) { return; }
 	ZmListController.call(this, null, null);
+	this.clearChangeListener();
 	this._currentViewId = "ZmAttachMailListView";
 	this._view = {};
 	this._view[this._currentViewId] = view;
@@ -613,6 +615,17 @@ function() {
 	// override to avoid js expn although we do not have a toolbar per se
 };
 
+ZmAttachMailController.prototype.clearChangeListener = function() {
+	// remove listener for the tag list
+	if (this._boundTagChangeListener) {
+		var tagTree = appCtxt.getTagTree();
+		if (tagTree) {
+			tagTree.removeChangeListener(this._boundTagChangeListener);
+		}
+	}
+};
+
+
 /**
  * @class
  * The attach mail list view.
@@ -622,6 +635,7 @@ function() {
 ZmAttachMailListView = function(params) {
 	this._showCheckboxColSpan = appCtxt.get(ZmSetting.SHOW_SELECTION_CHECKBOX);
 	ZmListView.call(this, params);
+	this.clearChangeListener();
 	this._controller = new ZmAttachMailController(this);
 };
 
@@ -631,6 +645,22 @@ ZmAttachMailListView.prototype.constructor = ZmAttachMailListView;
 ZmAttachMailListView.prototype._getDivClass =
 function(base, item, params) {
 	return "";
+};
+
+ZmAttachMailListView.prototype.clearChangeListener = function() {
+	// remove listeners for this list from folder tree and tag list
+	if (this._boundFolderChangeListener) {
+		var folderTree = appCtxt.getFolderTree();
+		if (folderTree) {
+			folderTree.removeChangeListener(this._boundFolderChangeListener);
+		}
+	}
+	if (this._tagListChangeListener) {
+		var tagTree = appCtxt.getTagTree();
+		if (tagTree) {
+			tagTree.removeChangeListener(this._tagListChangeListener);
+		}
+	}
 };
 
 ZmAttachMailListView.prototype._getCellContents =
