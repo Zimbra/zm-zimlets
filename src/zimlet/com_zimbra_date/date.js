@@ -107,14 +107,17 @@ function(itemId) {
 	}
 };
 
-Com_Zimbra_Date.prototype.toolTipPoppedUp =
-function(spanElement, contentObjText, matchContext, canvas) {
+Com_Zimbra_Date.prototype.toolTipPoppedUp = function(spanElement, contentObjText, matchContext, canvas) {
+
 	var app = this.getAppInMainWindow(ZmApp.CALENDAR);
 	if (!app) {
 		return;
 	}
 
-	canvas.innerHTML = app.getDateToolTip(matchContext ? matchContext.date : new Date());
+    var date = matchContext ? matchContext.date : new Date();
+    if (!isNaN(date)) {
+	    canvas.innerHTML = app.getDateToolTip(date);
+    }
 };
 
 /**
