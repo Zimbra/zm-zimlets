@@ -116,7 +116,7 @@ Com_Zimbra_Date.prototype.toolTipPoppedUp = function(spanElement, contentObjText
 
     var date = matchContext ? matchContext.date : new Date();
     if (!isNaN(date)) {
-	    canvas.innerHTML = app.getDateToolTip(date);
+	    canvas.innerHTML = app.getDateToolTip(date, true);
     }
 };
 
