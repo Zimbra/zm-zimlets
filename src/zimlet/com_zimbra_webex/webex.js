@@ -2919,7 +2919,8 @@ WebExZimlet.prototype._getEmailsFromContacts = function(objContact) {
 };
 
 WebExZimlet.prototype._getValidEmailsAsString = function(fieldId) {
-    var el = document.getElementById(fieldId);
+    var el = document.getElementById(fieldId),
+    ccEmails = [];
     if (el) {
         var val = el.value;
         if (val != "") {
@@ -2929,10 +2930,10 @@ WebExZimlet.prototype._getValidEmailsAsString = function(fieldId) {
                 this._showErrorMessage(this.getMessage("cannotContinueInvalidEmails") + "<br>"+ badAddrs);
                 return "";
             }
-            var ccEmails = parsed.good.size() ? parsed.good.getArray() : parsed.all.getArray();
+            ccEmails = parsed.good.size() ? parsed.good.getArray() : parsed.all.getArray();
         }
     }
-    return ccEmails.join(";");
+    return ccEmails ? ccEmails.join(';') : "";
 };
 
 function webex_zimlet_update_tab(index) {
