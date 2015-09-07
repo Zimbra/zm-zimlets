@@ -43,8 +43,6 @@ com_zimbra_srchhltr_HandlerObject.prototype.constructor = com_zimbra_srchhltr_Ha
 SearchHighlighterZimlet.prototype.init =
 function() {
 	this._searchController = appCtxt.getSearchController();
-	this._skipKeys = ["in:", "attachment:", "has:", "is:", "before:", "after:", "date:", "larger:", "smaller:",  "from:", "to:", "cc:", "bcc:", "and", "or", "not"];
-	this._skipKeysLen = this._skipKeys.length;
 	this._spanIds = [];
 };
 
@@ -92,87 +90,34 @@ function(html, idx, obj, spanId, context) {
     return idx;
 };
 
+
 /**
- * Gets list of search words to highlight
+ * Gets list of search words to highlight using ZmParsedQuery Utility
  * @return {array} An array of search words
  */
 SearchHighlighterZimlet.prototype._getSearchWords =
 function(searchStr) {
-	if(!searchStr) {
+	if (!searchStr) {
 		return [];
 	}
-	searchStr = searchStr.toLowerCase().replace(/in:\"(\w?[^a-zA-Z0-9_\"]?)+\"|in:(\w?[^a-zA-Z0-9_\"\s]?)+/g, "");//folder with multip-word names
-	searchStr = AjxStringUtil.trim(searchStr);
-	if(searchStr == "") {
-		return [];
-	}
-	var dArry = searchStr.split(" ");
-
-	var result1 = [];
-	for (var i = 0; i < dArry.length; i++) {
-		var d = AjxStringUtil.trim(dArry[i]);
-		if(d == "") {
-			continue;
-		}
-		var skipThis = false;
-		for (var j = 0; j < this._skipKeysLen; j++) {
-			var k = this._skipKeys[j];
-			if (d.indexOf(k) == 0 || d.indexOf("(" + k) == 0 || d.indexOf("((" + k) == 0) {
-				skipThis = true;
-				break;
-			}
-		}
-		if (!skipThis) {
-			d = d.replace("subject:", "").replace("content:", "");//replace subject and content keys
-			result1.push(d);
+	var result = [];
+	
+	var searchTokens = (new ZmParsedQuery(searchStr)).getTokens();
+	
+	for (var i = 0; i < searchTokens.length; i++) {	
+		if (searchTokens[i].op === ZmParsedQuery.OP_CONTENT && 
+				(i == 0 || (searchTokens[i - 1].op !== ZmParsedQuery.COND_NOT))) {
+			/* If the ZmSearchToken has "op" as "content" and is not coming immediately after
+			 * the conditional "not" operator then include it in the result array.
+			 */
+			result.push(searchTokens[i].arg);
 		}
 	}
-	var result2 = [];
-	for (var k = 0; k < result1.length; k++) {//remove " ( and )
-		var word = result1[k];
-		word = word.replace(/\(/g, "").replace(/\)/g, "");
-		if (word == "") {
-			continue;
-		}
-
-		var len = word.length;
-		if ((word.indexOf("\"") == 0) || (word.lastIndexOf("\"") == len - 1)) {
-			word = word.replace(/\"/g, "");
-		}
-		if ((word.indexOf("\|") == 0) || (word.lastIndexOf("\|") == len - 1)) {
-			word = word.replace(/\|/g, "");
-		}
-		if (word != "") {
-			result2.push(word);
-		}
-	}
-	return SearchHighlighterZimlet.searchWordHighlighter_unique(result2);
+	
+	return AjxUtil.uniq(result);
 };
 
-/**
- * Utility function that returns unique elements
- * @param {array} b An Array w/ duplicate items
- */
-SearchHighlighterZimlet.searchWordHighlighter_unique = function(b) {
-	var a = [], i, l = b.length;
-	for (i = 0; i < l; i++) {
-		if (!SearchHighlighterZimlet.searchWordHighlighter_arrayHasEl(a, b[i])) {
-			a.push(b[i]);
-		}
-	}
-	return a;
-};
-/**
- *  A helper function
- */
-SearchHighlighterZimlet.searchWordHighlighter_arrayHasEl = function(array, val) {
-	for (var i = 0; i < array.length; i++) {
-		if (array[i] == val) {
-			return true;
-		}
-	}
-	return false;
-};
+
  /**
  *  Creates list of regular expressions to match
  */
@@ -183,18 +128,44 @@ function() {
 		var words = this._getSearchWords(this._currentSearchQuery);
 		this._regexps = [];
 		try {
+			var expression, token, lastCharIsStar;
 			for (var i = 0; i < words.length; i++) {
-				var word = words[i];
-				if (word.startsWith("*")) {
-					word = word.substr(1);
+				token = words[i];
+				
+				lastCharIsStar = token[token.length - 1] == '*'? true : false;
+		
+				//Remove all punctuations in the beginning and at the end.
+				token = token.replace(/^\W*/, '').replace(/\W*$/, '');
+				 		
+				/* For the middle characters (*,?,+), all of them are searched for as a content.
+				 * e.g While searching for "20?15",   '?' treated as part of the content
+				 * and not as quantifier. 
+				 */
+				token = AjxStringUtil.regExEscape(token);
+				
+				//Handle the case where "*" is at the end.
+				if (lastCharIsStar) {
+					token = token.concat("\\S*");
+				
+				
+				if (expression) {
+					expression = expression + "|" + token;
 				}
-				if (word.endsWith("*")) {
-					word = word.substr(0, word.length - 1);
+				else {
+					expression = token;
 				}
-				this._regexps.push(new RegExp(word, "ig"));
+				
 			}
+			if (expression) {
+				/* We want to match the exact word.
+				 * e.g When the user searches for "hi" do not highlight "this" or "his".
+				 */
+				expression = "\\b(" + expression + ")\\b";
+				this._regexps.push(new RegExp(expression, "ig"));
+				
+			}
+			
 		} catch(e) {
-			appCtxt.getAppController().setStatusMsg([this.getMessage("SearchHighlighterZimlet_ZimletError"), " ", e].join(""), ZmStatusView.LEVEL_WARNING);
 			this._regexps = [];
 		}
 		this._oldSearchQuery = this._currentSearchQuery;
