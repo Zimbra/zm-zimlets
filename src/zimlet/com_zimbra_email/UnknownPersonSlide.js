@@ -256,10 +256,9 @@ function() {
 // Common code for AB & GAL search
 // If response is not undefined, the call is from the GAL search handler
 // If contact is not undefined, the call is from AB
+UnknownPersonSlide.prototype._handleContactDetails = function(contact, response) {
 
-UnknownPersonSlide.prototype._handleContactDetails =
-function(contact, response) {
-	var attrs = null;
+	var attrs = {};
     var id = null;
 	if (response) {
 		var data = response.getResponse();
@@ -267,17 +266,13 @@ function(contact, response) {
 		var cn = r.cn;
 		if (cn && cn[0]) {
             id = cn[0].id;
-			attrs = cn[0]._attrs;
+			attrs = AjxUtil.hashCopy(cn[0]._attrs, ['objectClass']);
 		}
     }
 
-	if (attrs && contact && contact.attr) {
-		//add or overwrite any attributes that are present in the local contact's info
-		attrs = AjxUtil.hashUpdate(attrs, contact.attr, true);
-	} else {
-		//the use of hashCopy is due to bug 81951 - Don't modify the contact attributes.
-		attrs = attrs || (contact && contact.attr && AjxUtil.hashCopy(contact.attr)) || {};
-	}
+	if (contact && contact.attr) {
+        AjxUtil.hashUpdate(attrs, contact.attr, true);
+    }
 
     attrs["fullName"] =  this.emailZimlet.fullName || attrs["fullName"] || contact && contact._fileAs;
     this._presentity = attrs["email"] = this.emailZimlet.emailAddress || attrs["email"];        // email is the presence identity
@@ -291,23 +286,23 @@ function(contact, response) {
     this._setPresenceUI();
 };
 
-UnknownPersonSlide.prototype._getPresence =
-    function() {
-        var now = new Date();
-        //debugger;
-        // Do we have the presence data for this user in the presence cache
-        // Also check for cache staleness: currently anything over 30 secs is considered stale
-        var then = this._presenceCache[this._presentity] && this._presenceCache[this._presentity].timestamp || 0;
+UnknownPersonSlide.prototype._getPresence = function() {
 
-        if (now - then < 5000)  {
-            return this._presenceCache[this._presentity];
-        }
+    var now = new Date();
 
-        if (this.emailZimlet._presenceProvider)  {
-            this.emailZimlet._presenceProvider(this._presentity, this._handlePresence.bind(this));
-        }
-        return null;
+    // Do we have the presence data for this user in the presence cache
+    // Also check for cache staleness: currently anything over 30 secs is considered stale
+    var then = this._presenceCache[this._presentity] && this._presenceCache[this._presentity].timestamp || 0;
+
+    if (now - then < 5000)  {
+        return this._presenceCache[this._presentity];
     }
+
+    if (this.emailZimlet._presenceProvider)  {
+        this.emailZimlet._presenceProvider(this._presentity, this._handlePresence.bind(this));
+    }
+    return null;
+};
 
 //
 // Callback from the presence provider.
@@ -395,30 +390,6 @@ function(attrs) {
 	if (frame) {
 		frame.onmouseup =  AjxCallback.simpleClosure(this._handleAllClicks, this);
 	}
-	/*
-	document.getElementById("UnknownPersonSlide_EmailAnchorId").onclick =  AjxCallback.simpleClosure(this._openCompose, this);
-	if(document.getElementById("UnknownPersonSlide_NameAnchorId")) {
-		document.getElementById("UnknownPersonSlide_NameAnchorId").onclick =  AjxCallback.simpleClosure(this._openContact, this); 
-	}
-	*/
-	this._removeCustomAttrs(attrs);
-};
-
-// Remove custom attributes we added because we are playing with the contact data directly
-// todo - implement clone on attrs
-
-UnknownPersonSlide.prototype._removeCustomAttrs =
-function(attrs) {
-	delete attrs["rightClickForMoreOptions"];
-	delete attrs["formattedEmail"];
-	delete attrs["address"];
-	delete attrs["presence"];
-
-    /* See bug 77183. imagepart is not a generated attr so do not remove it
-    if(attrs["imagepart"]) {
-        delete attrs["imagepart"];
-    }*/
-	delete attrs["imURI"];
 };
 
 UnknownPersonSlide.prototype._formatTexts =
