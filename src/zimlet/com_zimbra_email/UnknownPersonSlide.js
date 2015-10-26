@@ -112,6 +112,13 @@ UnknownPersonSlide.prototype._setCalendarFrame =
         this.emailZimlet.slideShow.addSlide(slide);
     };
 
+UnknownPersonSlide.prototype._setChatFrame =
+	function() {
+		var selectCallback = this._handleChatSlideSelect.bind(this);
+		var slide = new EmailToolTipSlide(null, true, "Conversation_icon", selectCallback, this.emailZimlet.getMessage("slideChatTooltip"));
+		this.emailZimlet.slideShow.addSlide(slide);
+	};
+
 UnknownPersonSlide.prototype._setPresence =
     function() {
 
@@ -229,6 +236,13 @@ UnknownPersonSlide.prototype._handleCalendarSlideSelect =
         AjxDispatcher.run("GetCalController").newAppointment(appt, null, null, null);
     };
 
+UnknownPersonSlide.prototype._handleChatSlideSelect =
+	function() {
+		this.emailZimlet.popdown();
+		appCtxt.getAppController().getApp(ZmApp.CHAT).startChat(this.xmppURI);
+	};
+
+
 UnknownPersonSlide.prototype._getContactDetailsAndShowTooltip =
 function() {
 	this._slide.setInfoMessage(this.emailZimlet.getMessage("loading"));
@@ -272,7 +286,7 @@ UnknownPersonSlide.prototype._handleContactDetails = function(contact, response)
 
 	if (contact && contact.attr) {
         AjxUtil.hashUpdate(attrs, contact.attr, true);
-    }
+	}
 
     attrs["fullName"] =  this.emailZimlet.fullName || attrs["fullName"] || contact && contact._fileAs;
     this._presentity = attrs["email"] = this.emailZimlet.emailAddress || attrs["email"];        // email is the presence identity
@@ -286,22 +300,22 @@ UnknownPersonSlide.prototype._handleContactDetails = function(contact, response)
     this._setPresenceUI();
 };
 
-UnknownPersonSlide.prototype._getPresence = function() {
+UnknownPersonSlide.prototype._getPresence =
+    function() {
+        var now = new Date();
 
-    var now = new Date();
+        // Do we have the presence data for this user in the presence cache
+        // Also check for cache staleness: currently anything over 30 secs is considered stale
+        var then = this._presenceCache[this._presentity] && this._presenceCache[this._presentity].timestamp || 0;
 
-    // Do we have the presence data for this user in the presence cache
-    // Also check for cache staleness: currently anything over 30 secs is considered stale
-    var then = this._presenceCache[this._presentity] && this._presenceCache[this._presentity].timestamp || 0;
+        if (now - then < 5000)  {
+            return this._presenceCache[this._presentity];
+        }
 
-    if (now - then < 5000)  {
-        return this._presenceCache[this._presentity];
-    }
-
-    if (this.emailZimlet._presenceProvider)  {
-        this.emailZimlet._presenceProvider(this._presentity, this._handlePresence.bind(this));
-    }
-    return null;
+        if (this.emailZimlet._presenceProvider)  {
+            this.emailZimlet._presenceProvider(this._presentity, this._handlePresence.bind(this));
+        }
+        return null;
 };
 
 //
@@ -363,14 +377,38 @@ function(attrs) {
         if (imParts.length == 2){
 			var imProtocol = imParts[0];
 			im = im.split(":")[1];
-			if (imProtocol && imProtocol == "other") {
-				imProtocol = "im";
-			}
-			else if (imProtocol && imProtocol == "aol") {
-				imProtocol = "aim";
-			}
-            im = "<a  id='UnknownPersonSlide_imAnchorId' href='" + imProtocol + ":" + AjxStringUtil.htmlEncode(im.substring(2)) + "'>" + AjxStringUtil.htmlEncode(im.substring(2)) + "</a>" ;
-            this.imURI = attrs["imURI"] = im;
+            if (imProtocol && imProtocol == "xmpp") {
+                if (appCtxt.get(ZmSetting.CHAT_FEATURE_ENABLED) && appCtxt.get(ZmSetting.CHAT_ENABLED)) {
+                    var chatApp = appCtxt.getAppController().getApp(ZmApp.CHAT);
+                    if (chatApp && chatApp.getRosterContact(im.substring(2))) {
+                        this.xmppURI = attrs["xmppURI"] = AjxStringUtil.htmlEncode(im.substring(2));
+                        this._setChatFrame();
+                    }
+                }
+            } else {
+                if (imProtocol && imProtocol == "other") {
+                    imProtocol = "im";
+                }
+                else if (imProtocol && imProtocol == "aol") {
+                    imProtocol = "aim";
+                }
+                im = "<a  id='UnknownPersonSlide_imAnchorId' href='" + imProtocol + ":" + AjxStringUtil.htmlEncode(im.substring(2)) + "'>" + AjxStringUtil.htmlEncode(im.substring(2)) + "</a>";
+                this.imURI = attrs["imURI"] = im;
+            }
+
+        }
+    } else if (appCtxt.get(ZmSetting.CHAT_FEATURE_ENABLED) && appCtxt.get(ZmSetting.CHAT_ENABLED)) {
+        var chatApp = appCtxt.getAppController().getApp(ZmApp.CHAT);
+        if (chatApp) {
+            for (var i = 0; i < 4; i++) {
+                var emailAddr = "email" + ((i == 0) ? "" : i);
+                if (attrs[emailAddr] && chatApp.getRosterContact(attrs[emailAddr])) {
+                    //check if this contact is part of the buddy list.
+                    this.xmppURI = AjxStringUtil.htmlEncode(attrs[emailAddr]);
+                    this._setChatFrame();
+                    break;
+                }
+            }
         }
     }
 
