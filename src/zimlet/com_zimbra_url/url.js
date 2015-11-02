@@ -289,7 +289,7 @@ Com_Zimbra_Url.YOUTUBE_LINK_PATTERN2 = "youtube.com/v/";
 Com_Zimbra_Url.YOUTUBE_LINK_PATTERN3 = "youtu.be/";
 Com_Zimbra_Url.YOUTUBE_FEED = "http://gdata.youtube.com/feeds/api/videos/@ID?alt=jsonc&v=2";
 Com_Zimbra_Url.YOUTUBE_EMBED_URL = "//www.youtube.com/embed/";
-Com_Zimbra_Url.YOUTUBE_DEFAULT_THUMBNAIL = "http://img.youtube.com/vi/@ID.jpg";
+Com_Zimbra_Url.YOUTUBE_DEFAULT_THUMBNAIL = "https://img.youtube.com/vi/@ID/default.jpg";
 Com_Zimbra_Url.PROTOCOL = location.protocol;
 Com_Zimbra_Url.YOUTUBE_MAX_VIDEOS = 5;
 
