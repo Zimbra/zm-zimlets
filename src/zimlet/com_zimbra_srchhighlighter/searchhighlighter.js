@@ -146,7 +146,7 @@ function() {
 				//Handle the case where "*" is at the end.
 				if (lastCharIsStar) {
 					token = token.concat("\\S*");
-				}
+				
 				
 				if (expression) {
 					expression = expression + "|" + token;
@@ -162,6 +162,7 @@ function() {
 				 */
 				expression = "\\b(" + expression + ")\\b";
 				this._regexps.push(new RegExp(expression, "ig"));
+				
 			}
 			
 		} catch(e) {
