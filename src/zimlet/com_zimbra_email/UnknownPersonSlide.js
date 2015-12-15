@@ -367,7 +367,12 @@ function(attrs) {
 		var workCity = attrs.workCity || "";
 		var workStreet = attrs.workStreet || "";
 		var workPostalCode = attrs.workPostalCode || "";
-		var address = [workStreet, " ", workCity, " ", workState, " ", workPostalCode].join("");
+
+		var pattern = this.emailZimlet.getMessage("postalAddress");
+		var formatter = new AjxMessageFormat(pattern);
+		var args = [workStreet, workCity, workState, workPostalCode];
+		var address = AjxStringUtil.trim(formatter.format(args), true);
+
 		attrs["address"] = AjxStringUtil.trim(address);
 	}
 
