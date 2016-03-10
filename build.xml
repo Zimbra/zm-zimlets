@@ -1,5 +1,7 @@
 <project name="Zimlet" default="package">
 
+    <import file="../ant-global.xml"/>
+
     <property file='build-custom.properties' />
 
     <!--
@@ -31,20 +33,8 @@
     <property name="dist.zimlet-experimental.dir" location="${dist.dir}/zimlets-experimental" />
     <property name="dist.zimlet-offline.dir" location="${dist.dir}/zimlets-offline" />
 
-	<property name="common.dir" location="../ZimbraCommon" />
-	<property name="common.jars.dir" location="${common.dir}/jars" />
-	<property name="common.internal.jars.dir" location="${common.dir}/jars-internal/jars" />
-	<property name="common.classes.dir" location="../ZimbraCommon/build/classes" />
-
-    <property name="soap.dir" location="../ZimbraSoap"/>
-    <property name="soap.classes.dir" location="${soap.dir}/build/classes"/>
-
-    <property name="client.dir" location="../ZimbraClient"/>
-    <property name="client.classes.dir" location="${client.dir}/build/classes"/>
-
 	<property name="webinf.dir" location="WebRoot/WEB-INF" />
-	<property name="server.dir" location="../ZimbraServer" />
-	<property name="server.classes.dir" location="${server.dir}/build/classes" />
+
 	<property name="jars.dir" location="jars" />
 	<property name="config.dir" location="conf" />
 	<property name="src.dir" location="src" />
@@ -56,6 +46,7 @@
 	<property name="generated.java.dir" location="${generated.dir}/src/java" />
 
 	<property name="zimlets-zss" value="com_zimbra_zss"/>
+	<property name="zimlets-converse" value="com_zimbra_converse"/>
 	<property name="zimlets" value="com_zimbra_mailarchive,com_zimbra_phone,com_zimbra_url,com_zimbra_email,com_zimbra_date,com_zimbra_ymemoticons,com_zimbra_attachmail,com_zimbra_attachcontacts,com_zimbra_srchhighlighter,com_zimbra_webex"/>
 	<property name="zimlets-offline" value=""/>
 	<property name="zimlets-example" value="com_zimbra_example_*"/>
@@ -94,12 +85,6 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
-		<classpath>
-			<pathelement location="jars/ant-contrib-1.0b1.jar"/>
-		</classpath>
-	</taskdef>
 
 	<target name="dev-sync" depends="jar">
 		<copy verbose="true" todir="${deploy.dir}${deploy.jsp.path}">
@@ -156,6 +141,15 @@
 	<target name="reload-zimlets" depends="deploy-zimlets,restart-webserver" description="Reload Zimlets"/>
 	<target name="reload-zimlets-extra" depends="deploy-zimlets-extra,restart-webserver" description="Reload Zimlets Extra"/>
     <target name="reload-zimlets-experimental" depends="deploy-zimlets-experimental,restart-webserver" description="Reload Zimlets Experimental"/>
+
+   <target name="package-converse-zimlet" depends="build-init,compile">
+            <foreach list="${zimlets-converse}" target="package-zimlet" param="zimlet">
+                <param name="tempdir" value="${generated.dir}/zimlets" />
+                <param name="destdir" value="${dist.zimlet.dir}" />
+                <param name="zimlet.version" value="${zimlet.version}" />
+                <param name="TS" value="${TS}" />
+            </foreach>
+    </target>
 
 	<target name="package-zss-zimlet" depends="build-init,compile">
 			<foreach list="${zimlets-zss}" target="package-zimlet" param="zimlet">
