@@ -83,7 +83,7 @@ UndoSendZimlet.prototype._keyDownListener = function(ev) {
  *
  * @param {ZmComposeController}     controller      compose controller
  */
-UndoSendZimlet.prototype.onSendButtonClicked = function(controller) {
+UndoSendZimlet.prototype.onMsgSend = function(controller, msg, params) {
 
     // See if another message is being handled; if so, bail.
     if (Dwt.getVisible(document.getElementById(this._mainContainerId))) {
@@ -92,10 +92,10 @@ UndoSendZimlet.prototype.onSendButtonClicked = function(controller) {
     }
 
     this._controller = controller;
-    var avm = appCtxt.getAppViewMgr();
-    var viewId = this._composeViewId = avm.getCurrentViewId();
+    this._sendMsgCmd = msg.send.bind(msg, params);
 
-	controller.saveDraft(ZmComposeController.DRAFT_TYPE_AUTO);
+    var avm = appCtxt.getAppViewMgr(),
+        viewId = this._composeViewId = avm.getCurrentViewId();
 
     if (!this._mainContainerId) {
         this._createView();
@@ -229,7 +229,7 @@ UndoSendZimlet.prototype._sendNow = function() {
 UndoSendZimlet.prototype._sendEmail = function() {
 
 	this._showView(false);
-	this._controller._send();
+    this._sendMsgCmd();
 };
 
 /**
