@@ -1820,7 +1820,7 @@ function() {
 				if(f.zid && f.rid) {
 					id = [f.zid,":",f.rid].join("");
 				}
-				html[j++] = ["<option value='", id,"'>", f.name , "</option>"].join("");
+				html[j++] = ["<option value='", id,"'>", AjxStringUtil.htmlEncode(f.name) , "</option>"].join("");
 
 			}
 		}
