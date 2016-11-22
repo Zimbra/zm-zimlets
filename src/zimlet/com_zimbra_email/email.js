@@ -363,7 +363,6 @@ function(opacity, styleObj) {
 	styleObj.MozOpacity = (opacity / 100);
 	styleObj.KhtmlOpacity = (opacity / 100);
 	styleObj.zoom = 1;
-	styleObj.filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=" + opacity + ")";
 };
 
 EmailTooltipZimlet.prototype.openCenteredWindow =
