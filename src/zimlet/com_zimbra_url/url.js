@@ -550,11 +550,9 @@ function(youTubeId, msgElId, youTubeHash, opac) {
 		}
 		if (opac && id === youTubeId) {
 			img.style.opacity = 0.4;
-			img.style.filter = "alpha(opacity=40)";
 		}
 		else {
 			img.style.opacity = "";
-			img.style.filter = "";
 		}
 	}
 };
