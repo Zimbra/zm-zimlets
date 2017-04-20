@@ -117,7 +117,7 @@ function(parent, zimlet, className) {
 	DwtComposite.call(this,parent,className,Dwt.STATIC_STYLE);
 	var acct = appCtxt.multiAccounts ? appCtxt.getAppViewMgr().getCurrentView().getFromAccount() : appCtxt.getActiveAccount();
 	if (this.prevAccount && (acct.id == this.prevAccount.id)) {
-			this.setSize(Dwt.DEFAULT, "275");
+			this.setSize(Dwt.DEFAULT, AttachMailTabView.HEIGHT);
 			return;
 	}
 	this.prevAccount = acct;
@@ -146,6 +146,11 @@ AttachMailTabView.ELEMENT_ID_VIEW_MESSAGE_BUTTON = "attDlg_attMsg_ViewMsgBtn";
 AttachMailTabView.ELEMENT_ID_NAV_BUTTON_CELL = "attDlg_attMsg_NavBtnCell";
 
 /**
+ * Defines the size of the view
+ */
+AttachMailTabView.HEIGHT = 300;
+
+/**
  * Returns a string representation of the object.
  * 
  */
@@ -162,7 +167,7 @@ function() {
 	DwtTabViewPage.prototype.showMe.call(this);
 	var acct = appCtxt.multiAccounts ? appCtxt.getAppViewMgr().getCurrentView().getFromAccount() : appCtxt.getActiveAccount();
 	if (this.prevAccount && (acct.id == this.prevAccount.id)) {
-			this.setSize(Dwt.DEFAULT, "275");
+			this.setSize(Dwt.DEFAULT, AttachMailTabView.HEIGHT);
 			return;
 	}
 	this.prevAccount = acct;
@@ -222,33 +227,28 @@ function() {
 	var html = [];
 	var idx = 0;
 
-	html[idx++] = '<table width="100%" style="margin-bottom:5px">';
-	html[idx++] = '<TR><td width=\"20%\"><INPUT type="text" id="';
+	html[idx++] = '<table width="100%" style="margin-bottom:12px">';
+	html[idx++] = '<TR><td  colspan="2"><INPUT type="text" id="';
 	html[idx++] = AttachMailTabView.ELEMENT_ID_SEARCH_FIELD;
-	html[idx++] = '" style="padding:4px"></INPUT></td>';
-	html[idx++] = '<td width=\"10%\"><div id="';
+	html[idx++] = '" style="padding:4px"></INPUT>';
+	html[idx++] = '<div id="';
 	html[idx++] = AttachMailTabView.ELEMENT_ID_SEARCH_BUTTON;
-	html[idx++] = '" style="margin: 0 2px" />';
-	html[idx++] = '<td width=\"10%\"><div id="';
+	html[idx++] = '" /></td></tr>';
+	html[idx++] = '</table>';
+	html[idx++] = '<div id="' + this._folderTreeCellId + '" class="AttachMailColumnFirst"></div>';
+	html[idx++] = '<div id="' + this._folderListId + '" class="AttachMailColumnSecond"></div>';
+	html[idx++] = '<table class="AttachMailBottomRowRight">';
+	html[idx++] = '<tr><td width=\"10%\"><div id="';
 	html[idx++] = AttachMailTabView.ELEMENT_ID_VIEW_MESSAGE_BUTTON;
-	html[idx++] = '" style="margin: 0 2px" /></td>';
+	html[idx++] = '" /></td>';
 	html[idx++] = '<td align="right" width="60%"><SPAN id="';
 	html[idx++] = AttachMailTabView.ELEMENT_ID_NAV_BUTTON_CELL;
-	html[idx++] = '" /></td></TR></table>';
-	html[idx++] = '<table width="100%">';
-	html[idx++] = '<tr>';
-	html[idx++] = '<td valign="top" id="' + this._folderTreeCellId + '">';
-	html[idx++] = '</td>';
-	html[idx++] = '<td  valign="top"  id="' + this._folderListId + '">';
-	html[idx++] = '</td>';
-	html[idx++] = '</tr>';
+	html[idx++] = '" /></td></tr>';
 	html[idx++] = '</table>';
-
-    this.setContent(html.join(""));
-
+	
+	this.setContent(html.join(""));
 	var searchButton = new DwtButton({parent:this});
-	var searchButtonLabel = this.zimlet.getMessage("AttachMailZimlet_tab_button_search");
-	searchButton.setText(searchButtonLabel);
+	searchButton.setImage("Search2");
 	searchButton.addSelectionListener(new AjxListener(this, this._searchButtonListener));
 	document.getElementById(AttachMailTabView.ELEMENT_ID_SEARCH_BUTTON).appendChild(searchButton.getHtmlElement());
 
@@ -493,7 +493,7 @@ function() {
 		account: this.prevAccount
 	};
 	this._setOverview(params);
-	this.setSize(Dwt.DEFAULT, "275");
+	this.setSize(Dwt.DEFAULT, AttachMailTabView.HEIGHT);
 	this._currentQuery = this._getQueryFromFolder("2");
 	//this.treeView.setSelected("2");
 	setTimeout(AjxCallback.simpleClosure(this.treeView.setSelected, this.treeView, 2), 100);
@@ -567,9 +567,10 @@ function(width, height) {
 	var treeWidth = size.x * 0.350;
 	// var listWidth = size.x - treeWidth - 15;
 	var listWidth = size.x - treeWidth;
+	var listWidthLeftMargin = 16;
 	var newHeight = height - 55;
 	this._overview.setSize(treeWidth, newHeight);
-	this._tabAttachMailView.setSize(listWidth - 5, newHeight);
+	this._tabAttachMailView.setSize(listWidth - 5 - listWidthLeftMargin, newHeight);
 	return this;
 };
 
@@ -679,31 +680,29 @@ function(htmlArr, idx, item, field, colIdx, params) {
 	}
 	var attachCell = "";
 	var cols = 2;
-	if (item.hasAttach){
 
-		attachCell = "<td width='16px'><div class='ImgAttachment'/></td>";
-		cols = 3;
-	}
 	htmlArr[idx++] = "<div class='AttachMailRowDiv'>";
 	htmlArr[idx++] = "<table width='100%'>"; 
 	
 	var subject = item.subject ? AjxStringUtil.htmlEncode(item.subject.slice(0, 32)) : ZmMsg.noSubject;
 	htmlArr[idx++] = "<tr>";
+	htmlArr[idx++] = "<td align='left' ><span class='AttachMailFrom'> ";
 	if (this._showCheckboxColSpan) {
-		htmlArr[idx++] = "<td rowspan=3 style='vertical-align:middle;' width='20'><center>";
-		idx = this._getImageHtml(htmlArr, idx, "CheckboxUnchecked", this._getFieldId(item, ZmItem.F_SELECTION));
-		htmlArr[idx++] = "</center></td>";
+		idx = this._getImageHtml(htmlArr, idx, "CheckboxUnchecked", this._getFieldId(item, ZmItem.F_SELECTION),["AttachMailIcon"]);
 	}
-	htmlArr[idx++] = attachCell;
-	htmlArr[idx++] = "<td align='left' width='80%'><span class='AttachMailSubject'> " + subject + "</span></td>";
+	htmlArr[idx++] = from;
+	htmlArr[idx++] = "</span></td>";
 
-	htmlArr[idx++] = "<td width='20%' align='right'>";
+	htmlArr[idx++] = "<td width='20%' align='right' class='AttachMailDate'>";
 	htmlArr[idx++] = AjxDateUtil.computeDateStr(params.now || new Date(), item.date);
 	htmlArr[idx++] = "</td></tr>";
-
-	htmlArr[idx++] = "<tr><td align='left' colspan='"+cols+"'><span class='AttachMailFrom'> ";
-	htmlArr[idx++] = from;
-	htmlArr[idx++] = "</span></td></tr>";
+	htmlArr[idx++] = "<tr>";
+	htmlArr[idx++] = "<td align='left' colspan='"+cols+"'><span class='AttachMailSubject'> ";
+	if (item.hasAttach){
+		idx = this._getImageHtml(htmlArr, idx, "Attachment", this._getFieldId(item, ZmItem.F_ATTACHMENT),["AttachMailIcon"]);
+	}
+	htmlArr[idx++] = subject + "</span></td>";
+	htmlArr[idx++] = "</tr>";
 	
 	if (fragment != "") {
 		htmlArr[idx++] = "<tr><td align=left colspan="+cols+"><span class='AttachMailFrag'>" + fragment + "</span></td></tr>";
