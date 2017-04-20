@@ -28,35 +28,130 @@
 }
 
 .AttachMailTabBox {
-    background-color: #FDFCFA;
-    border-right:1px solid #E0E0E0;
+    background-color: #ffffff;
+    border: 1px solid #E0E0E0;
 }
 
 .AttachMailRowDiv {
     border-style: solid;
-    border-width: 1px 0;
+    border-width: 0 0 1px 0;
     cursor: pointer;
     border-color: #E0E0E0;
-    padding: 3px 0;
+    padding: 14px;
+    line-height: 20px;
 }
 
-.AttachMailSubject {
-    font-weight: bold;
-    font-size: 13px;
-    color: #2B2A2B;
-}
-
+.AttachMailSubject,
 .AttachMailFrom {
     font-weight: bold;
-    font-size: 11px;
-    color: #2B2A2B;
+    font-size: 12px;
+    color: rgb(51,51,51);
 }
 
 .AttachMailFrag {
     overflow: hidden;
-    color: gray;
+    font-size: 12px;
+}
+
+.AttachMailDate {
+    font-size: 12px;
+}
+
+.AttachMailIcon {
+    padding-right: 10px;
 }
 
 .AttachMailList .Row-selected, .AttachMailList .Row-focused{
   border: none;
+}
+
+.AttachMailList .Row-focused TD,
+.AttachMailList .Row-selected TD {
+    color: inherit;
+}
+
+.AttachMailList .RowEven,
+.AttachMailList .RowOdd {
+    color: #777;
+}
+
+.AttachMailList .Row-selected .AttachMailFrom,
+.AttachMailList .Row-selected .AttachMailSubject {
+    color: #ffffff;
+}
+
+.Row-selected .svg-icon {
+    fill: #fff;
+}
+
+.AttachMailIcon,
+.AttachMailIcon > div {
+    display: inline;
+}
+
+.AttachMailColumnFirst,
+.AttachMailColumnSecond {
+    display: inline-block;
+}
+
+.AttachMailColumnSecond {
+    margin-left: 2%;
+}
+
+.AttachMailBottomRowRight {
+    width: 63%;
+    float: right;
+    margin-top: 3px;
+}
+
+.AMZimletNavToolBar .ZToolbarButton {
+    height: 36px;
+    height: 3rem;
+}
+
+.AMZimletNavToolBar .ZToolbarButtonBorder {
+    padding: 0;
+}
+
+.AMZimletNavToolBar .ZToolbarButtonTable td:not(:empty) {
+    padding: 0;
+}
+
+.AMZimletNavToolBarTitle {
+    height: 100%;
+    padding: 0 8px;
+}
+
+#attDlg_attMsg_SearchField {
+    width: 95%;
+    height: 3rem;
+    border: 1px solid #E0E0E0;
+}
+
+#attDlg_attMsg_SearchBtn {
+    float: right;
+    width: 5%;
+    height: 3rem;
+}
+
+#attDlg_attMsg_ViewMsgBtn .ZHover .ZButtonBorder {
+    background: inherit;
+}
+
+#attDlg_attMsg_ViewMsgBtn .ZWidgetTitle  {
+    color: rgb(0, 124, 195);
+}
+
+#attDlg_attMsg_SearchBtn .ZButton {
+    border: 1px solid #E0E0E0;
+    border-left-width: 0px;
+}
+
+#attDlg_attMsg_SearchBtn .ZWidgetIcon {
+    text-align: center;
+    width: 100%;
+}
+
+.AttachMailTabView {
+    margin-bottom: 8px;
 }
