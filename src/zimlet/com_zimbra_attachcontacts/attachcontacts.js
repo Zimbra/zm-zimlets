@@ -290,7 +290,7 @@ AttachContactsZimlet.prototype.addMenuButton = function(contactCallback, menu, a
 			var op = {
 				id:			AttachContactsZimlet.SEND_CONTACTS,
 				text:		this.getMessage("ACZ_SendContact"),
-				image:		"MsgStatusSent"
+				image:		"Forward"
 			};
 			if (index!==null)
 				op.index = index+1;
