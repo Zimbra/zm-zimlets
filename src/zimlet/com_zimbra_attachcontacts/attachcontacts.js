@@ -81,7 +81,8 @@ function() {
     this.AttachContactsView.reparentHtmlElement(attachDialog._getContentDiv().childNodes[0], 0);
     this.AttachContactsView.attachDialog = attachDialog;
 	attachDialog.setOkListener(new AjxCallback(this, this._okListener));
-    this.AttachContactsView.attachDialog.popup();
+	this.AttachContactsView._resetRowSelection(true);
+	this.AttachContactsView.attachDialog.popup();
     this.AttachContactsView.attachDialog.enableInlineOption(false);
     this._addedToMainWindow = true;
 };
