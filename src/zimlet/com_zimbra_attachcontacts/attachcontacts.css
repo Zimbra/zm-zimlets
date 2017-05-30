@@ -22,8 +22,8 @@
  */
 
 .AttachContactsTabBox {
-	background-color:#FDFCFA;
-    border-right:1px solid #E0E0E0;
+	background-color:#FFF;
+	border:1px solid #E0E0E0;
 }
 
 table.AttachContacts_table input[type="text"]{
@@ -36,9 +36,51 @@ table.AttachContacts_table input[type="text"]{
 }
 
 .AttachContactRow {
-    border-style: solid;
-    border-width: 1px 0;
-    cursor: pointer;
-    border-color: #E0E0E0;
-    padding: 3px 0;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+	cursor: pointer;
+	border-color: #E0E0E0;
+	padding: 14px;
+	line-height: 20px;
+}
+
+.AttachContactBottomRowRight {
+	float: right;
+	margin-top: -4px;
+}
+
+.ACZimletNavToolBarTitle {
+	height: 100%;
+	padding: 0 8px;
+}
+
+#attDlg_attContact_SearchField {
+	width: 95%;
+	height: 3rem;
+	border: 1px solid #E0E0E0;
+}
+
+#attDlg_attContact_SearchBtn {
+	float: right;
+	width: 5%;
+	height: 3rem;
+}
+
+#attDlg_attContact_SearchBtn .ZButton {
+	border: 1px solid #E0E0E0;
+	border-left-width: 0px;
+}
+
+#attDlg_attContact_SearchBtn .ZWidgetIcon {
+	text-align: center;
+	width: 100%;
+}
+
+.AttachContactIconTd {
+	padding-right:8px;
+}
+
+.AttachContactFolderListContainer {
+	margin-left:16px;
+	border:1px solid #E0E0E0;
 }
