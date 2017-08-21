@@ -1,0 +1,83 @@
+.Imgcom_rpost_rmail-panelIcon {
+ background: url("rpost.png") no-repeat 0 0;
+ width: 18px;
+ height: 18px;
+ overflow: hidden;
+}
+
+.RPostInput
+{
+min-width:300px;
+}
+
+.rpostHr
+{
+height:1px; 
+border:none; 
+color:#f2f2f2; 
+background-color:#f2f2f2;
+width:95% !important; 
+text-align:center; 
+
+}
+
+.RPostSideNote
+{
+margin-left:10px !important;
+margin-right:10px !important;
+min-width:360px;
+background-color:#f9f589;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url(https://fonts.gstatic.com/s/roboto/v16/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+.RPost-infobar {
+ background: url("rpost-infobar.png") no-repeat 0 0;
+ min-width:90%;
+ background-color:#4d5964;
+ min-height:55px;
+ color:white;
+ font-size:20px;
+ padding-left:80px;
+ vertical-align: middle;
+ line-height: 55px;  
+ margin:7px;
+ font-family: 'Roboto', sans-serif;
+}
+
+.RPost-infobar-right {
+float:right;
+background: url("rpost-infobar-right.png") no-repeat 0 0;
+min-height:55px;
+min-width:79px;
+}
+
+.rpostAdvancedLinkDisabled
+{
+color:#cccccc !important;
+cursor:default !important;
+}
+
+.rpostAdvancedLinkEnabled
+{
+cursor:pointer !important;
+}
+
+#RPostLargeMailProgress
+{
+height:20px;
+width:100%;
+}
+.RmailFileList
+{
+padding:10px;
+}
+.RmailFileList:empty {
+   display: none;
+}
