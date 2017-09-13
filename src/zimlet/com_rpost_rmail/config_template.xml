@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zimletConfig name="com_rpost_rmail" version="1.0"><global>
+<property name="trialUnitsRemainingTreshold">5</property>
+</global></zimletConfig>
