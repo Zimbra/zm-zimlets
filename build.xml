@@ -216,17 +216,25 @@
 		</foreach>
 	</target>
 
-    <target name="install-zimlet" depends="resolve">
+	<target name="install-zimlet" depends="resolve">
 		<echo>${action} ${zimlet}</echo>
-		<java classname="com.zimbra.cs.zimlet.ZimletUtil" fork="true" classpathref="class.path" failonerror="true">
+		<exec executable="zmzimletctl" failonerror="true">
 			<arg line="-q" />
 			<arg line="${action}" />
 			<arg file="${dir}/${zimlet}.zip" />
-		</java>
+		</exec>
+		<!-- ZimletUtil is giving some ldap exception so disabling it for now -->
+		<!-- <java classname="com.zimbra.cs.zimlet.ZimletUtil" fork="true" classpathref="class.path" failonerror="true">
+			<arg line="-q" />
+			<arg line="${action}" />
+			<arg file="${dir}/${zimlet}.zip" />
+		</java> -->
 	</target>
 
 	<target name="restart-webserver">
-		<ant dir="${server.dir}" target="restart-webserver"/>
+		<exec executable="zmmailboxdctl">
+			<arg value="restart"/>
+		</exec>
 	</target>
 	
     <target name="set-buildinfo-vars">
