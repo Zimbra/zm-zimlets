@@ -68,7 +68,7 @@ function() {
 	var attachDialog = this._attachDialog = appCtxt.getAttachDialog();
 	attachDialog.setTitle(ZmMsg.attachMail);
     this.removePrevAttDialogContent(attachDialog._getContentDiv().firstChild);
-    if (!this.AttachContactsView || !this.AttachContactsView.attachDialog){
+    if (!this.AMV || !this.AMV.attachDialog){
 	    this.AMV = new AttachMailTabView(this._attachDialog, this);
     }
 
@@ -411,6 +411,7 @@ function(params) {
 	}
 	var bcView = this._tabAttachMailView;
 	bcView.set(this._list);
+	bcView._controller.setList(this._list);
 };
 
 /**
