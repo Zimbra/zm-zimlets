@@ -1,0 +1,10 @@
+<zimlet name="tk_barrydegraaff_attachmentalert" version="0.5" label="Attachment Alert" description="Alerts you when forgetting to attach an attachment when composing a message." target="main compose-window">
+	<include>tk_barrydegraaff_attachmentalert.js</include>
+	<handlerObject>tk_barrydegraaff_attachalert_HandlerObject</handlerObject>
+	<zimletPanelItem label="Attachment Alert" icon="Attachment">
+		<toolTipText>Alerts you when forgetting to attach an attachment when composing a message.</toolTipText>
+	</zimletPanelItem>
+	<userProperties>
+      <property type="string" label="Comma separated list of keywords" name="AttachmentAlertKeywords" rows="1"/>
+	</userProperties>
+</zimlet>
