@@ -1,4 +1,4 @@
-<zimlet name="com_zimbra_email_templates" version="1.0.2" label="${msg.label}" description="${msg.description}" target="main compose-window">
+<zimlet name="com_zimbra_email_templates" version="1.0.1" label="${msg.label}" description="${msg.description}" target="main compose-window">
   <include>email_templates.js</include>
 	<includeCSS>email_templates.css</includeCSS>
   <handlerObject>Com_Zimbra_Email_Templates</handlerObject>
