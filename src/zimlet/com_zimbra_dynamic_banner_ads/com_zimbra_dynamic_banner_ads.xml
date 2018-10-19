@@ -1,0 +1,4 @@
+<zimlet name="com_zimbra_dynamic_banner_ads" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
+    <include>js/dynamic_ads.js</include>
+    <handlerObject>Com_Zimbra_Dynamic_Banner_Ads</handlerObject>
+</zimlet>
