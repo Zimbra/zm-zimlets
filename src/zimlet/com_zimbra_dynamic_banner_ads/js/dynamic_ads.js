@@ -67,8 +67,6 @@ Com_Zimbra_Dynamic_Banner_Ads.prototype._updateAds = function () {
 		adLength = this.Ads.length,
 		self = this;
 
-	self.initAd(self.Ads[0]);
-
 	function changeAd() {
 		setInterval(function () {
 			adIndex++;
@@ -76,7 +74,12 @@ Com_Zimbra_Dynamic_Banner_Ads.prototype._updateAds = function () {
 		}, self.AdChangeInterval);
 	}
 
-	changeAd();
+	if (typeof self.Ads === "string") //means there's only a single ad
+		self.initAd(self.Ads);
+	else {
+		self.initAd(self.Ads[0]);
+		changeAd();
+	}
 };
 
 /**
