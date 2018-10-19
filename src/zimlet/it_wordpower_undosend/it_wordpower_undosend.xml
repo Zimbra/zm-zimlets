@@ -1,7 +1,7 @@
 <zimlet name="it_wordpower_undosend" version="1.6" description="Undo sending an email">	
 	<include>it_wordpower_undosend.js</include>
 	<handlerObject>it_wordpower_undosend_HandlerObject</handlerObject>
-	<zimletPanelItem label="UndoSend" icon="OutOfOffice">
+	<zimletPanelItem label="${msg.lbl_title}" icon="OutOfOffice">
 		<toolTipText>${msg.lbl_setup}</toolTipText>
 		
 	</zimletPanelItem>
