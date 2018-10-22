@@ -42,7 +42,7 @@ Com_Zimbra_Login_History.prototype = new ZmZimletBase();
 *
 */
 Com_Zimbra_Login_History.prototype.init = function () {
-	this._simpleAppName = this.createApp("Login History", "zimbraIcon", "Login History Tab");
+	this._simpleAppName = this.createApp(this.getMessage("label"), "zimbraIcon", this.getMessage("description"));
 };
 
 /**
@@ -56,9 +56,9 @@ function(appName, active) {
         switch (appName) {
                 case this._simpleAppName: {
                         var app = appCtxt.getApp(appName);
-                        app.setContent("<div style='color:red; width: 90%; padding: 10px;' id='loadingdiv'>Loading...</div><div style='width: 100%; float: left;' id='loginhistorycontent'> </div>");
-                        var historyContent = this.GetHistory();
-                        break;
+                        app.setContent("<div style='color:red; width: 90%; padding: 10px;' id='loadingdiv'>"+this.getMessage("lodingText")+"</div><div style='width: 100%; float: left;' id='loginhistorycontent'> </div>");
+                        var historyContent = this.GetHistory(this.getMessage("noDataFound"),this.getMessage("heading"), this.getMessage("serialNo"), this.getMessage("geoLocation"), this.getMessage("date"),this.getMessage("protocol"), this.getMessage("location"));
+												break;
                 }
         }
 };
@@ -79,7 +79,7 @@ function(appName) {
 };
 
 Com_Zimbra_Login_History.prototype.GetHistory =
-function() {
+function(noDataLabel, headingLabel, serialNoLabel, geoLocationLabel, dateLabel, protocolLabel, locationLabel) {
         var userEmail =  appCtxt.getActiveAccount().getEmail();
         var historyData;
         var xhttp = new XMLHttpRequest();
@@ -88,16 +88,16 @@ function() {
                         document.getElementById('loadingdiv').style.display = "none";
                         if( this.responseText.trim().toLowerCase() == 'no records found' ) {
                                 document.getElementById('loginhistorycontent').style.padding = '10px';
-                                document.getElementById('loginhistorycontent').innerHTML = this.responseText;
+                                document.getElementById('loginhistorycontent').innerHTML = noDataLabel;
                         } else {
                                 historyData = JSON.parse(this.responseText);
-                                var content = "<div style='width: 90%; color:red; border:1px solid #000; font-size: 16px; padding: 10px;'>Login History Data </div>";
+                                var content = "<div style='width: 90%; color:red; border:1px solid #000; font-size: 16px; padding: 10px;'>"+headingLabel+"</div>";
                                 content = content + "<div style='float: left; width: 90%; margin:auto; text-align: center; border: 1px solid #000; display: inline-table; padding:10px;' >";
-                                content = content + "<div width='10%' style='float: left; width: 10%; display: inline-table; font-size: 16px; font-weight: bold;'> Sr. No </div>";
-                                content = content + "<div width='25%' style='float: left; width: 30%; display: inline-table; font-size: 16px; font-weight: bold;'>Geo Location</div>";
-                                content = content + "<div width='25%' style='float: left; width: 30%; display: inline-table; font-size: 16px; font-weight: bold;'>Date</div>";
-                                content = content + "<div width='25%' style='float: left; width: 10%; display: inline-table; font-size: 16px; font-weight: bold;'>Protocol</div>";
-                                content = content + "<div width='25%' style='float: left; width: 20%; display: inline-table; font-size: 16px; font-weight: bold;'>Location</div>";
+                                content = content + "<div width='10%' style='float: left; width: 10%; display: inline-table; font-size: 16px; font-weight: bold;'> "+serialNoLabel+" </div>";
+                                content = content + "<div width='25%' style='float: left; width: 30%; display: inline-table; font-size: 16px; font-weight: bold;'>"+geoLocationLabel+"</div>";
+                                content = content + "<div width='25%' style='float: left; width: 30%; display: inline-table; font-size: 16px; font-weight: bold;'>"+dateLabel+"</div>";
+                                content = content + "<div width='25%' style='float: left; width: 10%; display: inline-table; font-size: 16px; font-weight: bold;'>"+protocolLabel+"</div>";
+                                content = content + "<div width='25%' style='float: left; width: 20%; display: inline-table; font-size: 16px; font-weight: bold;'>"+locationLabel+"</div>";
                                 content = content + "</div>";
                                 if(historyData.length > 0 ) {
                                         content = content + "<div style='float: left; width: 90%; margin:auto; text-align: center; border: 1px solid #000; display: inline-table; padding: 10px;' >";
