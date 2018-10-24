@@ -1,0 +1,4 @@
+<zimlet name="com_zimbra_login_history" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
+    <include>js/login_history.js</include>
+    <handlerObject>Com_Zimbra_Login_History</handlerObject>
+</zimlet>
