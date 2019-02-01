@@ -206,7 +206,7 @@ SearchHighlighterZimlet.prototype.addMenuButton = function(controller, menu) {
 		var op = {
 			id:			 ID,
 			text:		  text,
-			image:		  "search"
+			image:		  "Search"
 		};
 		var opDesc = ZmOperation.defineOperation(null, op);
 		menu.addOp(ID, 1000);//add the button at the bottom
