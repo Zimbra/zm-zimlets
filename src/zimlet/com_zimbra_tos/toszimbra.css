@@ -1,0 +1,34 @@
+#TosZimletPref .WindowOuterContainer {
+	background: #53565a;
+	border-radius: 4px;
+	box-shadow: none;
+	max-width: 700px;
+	min-width: 600px;
+	height: 80%;
+	overflow: auto;
+}
+#TosZimletPref_title {
+	color: #fff;
+    font-size: 16px;
+	text-align: center;
+}
+.toscontent {
+	border: 1px solid #f2f2f2;
+	overflow-y: scroll;
+	height: 200px;
+	margin: 10px 20px 0 20px;
+	padding: 10px 20px;
+	position: relative;
+	width: 600px;
+}
+
+.tosDialog {
+	padding: 15px;
+}
+#TosZimletPref_buttons {
+	float: right;
+	margin-top: -40px;
+}
+#TosZimletPref_buttonsSep {
+	display: none;
+}
