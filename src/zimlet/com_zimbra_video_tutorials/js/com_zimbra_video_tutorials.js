@@ -113,7 +113,7 @@ function() {
         {
                 "id" : "6", 
                 "videoTitle"   : "How to add/create Contacts",
-                "videpPath" : "https://video.nic.in/ Create_Contact.mp4"
+                "videpPath" : "https://video.nic.in/Create_Contact.mp4"
         },
         {
                 "id" : "7", 
