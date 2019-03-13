@@ -90,12 +90,6 @@ function() {
 	].join("");
 };
 
-//Zimlet framework calls this when the overview panel icon is single clicked
-Com_Zimbra_Tos.prototype.singleClicked =
-function() {
-	this._showPreferenceDlg();
-};
-
 /**
  * Listens for the OK preferences button.
  * 

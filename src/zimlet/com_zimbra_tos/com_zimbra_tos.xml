@@ -5,4 +5,7 @@
     <handlerObject>Com_Zimbra_Tos</handlerObject>
     <zimletPanelItem label="${msg.label}">
     </zimletPanelItem>
+    <userProperties>
+        <property type="string" name="zimbraPrefAcceptedClientTOS" value="false"/>
+    </userProperties>
 </zimlet>
