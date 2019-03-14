@@ -1,0 +1,5 @@
+<zimlet name="com_zimbra_video_tutorials" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
+	<include>js/com_zimbra_video_tutorials.js</include>
+	<includeCSS>css/style.css</includeCSS>
+	<handlerObject>Com_Zimbra_Video_Tutorials</handlerObject>
+</zimlet>
