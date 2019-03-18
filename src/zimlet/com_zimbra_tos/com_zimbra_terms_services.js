@@ -66,7 +66,7 @@ Com_Zimbra_Tos.prototype._showPreferenceDlg =
 	this._preferenceDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._okPreferenceBtnListener));
 	this._preferenceDialog.setButtonEnabled(DwtDialog.OK_BUTTON, false);
 	
-	this.acceptedtos = Boolean(this.getUserProperty("zimbraPrefAcceptedClientTOS"));
+	this.acceptedtos = Boolean(this.getUserProperty("terms_services_accepted"));
 
 	document.getElementById("tos_accept_div1").checked = this.acceptedtos;
 	if (!this.acceptedtos) {
@@ -90,12 +90,6 @@ function() {
 	].join("");
 };
 
-//Zimlet framework calls this when the overview panel icon is single clicked
-Com_Zimbra_Tos.prototype.singleClicked =
-function() {
-	this._showPreferenceDlg();
-};
-
 /**
  * Listens for the OK preferences button.
  * 
@@ -104,7 +98,8 @@ Com_Zimbra_Tos.prototype._okPreferenceBtnListener =
 function() {
 	this._preferenceDialog.popdown();
 	var domVal = document.getElementById("tos_accept_div1").checked;
-	this.setUserProperty("zimbraPrefAcceptedClientTOS", domVal, true);
+	this.setUserProperty("terms_services_accepted", domVal, true);
+	document.getElementById("tos_accept_div1").setAttribute("disabled");
 };
 
 /**
