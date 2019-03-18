@@ -99,7 +99,7 @@ function() {
 	this._preferenceDialog.popdown();
 	var domVal = document.getElementById("tos_accept_div1").checked;
 	this.setUserProperty("terms_services_accepted", domVal, true);
-	document.getElementById("tos_accept_div1").setAttribute("disabled");
+	document.getElementById("tos_accept_div1").setAttribute("disabled","true");
 };
 
 /**
