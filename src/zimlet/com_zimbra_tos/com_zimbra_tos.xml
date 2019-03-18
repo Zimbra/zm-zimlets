@@ -1,11 +1,7 @@
-<zimlet name="com_zimbra_tos" version="1.0" description="Displays Terms of Services">
+<zimlet name="com_zimbra_tos" version="1.0" description="{msg.description}">
     <include>com_zimbra_terms_services.js</include>
     <includeCSS>toszimbra.css</includeCSS>
     <include>templates/TOS.template.js</include>
     <handlerObject>Com_Zimbra_Tos</handlerObject>
-    <zimletPanelItem label="${msg.label}">
-    </zimletPanelItem>
-    <userProperties>
-        <property type="string" name="zimbraPrefAcceptedClientTOS" value="false"/>
-    </userProperties>
+    <zimletPanelItem label="${msg.label}" />
 </zimlet>

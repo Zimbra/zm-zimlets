@@ -1,7 +1,7 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
  * Zimbra Collaboration Suite Zimlets
- * Copyright (C) 2011, 2013, 2014, 2016 Synacor, Inc.
+ * Copyright (C) 2011, 2013, 2014, 2016, 2019 Synacor, Inc.
  *
  * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * The Initial Developer of the Original Code is Zimbra, Inc.  All rights to the Original Code were
  * transferred by Zimbra, Inc. to Synacor, Inc. on September 14, 2015.
  *
- * All portions of the code are Copyright (C) 2011, 2013, 2014, 2016 Synacor, Inc. All Rights Reserved.
+ * All portions of the code are Copyright (C) 2011, 2013, 2014, 2016, 2019 Synacor, Inc. All Rights Reserved.
  * ***** END LICENSE BLOCK *****
  */
 
@@ -64,7 +64,7 @@ Com_Zimbra_Tos.prototype._showPreferenceDlg =
 	this._preferenceView.getHtmlElement().innerHTML = this._createPrefView();
 	this._preferenceDialog = this._createDialog({title: this.getMessage("TosZimlet_label"), view: this._preferenceView, standardButtons: [DwtDialog.OK_BUTTON], id: "TosZimletPref"});
 	this._preferenceDialog.setButtonListener(DwtDialog.OK_BUTTON, new AjxListener(this, this._okPreferenceBtnListener));
-
+	this._preferenceDialog.setButtonEnabled(DwtDialog.OK_BUTTON, false);
 	
 	this.acceptedtos = Boolean(this.getUserProperty("zimbraPrefAcceptedClientTOS"));
 
@@ -84,7 +84,7 @@ function() {
 		this.getMessage("TosZimlet_content"),
 		"</div>",
 		"<div class='tosDialog'>",
-		"<input id='tos_accept_div1' type='checkbox'/>",
+		"<input id='tos_accept_div1' type='checkbox' onchange='tosChecked(this);' />",
 		this.getMessage("TosZimlet_description"),
 		"</div>"
 	].join("");
@@ -107,3 +107,12 @@ function() {
 	this.setUserProperty("zimbraPrefAcceptedClientTOS", domVal, true);
 };
 
+/**
+ * Listens for the Checkbox.
+ * 
+ */
+function tosChecked(checkbox) {
+	if(document.getElementById("tos_accept_div1").checked) {
+		Com_Zimbra_Tos._preferenceDialog.setButtonEnabled(DwtDialog.OK_BUTTON, true);
+	}
+};
