@@ -34,7 +34,6 @@
     font-size: 16px;
     font-weight: bold;
     height: 90%;
-    overflow-y: scroll;
 }
 
 .description {
@@ -53,9 +52,11 @@
     padding-left: 10px;
     margin-bottom: 10px;
     float: left;
+    height: 392px;
+    display: block;
 }
 
-.videoLabel {
+.videoTitle {
     width: 100%;
     float: left;
     display: block;
@@ -63,10 +64,38 @@
     color: rgb(0, 135, 195);
 }
 
+.videoList {
+    overflow-y: scroll;
+    width: 100%;
+    padding: 2px;
+    height: 200px;
+}
+
+.videoLabel {
+    width: 30%;
+    float: left;
+    display: block;
+    cursor: pointer;
+    color: #0087c3;
+    padding: 3px 0px 10px 10px;
+    height: 32px;
+    border-left: 1px solid #000;
+    border-bottom: 1px solid #000;
+    overflow: hidden;
+}
+
+.videoLabelLastItemInRow {
+    border-right: 1px solid #000;
+}
+
+.videoLabelFirstRow{
+    border-top: 1px solid #000;    
+}
+
 .videoContent {
     text-align: center;
     border-bottom:1px solid #000; 
-    display: none;
+    display: block;
     float: left;
     width: 100%;
     padding: 15px 0;
@@ -76,4 +105,5 @@
 .videos {
     width: 600px;
     max-width: 100%;
+    height: 337.50px
 }
