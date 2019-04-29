@@ -78,6 +78,58 @@ function(appName) {
         }
 };
 
+var videoJSON = [{
+        "id" : "1", 
+        "videoTitle"   : "How to create  Briefcase",
+        "videpPath" : "https://video.nic.in/Create_a_Briefcase.mp4"
+},
+{
+        "id" : "2", 
+        "videoTitle"   : "How to create  Calendar Appointment",
+        "videpPath" : "https://video.nic.in/Create_a_Calendar_Appointment.mp4"
+},
+{
+        "id" : "3", 
+        "videoTitle"   : "How to create Task",
+        "videpPath" : "https://video.nic.in/Create_a_Task.mp4"
+},
+{
+        "id" : "4", 
+        "videoTitle"   : "How to create Tag",
+        "videpPath" : "https://video.nic.in/Create_a_Tag.mp4"
+},
+{
+        "id" : "5", 
+        "videoTitle"   : "Configure IMAP/POP/SMTPS over mobile",
+        "videpPath" : "https://video.nic.in/Mobile_Config_Tutorial_IMAP_POP_SMTP-00001.mp4"
+},
+{
+        "id" : "6", 
+        "videoTitle"   : "How to add/create Contacts",
+        "videpPath" : "https://video.nic.in/Create_Contact.mp4"
+},
+{
+        "id" : "7", 
+        "videoTitle"   : "How to Search mails and Saved Search",
+        "videpPath" : "https://video.nic.in/Search_Your_Content_and_Saved_Search_Tutorial.mp4"
+},
+{
+        "id" : "8", 
+        "videoTitle"   : "Mobile user-manual",
+        "videpPath" : "https://video.nic.in/android_mobile_user-manual.mp4"
+},
+{
+        "id" : "9", 
+        "videoTitle"   : "IOS Mobile",
+        "videpPath" : "https://video.nic.in/iSO_Mobile.mp4"
+},
+{
+        "id" : "10", 
+        "videoTitle"   : "How to add and delete country policy",
+        "videpPath" : "https://video.nic.in/kavach_add_and_delete_country_policy.mp4"
+}
+];
+
 Com_Zimbra_Video_Tutorials.prototype.LoadVideos =
 function() {
         var videoData = '';
@@ -85,92 +137,37 @@ function() {
         //TODO Don't remove this line, if client need any description we can uncomment it back
         //videoData = videoData + "<div class='description'>"+this.getMessage("description")+"</div>"
 
-        var videoJSON = [{
-                "id" : "1", 
-                "videoTitle"   : "How to create  Briefcase",
-                "videpPath" : "https://video.nic.in/Create_a_Briefcase.mp4"
-        },
-        {
-                "id" : "2", 
-                "videoTitle"   : "How to create  Calendar Appointment",
-                "videpPath" : "https://video.nic.in/Create_a_Calendar_Appointment.mp4"
-        },
-        {
-                "id" : "3", 
-                "videoTitle"   : "How to create Task",
-                "videpPath" : "https://video.nic.in/Create_a_Task.mp4"
-        },
-        {
-                "id" : "4", 
-                "videoTitle"   : "How to create Tag",
-                "videpPath" : "https://video.nic.in/Create_a_Tag.mp4"
-        },
-        {
-                "id" : "5", 
-                "videoTitle"   : "Configure IMAP/POP/SMTPS over mobile",
-                "videpPath" : "https://video.nic.in/Mobile_Config_Tutorial_IMAP_POP_SMTP-00001.mp4"
-        },
-        {
-                "id" : "6", 
-                "videoTitle"   : "How to add/create Contacts",
-                "videpPath" : "https://video.nic.in/Create_Contact.mp4"
-        },
-        {
-                "id" : "7", 
-                "videoTitle"   : "How to Search mails and Saved Search",
-                "videpPath" : "https://video.nic.in/Search_Your_Content_and_Saved_Search_Tutorial.mp4"
-        },
-        {
-                "id" : "8", 
-                "videoTitle"   : "Mobile user-manual",
-                "videpPath" : "https://video.nic.in/android_mobile_user-manual.mp4"
-        },
-        {
-                "id" : "9", 
-                "videoTitle"   : "IOS Mobile",
-                "videpPath" : "https://video.nic.in/iSO_Mobile.mp4"
-        },
-        {
-                "id" : "10", 
-                "videoTitle"   : "How to add and delete country policy",
-                "videpPath" : "https://video.nic.in/kavach_add_and_delete_country_policy.mp4"
-        }
-        ];
-
+        videoData += "<div>"
+        videoData += "<div class='videoContainer' id='videoContainer'>";
+        videoData += "<center><span class='videoTitle'  id='span_video'>"+videoJSON[0].videoTitle+"</span></center>";
+        videoData += "<div class='videoContent' id='videoContent_video'>";
+        videoData += "<video class='videos' controls controlsList=' nodownload noremoteplayback' id='videoPlayer_video'>";
+        videoData += "<source src='"+videoJSON[0].videoPath+"' type='video/mp4'>";
+        videoData += "Your browser does not support the video tag.";
+        videoData += "</video>";
+        videoData += "</div>";
+        videoData += "</div>";
+        videoData += "<div class=videoList>";
+        var noOfVideos = videoJSON.length;
         for (key in videoJSON) {
-                videoData = videoData + "<div class='videoContainer' id='videoContainer"+videoJSON[key].id+"'>";
-                videoData = videoData + "<span class=\"videoLabel\" onclick=\"toggleVideos()\" id='span_video"+videoJSON[key].id+"'>"+videoJSON[key].videoTitle+"</span>";
-                videoData = videoData + "<div class='videoContent' id='videoContent_video"+videoJSON[key].id+"'>";
-                videoData = videoData + "<video class='videos' controls controlsList=' nodownload noremoteplayback' id='videoPlayer_video"+videoJSON[key].id+"'>";
-                videoData = videoData + "<source src='"+videoJSON[key].videpPath+"' type='video/mp4'>";
-                videoData = videoData + "Your browser does not support the video tag.";
-                videoData = videoData + "</video>";
-                videoData = videoData + "</div>";
-                videoData = videoData + "</div>";
+                var isLastItemInRow = (((key+1) % 3 === 0) || (key == (noOfVideos - 1)));
+                var isFirstRow = ( key <= 2 );
+                videoData += "<div class='videoLabel"+(isLastItemInRow? ' videoLabelLastItemInRow' : ' ') +(isFirstRow? ' videoLabelFirstRow' : ' ')+"' onclick='changeVideo("+videoJSON[key].id+")' >"+videoJSON[key].videoTitle+"</div>";        
         }
+        videoData += "</div>"
 
     document.getElementById('videoDataDiv').innerHTML = videoData;
 }
 
-function toggleVideos(e) {
-        e = e || window.event;
-        e = e.target || e.srcElement;
-        var clickId = e.id;
-        var clickIdSpan = clickId.split("span_");
-
-        if(document.getElementById("videoContent_"+clickIdSpan[1]).style.display == "block") {
-                var videoPlayer = document.getElementById('videoPlayer_'+clickIdSpan[1]);
-                videoPlayer.pause();
-                document.getElementById("videoContent_"+clickIdSpan[1]).style.display = "none";
-        } else {
-                hideElements(document.querySelectorAll('.videoContent'));
-                document.getElementById("videoContent_"+clickIdSpan[1]).style.display = "block";
-        }
-}
-
-function hideElements(elements) {
-        elements = elements.length ? elements : [elements];
-        for (var index = 0; index < elements.length; index++) {
-                elements[index].style.display = 'none';
+function changeVideo(id){
+        var video = videoJSON.find(function(videoInfo){
+                return videoInfo.id == id;
+        })
+        if(video){
+                var videoLabel = document.getElementById("span_video");
+                var videoPlayer = document.getElementById("videoPlayer_video");
+                videoLabel.innerHTML = video.videoTitle;
+                videoPlayer.src = video.videoPath;
+                videoPlayer.play();
         }
 }
