@@ -127,52 +127,52 @@ if (!Array.prototype.find) {
       }
 
 var videoJSON = [{
-        "id" : "1", 
+        "id" : 1, 
         "videoTitle"   : "How to create  Briefcase",
         "videoPath" : "https://video.nic.in/Create_a_Briefcase.mp4"
 },
 {
-        "id" : "2", 
+        "id" : 2, 
         "videoTitle"   : "How to create  Calendar Appointment",
         "videoPath" : "https://video.nic.in/Create_a_Calendar_Appointment.mp4"
 },
 {
-        "id" : "3", 
+        "id" : 3, 
         "videoTitle"   : "How to create Task",
         "videoPath" : "https://video.nic.in/Create_a_Task.mp4"
 },
 {
-        "id" : "4", 
+        "id" : 4, 
         "videoTitle"   : "How to create Tag",
         "videoPath" : "https://video.nic.in/Create_a_Tag.mp4"
 },
 {
-        "id" : "5", 
+        "id" : 5, 
         "videoTitle"   : "Configure IMAP/POP/SMTPS over mobile",
         "videoPath" : "https://video.nic.in/Mobile_Config_Tutorial_IMAP_POP_SMTP-00001.mp4"
 },
 {
-        "id" : "6", 
+        "id" : 6, 
         "videoTitle"   : "How to add/create Contacts",
         "videoPath" : "https://video.nic.in/Create_Contact.mp4"
 },
 {
-        "id" : "7", 
+        "id" : 7, 
         "videoTitle"   : "How to Search mails and Saved Search",
         "videoPath" : "https://video.nic.in/Search_Your_Content_and_Saved_Search_Tutorial.mp4"
 },
 {
-        "id" : "8", 
+        "id" : 8, 
         "videoTitle"   : "Mobile user-manual",
         "videoPath" : "https://video.nic.in/android_mobile_user-manual.mp4"
 },
 {
-        "id" : "9", 
+        "id" : 9, 
         "videoTitle"   : "IOS Mobile",
         "videoPath" : "https://video.nic.in/iSO_Mobile.mp4"
 },
 {
-        "id" : "10", 
+        "id" : 10, 
         "videoTitle"   : "How to add and delete country policy",
         "videoPath" : "https://video.nic.in/kavach_add_and_delete_country_policy.mp4"
 }
@@ -200,7 +200,7 @@ function() {
         for (key in videoJSON) {
                 var isLastItemInRow = (((key+1) % 3 === 0) || (key == (noOfVideos - 1)));
                 var isFirstRow = ( key <= 2 );
-                videoData += "<div class='videoLabel"+(isLastItemInRow? ' videoLabelLastItemInRow' : '') +(isFirstRow? ' videoLabelFirstRow' : '')+"' onclick='changeVideo("+videoJSON[key].id+")' >"+videoJSON[key].videoTitle+"</div>";        
+                videoData += "<div class='videoLabel"+(isLastItemInRow? ' videoLabelLastItemInRow' : '') +(isFirstRow? ' videoLabelFirstRow' : '')+"' onclick='changeVideo("+videoJSON[key].id+")' ><b>" + videoJSON[key].id + "</b>. " + videoJSON[key].videoTitle+"</div>";        
         }
         videoData += "</div>"
 
