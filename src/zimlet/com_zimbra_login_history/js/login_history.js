@@ -57,8 +57,8 @@ function(appName, active) {
                 case this._simpleAppName: {
                         var app = appCtxt.getApp(appName);
                         app.setContent("<div style='color:red; width: 90%; padding: 10px;' id='loadingdiv'>"+this.getMessage("lodingText")+"</div><div style='width: 100%; float: left;' id='loginhistorycontent'> </div>");
-                        var historyContent = this.GetHistory(this.getMessage("noDataFound"),this.getMessage("heading"), this.getMessage("serialNo"), this.getMessage("geoLocation"), this.getMessage("date"),this.getMessage("protocol"), this.getMessage("location"));
-												break;
+                        var historyContent = this.GetHistory(this.getMessage("noDataFound"),this.getMessage("heading"), this.getMessage("serialNo"), this.getMessage("geoLocation"), this.getMessage("date"),this.getMessage("protocol"), this.getMessage("location"), this.getMessage("locationMessage"));
+			break;
                 }
         }
 };
@@ -79,7 +79,7 @@ function(appName) {
 };
 
 Com_Zimbra_Login_History.prototype.GetHistory =
-function(noDataLabel, headingLabel, serialNoLabel, geoLocationLabel, dateLabel, protocolLabel, locationLabel) {
+function(noDataLabel, headingLabel, serialNoLabel, geoLocationLabel, dateLabel, protocolLabel, locationLabel, locationMessage) {
         var userEmail =  appCtxt.getActiveAccount().getEmail();
         var historyData;
         var xhttp = new XMLHttpRequest();
@@ -112,6 +112,7 @@ function(noDataLabel, headingLabel, serialNoLabel, geoLocationLabel, dateLabel, 
                                         }
                                 }
                                 content = content + "</div>"
+                                content = content + "<div style='width: 90%;float: left;padding-left: 10px;padding-top: 20px;font-size: 14px;color: red;'>"+locationMessage+"</div>"
                                 document.getElementById('loginhistorycontent').innerHTML = content;
                         }
                 }
