@@ -91,29 +91,45 @@ function(noDataLabel, headingLabel, serialNoLabel, geoLocationLabel, dateLabel, 
                                 document.getElementById('loginhistorycontent').innerHTML = noDataLabel;
                         } else {
                                 historyData = JSON.parse(this.responseText);
-                                var content = "<div style='width: 90%; color:red; border:1px solid #000; font-size: 16px; padding: 10px;'>"+headingLabel+"</div>";
-                                content = content + "<div style='float: left; width: 90%; margin:auto; text-align: center; border: 1px solid #000; display: inline-table; padding:10px;' >";
-                                content = content + "<div width='10%' style='float: left; width: 10%; display: inline-table; font-size: 16px; font-weight: bold;'> "+serialNoLabel+" </div>";
-                                content = content + "<div width='25%' style='float: left; width: 30%; display: inline-table; font-size: 16px; font-weight: bold;'>"+geoLocationLabel+"</div>";
-                                content = content + "<div width='25%' style='float: left; width: 30%; display: inline-table; font-size: 16px; font-weight: bold;'>"+dateLabel+"</div>";
-                                content = content + "<div width='25%' style='float: left; width: 10%; display: inline-table; font-size: 16px; font-weight: bold;'>"+protocolLabel+"</div>";
-                                content = content + "<div width='25%' style='float: left; width: 20%; display: inline-table; font-size: 16px; font-weight: bold;'>"+locationLabel+"</div>";
+                                var content = "<div style='width: 90%; color:red; border:0px solid #000; background-color: #0087C3; font-size: 16px; '></div>";
+                                content = content + "<div style='width: 100% background-color: #555; overflow: auto; display: block; border:1px solid #0087C3;'>";
+                                content = content + "<button title='click here' style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='all' id='protocolbutton_all' onClick='showData(name)'>All</button>";
+                                content = content + "<button title='click here'style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='soap' id='protocolbutton_soap' onClick='showData(name)'>WEB</button>";
+                                content = content + "<button title='click here'style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='imap' id='protocolbutton_imap' onClick='showData(name)'>IMAP</button>";
+                                content = content + "<button title='click here'style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='pop3' id='protocolbutton_pop3' onClick='showData(name)'>POP</button>";
+                                content = content + "<button title='click here'style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='smtp' id='protocolbutton_smtp' onClick='showData(name)'>SMTP</button>";
                                 content = content + "</div>";
-                                if(historyData.length > 0 ) {
-                                        content = content + "<div style='float: left; width: 90%; margin:auto; text-align: center; border: 1px solid #000; display: inline-table; padding: 10px;' >";
-                                        for(var i =0; i< historyData.length; i++) {
-                                                content = content + "<div style='width: 100%; float: left; margin: 5px 0px;'>";
-                                                content = content + "<div style='float: left; width: 10%; display: inline-table; font-size: 15px;'>" + (i + 1) + "</div>";
-                                                content = content + "<div style='float: left; width: 30%; display: inline-table; font-size: 15px;'>" + historyData[i].ip + "</div>";
-                                                content = content + "<div style='float: left; width: 30%; display: inline-table; font-size: 15px;'>" + historyData[i].requestTime + "</div>";
-                                                content = content + "<div style='float: left; width: 10%; display: inline-table; font-size: 15px;'>" + historyData[i].protocol + "</div>";
-                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[i].location + "</div>";
-                                                content = content + "</div>";
-                                        }
+                                
+                                content = content + "<div style='float: left; width: 100%; margin:auto; text-align: center; border:1px solid #0087C3;; display: inline-table;' >";
+                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 16px; color: #0087C3; font-weight: 500;'> "+serialNoLabel+" </div>";
+                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 16px; color: #0087C3; font-weight: 500;'>"+geoLocationLabel+"</div>";
+                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 16px; color: #0087C3; font-weight: 500;'>"+dateLabel+"</div>";
+                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 16px; color: #0087C3; font-weight: 500;'>"+protocolLabel+"</div>";
+                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 16px; color: #0087C3; font-weight: 500;'>"+locationLabel+"</div>";
+                                content = content + "</div>";
+                                var array = ["all", "soap", "imap", "pop3", "smtp"];
+                                
+                                if (historyData) {
+                                	for (var i = 0; i < array.length; i++) {
+                                        var type = array[i];
+                                        if(historyData[type].length > 0 ) {
+	                                        content = content + "<div style='float: left; width: 100%; margin:auto; text-align: center; border: 1px solid #000; display:none; ' id='protocolcontent_"+type+"' class='protocolcontent' >";
+	                                        for(var j =0; j< historyData[type].length; j++) {
+	                                                content = content + "<div style='width: 100%; float: left; margin: 5px 0px;'>";
+	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + (j + 1) + "</div>";
+	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].ip + "</div>";
+	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].requestTime + "</div>";
+	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].protocol + "</div>";
+	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].location + "</div>";
+	                                                content = content + "</div>";
+	                                        }
+	                                }
+                                        content = content + "</div>"
+									}
+                                	content = content + "<div style='width: 100%;float: left; padding-top: 20px;font-size: 14px;color: red;'>"+locationMessage+"</div>"
+                                	document.getElementById('loginhistorycontent').innerHTML = content;
+                                	showData('all');
                                 }
-                                content = content + "</div>"
-                                content = content + "<div style='width: 90%;float: left;padding-left: 10px;padding-top: 20px;font-size: 14px;color: red;'>"+locationMessage+"</div>"
-                                document.getElementById('loginhistorycontent').innerHTML = content;
                         }
                 }
         }
@@ -121,4 +137,25 @@ function(noDataLabel, headingLabel, serialNoLabel, geoLocationLabel, dateLabel, 
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send();
         return historyData;
+}
+
+function showData(type) {
+	var array = ["all", "soap", "imap", "pop3", "smtp"];
+	for (var j = 0; j < array.length; j++) {
+		if (type == array[j]) {
+			document.getElementById('protocolbutton_' + array[j]).style.backgroundColor = "#FFFFFF";
+			document.getElementById('protocolbutton_' + array[j]).style.color = "#000";
+		} else {
+			document.getElementById('protocolbutton_' + array[j]).style.backgroundColor = "#0087C3";
+			document.getElementById('protocolbutton_' + array[j]).style.color = "#FFFFFF";
+		}
+	}
+	
+	var divsToHide = document.getElementsByClassName("protocolcontent");
+    for(var i = 0; i < divsToHide.length; i++){
+        divsToHide[i].style.visibility = "hidden"; 
+        divsToHide[i].style.display = "none"; 
+    }
+    document.getElementById('protocolcontent_'+type).style.visibility = "visible";
+    document.getElementById('protocolcontent_'+type).style.display = "block";
 }
