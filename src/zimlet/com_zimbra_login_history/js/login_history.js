@@ -99,8 +99,8 @@ Com_Zimbra_Login_History.prototype.appLaunch =
 	                        });
 	                        $jQuery("#filterdata_lh").on('click', function(){
 	                            var from_DateRange = document.getElementById("from_DateRange").value;
-	                        	var to_DateRange = document.getElementById("to_DateRange").value;
-	                        	var historyContent = Com_Zimbra_Login_History.GetHistory.call(this, from_DateRange, to_DateRange);
+	                            var to_DateRange = document.getElementById("to_DateRange").value;
+	                            var historyContent = Com_Zimbra_Login_History.GetHistory.call(this, from_DateRange, to_DateRange);
 	                        });
 	                        break;
 	                }
@@ -201,11 +201,6 @@ function formatDate(d) {
 		mm = '0' + mm;
 	} 
 	return yyyy + '-' + mm + '-' + dd;
-}
-
-Com_Zimbra_Login_History.prototype.tableHeader = 
-	function() {
-	
 }
 
 Com_Zimbra_Login_History.prototype.calendarHTML = 
