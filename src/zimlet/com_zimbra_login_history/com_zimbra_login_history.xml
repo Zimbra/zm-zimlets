@@ -1,4 +1,7 @@
 <zimlet name="com_zimbra_login_history" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
     <include>js/login_history.js</include>
+    <include>js/jquery_calender_lh.js</include>
+    <include>js/jquery-ui_lh.js</include>
+    <includeCSS>css/jquery-ui_lh.css</includeCSS>
     <handlerObject>Com_Zimbra_Login_History</handlerObject>
 </zimlet>
