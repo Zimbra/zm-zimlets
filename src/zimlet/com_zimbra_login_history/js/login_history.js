@@ -45,13 +45,13 @@ Com_Zimbra_Login_History.prototype = new ZmZimletBase();
 */
 var noDataLabel, serialNoLabel, geoLocationLabel, dateLabel, protocolLabel,locationLabel, locationMessage;
 Com_Zimbra_Login_History.prototype.init = function () {
-	noDataLabel = this.getMessage("noDataFound");
-    serialNoLabel = this.getMessage("serialNo");
-    geoLocationLabel = this.getMessage("geoLocation");
-    dateLabel = this.getMessage("date");
-    protocolLabel = this.getMessage("protocol");
-    locationLabel = this.getMessage("location");
-    locationMessage = this.getMessage("locationMessage");
+        noDataLabel = this.getMessage("noDataFound");
+        serialNoLabel = this.getMessage("serialNo");
+        geoLocationLabel = this.getMessage("geoLocation");
+        dateLabel = this.getMessage("date");
+        protocolLabel = this.getMessage("protocol");
+        locationLabel = this.getMessage("location");
+        locationMessage = this.getMessage("locationMessage");
 	this._simpleAppName = this.createApp(this.getMessage("label"), "zimbraIcon", this.getMessage("description"));
 };
 
@@ -68,13 +68,8 @@ function(appName, active) {
                         var app = appCtxt.getApp(appName);
                         
                         
-                        app.setContent("<div style='width: 100%; float: left;' id='loginhistorydatecontent'>"+this.calendarHTML()+"</div><div style='color:red; width: 90%; padding: 10px;' id='loadingdiv'>"+this.getMessage("lodingText")+"</div><div style='width: 100%; float: left;' id='loginhistorycontent'> </div>");
-                        var d = new Date();
-                        var endDate = formatDate(new Date());
-                        var startDate = formatDate(d.setDate(d.getDate() - 15));
-                        document.getElementById("from_DateRange").value = startDate;
-                        document.getElementById("to_DateRange").value = endDate;
-                        var historyContent = this.GetHistory(startDate, endDate);
+                        app.setContent("<div style='width: 100%; float: left;' id='loginhistorydatecontent'>"+Com_Zimbra_Login_History.calendarHTML.call(this)+"</div><div style='color:red; width: 90%; padding: 10px;' id='loadingdiv'>"+this.getMessage("lodingText")+"</div><div style='width: 100%; float: left;' id='loginhistorycontent'> </div>");
+                        var historyContent = this.GetHistory('', '');
                         break;
                 }
         }
@@ -89,23 +84,47 @@ Com_Zimbra_Login_History.prototype.appLaunch =
 	function(appName) {
 	        switch (appName) {
 	                case this._simpleAppName: {
-	                        var app = appCtxt.getApp(appName);
-	                        $jQuery = $.noConflict();
-	                        $jQuery('body').on('focus',".datepicker_recurring_from", function(){
-	                             $jQuery(this).datepicker({minDate: -15, maxDate: 0});
-	                        });
-	                        $jQuery('body').on('focus',".datepicker_recurring_to", function(){
-	                             $jQuery(this).datepicker({minDate: -15, maxDate: 0});
-	                        });
-	                        $jQuery("#filterdata_lh").on('click', function(){
-	                            var from_DateRange = document.getElementById("from_DateRange").value;
-	                            var to_DateRange = document.getElementById("to_DateRange").value;
-	                            var historyContent = Com_Zimbra_Login_History.GetHistory.call(this, from_DateRange, to_DateRange);
-	                        });
-	                        break;
+	                	$cal("#from_DateRange").datepicker({
+	                        minDate: -14, 
+                            maxDate: 0,
+                            showOn: "button",
+                            buttonImage: "img/calendar.gif",
+                            buttonImageOnly: true,
+                            buttonText: "Select date"
+	                	});
+	                	$cal("#to_DateRange").datepicker({
+	                        minDate: -14, 
+                            maxDate: 0,
+                            showOn: "button",
+                            buttonImage: "img/calendar.gif",
+                            buttonImageOnly: true,
+                            buttonText: "Select date"
+	                	});
+	                    $cal("#filterdata_lh").on('click', function(){
+	                        var from_DateRange = document.getElementById("from_DateRange").value;
+	                        var to_DateRange = document.getElementById("to_DateRange").value;
+	                        var historyContent = Com_Zimbra_Login_History.GetHistory.call(this, from_DateRange, to_DateRange);
+	                    });
+	                    break;
 	                }
 	        }
 	};
+
+
+
+Com_Zimbra_Login_History.prototype.calendarHTML = 
+function() {
+        var content = "<div style='width: 100% background-color: #555; overflow: auto; display: block;" +
+                 "font-weight: 500; padding-left: 10px; color: #0087C3; margin-bottom: 30px;'>";
+        content = content + "<table><tr><td style='padding-right:10px;'>From Date Range</td>";
+        content = content + "<td style='padding-right:10px;'><input type='text' name='from_DateRange' id='from_DateRange' readonly='true' class='datepicker_recurring_from' value='' autocomplete='off'/>";
+        content = content + "</td><td style='padding-right:10px;'>To Date Range";
+        content = content + "</td><td style='padding-right:10px;'><input type='text' name='to_DateRange' id='to_DateRange' readonly='true' class='datepicker_recurring_to' value='' autocomplete='off'/>";
+        content = content + "</td><td><button type='button' name='submit' id='filterdata_lh' value='' style='cursor: pointer; padding: 4px 15px 4px 15px; border-radius: 3px;" +
+             "border-collapse: separate; border: 1px solid #bfbfbf; background: #ffffff;'>Go</button>";
+        content = content + "</td></tr></table></div>";
+        return content;
+}
 
 Com_Zimbra_Login_History.prototype.GetHistory =
 function(startDate, endDate) {
@@ -201,18 +220,4 @@ function formatDate(d) {
 		mm = '0' + mm;
 	} 
 	return yyyy + '-' + mm + '-' + dd;
-}
-
-Com_Zimbra_Login_History.prototype.calendarHTML = 
-	function() {
-	 var content = "<div style='width: 100% background-color: #555; overflow: auto; display: block;" +
-	 		"font-weight: 500; padding-left: 10px; color: #0087C3; margin-bottom: 30px;'>";
-     content = content + "<table><tr><td style='padding-right:10px;'>From Date Range</td>";
-     content = content + "<td style='padding-right:10px;'><input type='text' name='from_DateRange' id='from_DateRange' readonly='true' class='datepicker_recurring_from' value='' autocomplete='off'/>";
-     content = content + "</td><td style='padding-right:10px;'>To Date Range";
-     content = content + "</td><td style='padding-right:10px;'><input type='text' name='to_DateRange' id='to_DateRange' readonly='true' class='datepicker_recurring_to' value='' autocomplete='off'/>";
-     content = content + "</td><td><button type='button' name='submit' id='filterdata_lh' value='' style='cursor: pointer; padding: 4px 15px 4px 15px; border-radius: 3px;" +
-     		"border-collapse: separate; border: 1px solid #bfbfbf; background: #ffffff;'>Go</button>";
-     content = content + "</td></tr></table></div>";
-     return content;
 }
