@@ -104,7 +104,12 @@ Com_Zimbra_Login_History.prototype.appLaunch =
 	                        var from_DateRange = document.getElementById("from_DateRange").value;
 	                        var to_DateRange = document.getElementById("to_DateRange").value;
 	                        var historyContent = Com_Zimbra_Login_History.GetHistory.call(this, from_DateRange, to_DateRange);
-	                    });
+                            });
+                            $cal("#clearcal").on('click', function() {
+                                document.getElementById("from_DateRange").value = '';
+                                document.getElementById("to_DateRange").value = '';
+                                var historyContent = Com_Zimbra_Login_History.GetHistory.call(this, '', '');
+                            })
 	                    break;
 	                }
 	        }
@@ -114,14 +119,14 @@ Com_Zimbra_Login_History.prototype.appLaunch =
 
 Com_Zimbra_Login_History.prototype.calendarHTML = 
 function() {
-        var content = "<div style='width: 100% background-color: #555; overflow: auto; display: block;" +
-                 "font-weight: 500; padding-left: 10px; color: #0087C3; margin-bottom: 30px;'>";
+        var content = "<div style='width: 100%; overflow: auto; display: block;" +
+                 "font-weight: 500; padding-left: 10px; color: #0087C3; margin-bottom: 30px; margin-top: 10px;'>";
         content = content + "<table><tr><td style='padding-right:10px;'>From Date Range</td>";
         content = content + "<td style='padding-right:10px;'><input type='text' name='from_DateRange' id='from_DateRange' readonly='true' class='datepicker_recurring_from' value='' autocomplete='off'/>";
         content = content + "</td><td style='padding-right:10px;'>To Date Range";
         content = content + "</td><td style='padding-right:10px;'><input type='text' name='to_DateRange' id='to_DateRange' readonly='true' class='datepicker_recurring_to' value='' autocomplete='off'/>";
         content = content + "</td><td><button type='button' name='submit' id='filterdata_lh' value='' style='cursor: pointer; padding: 4px 15px 4px 15px; border-radius: 3px;" +
-             "border-collapse: separate; border: 1px solid #bfbfbf; background: #ffffff;'>Go</button>";
+             "border-collapse: separate; border: 1px solid #bfbfbf; background: #ffffff;'>Go</button><span id='clearcal' style='margin-left: 15px; font-size: 14px; cursor: pointer; font-weight: bold; '>Clear</span>";
         content = content + "</td></tr></table></div>";
         return content;
 }
@@ -130,17 +135,22 @@ Com_Zimbra_Login_History.prototype.GetHistory =
 function(startDate, endDate) {
         var userEmail =  appCtxt.getActiveAccount().getEmail();
         var historyData;
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200 && this.responseText != null && this.responseText != "") {
-                        document.getElementById('loadingdiv').style.display = "none";
-                        if( this.responseText.trim().toLowerCase() == 'no records found' ) {
-                                document.getElementById('loginhistorycontent').style.padding = '10px';
-                                document.getElementById('loginhistorycontent').innerHTML = noDataLabel;
-                        } else {
-                                historyData = JSON.parse(this.responseText);
+        document.getElementById('loadingdiv').style.display = 'block';
+        var apiRequestUrl = '/public/historyProxy.jsp?useremail='+userEmail+'&startDate='+startDate+'&endDate='+endDate;
+        $cal.ajax(apiRequestUrl,
+        {
+                dataType: 'json', // type of response data
+                timeout: 6000,     // timeout milliseconds
+                async: true, // sync call async= false, async call async=true
+                success: function (data,status,xhr) {   // success callback function
+                        var historyData = data;
+                        var splashScreenTable = document.getElementById("SplashScreenTable");
+                        var dataLength = historyData['all'].length;
+                        document.getElementById('loadingdiv').style.display = 'none';
+                        if (historyData && dataLength > 0) {
+
                                 var content = "<div style='width: 90%; color:red; border:0px solid #000; background-color: #0087C3; font-size: 16px; '></div>";
-                                content = content + "<div style='width: 100% background-color: #555; overflow: auto; display: block; border:1px solid #0087C3;'>";
+                                content = content + "<div style='width: 100%; overflow: auto; display: block; border:1px solid #0087C3;'>";
                                 content = content + "<button title='click here' style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='all' id='protocolbutton_all' onClick='showData(name)'>All</button>";
                                 content = content + "<button title='click here'style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='soap' id='protocolbutton_soap' onClick='showData(name)'>WEB</button>";
                                 content = content + "<button title='click here'style='font-size: 15px; font-weight: bold; font-family: monospace; width: 20%; background-color: #0087C3; color: #fff; cursor: pointer; border: none; padding: 5px;' type='button' name='imap' id='protocolbutton_imap' onClick='showData(name)'>IMAP</button>";
@@ -156,13 +166,11 @@ function(startDate, endDate) {
                                 content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 16px; color: #0087C3; font-weight: 500;'>"+locationLabel+"</div>";
                                 content = content + "</div>";
                                 var array = ["all", "soap", "imap", "pop3", "smtp"];
-                                
-                                if (historyData) {
-                                	for (var i = 0; i < array.length; i++) {
+                                for (var i = 0; i < array.length; i++) {
                                         var type = array[i];
-                                        if(historyData[type].length > 0 ) {
-	                                        content = content + "<div style='float: left; width: 100%; margin:auto; text-align: center; border: 1px solid #000; display:none; ' id='protocolcontent_"+type+"' class='protocolcontent' >";
-	                                        for(var j =0; j< historyData[type].length; j++) {
+                                        if(historyData[type].length > 0) {
+                                                content = content + "<div style='float: left; width: 100%; margin:auto; text-align: center; border: 1px solid #000; display:none; ' id='protocolcontent_"+type+"' class='protocolcontent' >";
+                                                for(var j =0; j< historyData[type].length; j++) {
 	                                                content = content + "<div style='width: 100%; float: left; margin: 5px 0px;'>";
 	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + (j + 1) + "</div>";
 	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].ip + "</div>";
@@ -170,20 +178,25 @@ function(startDate, endDate) {
 	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].protocol + "</div>";
 	                                                content = content + "<div style='float: left; width: 20%; display: inline-table; font-size: 15px;'>" + historyData[type][j].location + "</div>";
 	                                                content = content + "</div>";
-	                                        }
-	                                }
+                                                }
+                                        }
                                         content = content + "</div>"
-									}
-                                	content = content + "<div style='width: 100%;float: left; padding-top: 20px;font-size: 14px;color: red;'>"+locationMessage+"</div>"
-                                	document.getElementById('loginhistorycontent').innerHTML = content;
-                                	showData('all');
                                 }
+                                content = content + "<div style='width: 100%;float: left; padding-top: 20px;font-size: 14px;color: red;'>"+locationMessage+"</div>"
+                                document.getElementById('loginhistorycontent').innerHTML = content;
+                                showData('all');
+                        } else {
+                                document.getElementById('loadingdiv').style.display = 'none';
+                                document.getElementById('loginhistorycontent').style.padding = '10px';
+                                document.getElementById('loginhistorycontent').innerHTML = noDataLabel;
                         }
+                },
+                error: function (jqXhr, textStatus, errorMessage) { // error callback
+                        document.getElementById('loadingdiv').style.display = 'none';
+                        document.getElementById('loginhistorycontent').style.padding = '10px';
+                        document.getElementById('loginhistorycontent').innerHTML = noDataLabel;
                 }
-        }
-        xhttp.open("GET", "/public/historyProxy.jsp?useremail="+userEmail+"&startDate="+startDate+"&endDate="+endDate, true);
-        xhttp.setRequestHeader("Content-Type", "application/json");
-        xhttp.send();
+        });
         return historyData;
 }
 
@@ -204,8 +217,11 @@ function showData(type) {
         divsToHide[i].style.visibility = "hidden"; 
         divsToHide[i].style.display = "none"; 
     }
-    document.getElementById('protocolcontent_'+type).style.visibility = "visible";
-    document.getElementById('protocolcontent_'+type).style.display = "block";
+    var protocolContentDiv = document.getElementById('protocolcontent_'+type);
+    if(protocolContentDiv) {
+                protocolContentDiv.style.visibility = "visible";
+                protocolContentDiv.style.display = "block";
+    }
 }
 
 function formatDate(d) {
