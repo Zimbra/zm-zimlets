@@ -91,11 +91,15 @@ function() {
 		var jspUrl   = hostname + "/public/templatesProxy.jsp?id=" + allTemplateIds;
 		var response = AjxRpc.invoke(null, jspUrl, null, null, true);
 
-		if (response.success == true) {
-			var jsonData = JSON.parse(response.text);
-			if (jsonData.hasOwnProperty('count') && jsonData.count > 0) {
-				return jsonData;
-			}
+		if (response.success == true && response.text != null && response.text != "") {
+			try {
+				var jsonData = JSON.parse(response.text);
+				if (jsonData.hasOwnProperty('count') && jsonData.count > 0) {
+					return jsonData;
+				}
+	        } catch (err) {
+	            return templateData;
+	        }
 		}
 	}
 	return templateData;
