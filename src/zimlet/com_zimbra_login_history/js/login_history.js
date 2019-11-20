@@ -145,7 +145,7 @@ function(startDate, endDate) {
                 success: function (data,status,xhr) {   // success callback function
                         var historyData = data;
                         var splashScreenTable = document.getElementById("SplashScreenTable");
-                        var dataLength = historyData['all'].length;
+                        var dataLength = historyData && historyData['all'] ? historyData['all'].length : 0;
                         document.getElementById('loadingdiv').style.display = 'none';
                         if (historyData && dataLength > 0) {
 
