@@ -1,0 +1,9 @@
+<zimlet name="com_zimbra_vc_meeting" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
+	<include>js/com_zimbra_vc_meeting.js</include>
+	<includeCSS>css/style.css</includeCSS>
+	<handlerObject>Com_Zimbra_VC_Meeting</handlerObject>
+
+	<zimletPanelItem label="${msg.label}" icon="Attachment">
+        <toolTipText>${msg.label}</toolTipText>
+    </zimletPanelItem>
+</zimlet>
