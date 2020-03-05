@@ -20,7 +20,12 @@
  * All portions of the code are Copyright (C) 2007, 2014, 2016 Synacor, Inc. All Rights Reserved.
  * ***** END LICENSE BLOCK *****
  */
- .heading {
+
+ .videotutorials {
+     overflow: scroll;
+     height: 100%;
+ }
+ .videoheading {
     width: 90%;
     display: block;
     font-size: 20px;
@@ -66,7 +71,6 @@
 }
 
 .videoList {
-    overflow-y: scroll;
     width: 100%;
     padding: 2px;
     height: 200px;

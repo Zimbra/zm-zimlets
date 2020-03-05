@@ -56,7 +56,7 @@ function(appName, active) {
         switch (appName) {
                 case this._simpleAppName: {
                         var app = appCtxt.getApp(appName);
-                        app.setContent("<div class='heading' id='loadingdiv'>"+this.getMessage("heading")+"</div><div class='container' id='videoDataDiv'> </div>");
+                        app.setContent("<div class='videotutorials'><div class='videoheading' id='headingdiv'>"+this.getMessage("heading")+"</div><div class='container' id='videoDataDiv'> </div></div>");
                         var historyContent = this.LoadVideos();
 			break;
                 }
@@ -129,52 +129,52 @@ if (!Array.prototype.find) {
 var videoJSON = [{
         "id" : 1, 
         "videoTitle"   : "How to create  Briefcase",
-        "videoPath" : "https://video.nic.in/Create_a_Briefcase.mp4"
+        "videoPath" : "https://email.gov.in/videos/Create_a_Briefcase.mp4"
 },
 {
         "id" : 2, 
         "videoTitle"   : "How to create  Calendar Appointment",
-        "videoPath" : "https://video.nic.in/Create_a_Calendar_Appointment.mp4"
+        "videoPath" : "https://email.gov.in/videos/Create_a_Calendar_Appointment.mp4"
 },
 {
         "id" : 3, 
         "videoTitle"   : "How to create Task",
-        "videoPath" : "https://video.nic.in/Create_a_Task.mp4"
+        "videoPath" : "https://email.gov.in/videos/Create_a_Task.mp4"
 },
 {
         "id" : 4, 
         "videoTitle"   : "How to create Tag",
-        "videoPath" : "https://video.nic.in/Create_a_Tag.mp4"
+        "videoPath" : "https://email.gov.in/videos/Create_a_Tag.mp4"
 },
 {
         "id" : 5, 
         "videoTitle"   : "Configure IMAP/POP/SMTPS over mobile",
-        "videoPath" : "https://video.nic.in/Mobile_Config_Tutorial_IMAP_POP_SMTP-00001.mp4"
+        "videoPath" : "https://email.gov.in/videos/Mobile_Config_Tutorial_IMAP_POP_SMTP-00001.mp4"
 },
 {
         "id" : 6, 
         "videoTitle"   : "How to add/create Contacts",
-        "videoPath" : "https://video.nic.in/Create_Contact.mp4"
+        "videoPath" : "https://email.gov.in/videos/Create_Contact.mp4"
 },
 {
         "id" : 7, 
         "videoTitle"   : "How to Search mails and Saved Search",
-        "videoPath" : "https://video.nic.in/Search_Your_Content_and_Saved_Search_Tutorial.mp4"
+        "videoPath" : "https://email.gov.in/videos/Search_Your_Content_and_Saved_Search_Tutorial.mp4"
 },
 {
         "id" : 8, 
-        "videoTitle"   : "Mobile user-manual",
-        "videoPath" : "https://video.nic.in/android_mobile_user-manual.mp4"
+        "videoTitle"   : "How to install kavach application on android mobile",
+        "videoPath" : "https://email.gov.in/videos/android_mobile_user-manual.mp4"
 },
 {
         "id" : 9, 
-        "videoTitle"   : "IOS Mobile",
-        "videoPath" : "https://video.nic.in/iSO_Mobile.mp4"
+        "videoTitle"   : "How to install kavach application on iPhone",
+        "videoPath" : "https://email.gov.in/videos/iSO_Mobile.mp4"
 },
 {
         "id" : 10, 
-        "videoTitle"   : "How to add and delete country policy",
-        "videoPath" : "https://video.nic.in/kavach_add_and_delete_country_policy.mp4"
+        "videoTitle"   : "How to add/delete country policy for Geo fencing",
+        "videoPath" : "https://email.gov.in/videos/kavach_add_and_delete_country_policy.mp4"
 }
 ];
 
