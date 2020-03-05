@@ -25,25 +25,25 @@
  * Defines the Zimlet handler class.
  *
  */
-function Com_Zimbra_VC_Meeting_HandlerObject() {
+function Com_Zimbra_Vidyo_Conference_HandlerObject() {
 
         this._linkClicked = false;
 }
     
-Com_Zimbra_VC_Meeting_HandlerObject.prototype = new ZmZimletBase();
-Com_Zimbra_VC_Meeting_HandlerObject.prototype.constructor = Com_Zimbra_VC_Meeting_HandlerObject;
+Com_Zimbra_Vidyo_Conference_HandlerObject.prototype = new ZmZimletBase();
+Com_Zimbra_Vidyo_Conference_HandlerObject.prototype.constructor = Com_Zimbra_Vidyo_Conference_HandlerObject;
 
 /**
  * Simplify handler object
  *
  */
-var Com_Zimbra_VC_Meeting = Com_Zimbra_VC_Meeting_HandlerObject;
+var Com_Zimbra_Vidyo_Conference = Com_Zimbra_Vidyo_Conference_HandlerObject;
 
 /**
  * This method gets called by the Zimlet framework when single-click is performed.
  *  
  */
-Com_Zimbra_VC_Meeting.prototype.singleClicked =
+Com_Zimbra_Vidyo_Conference.prototype.singleClicked =
 function() {
         this._loadVCAppointment();
 };
@@ -52,7 +52,7 @@ function() {
  * This method gets called by the Zimlet framework when double-click is performed.
  *  
  */
-Com_Zimbra_VC_Meeting.prototype.doubleClicked =
+Com_Zimbra_Vidyo_Conference.prototype.doubleClicked =
 function() {
         this._loadVCAppointment();
 };
@@ -60,7 +60,7 @@ function() {
 /**
  * Displays Preferences dialog
  */
-Com_Zimbra_VC_Meeting.prototype._loadVCAppointment = function() {
+Com_Zimbra_Vidyo_Conference.prototype._loadVCAppointment = function() {
 
         /* TODO: This is DUMMY content for now, In next phase we will fetch content from backend API and remove it */
         var meetingContent = "Please join my room for VC meeting.\n\n";

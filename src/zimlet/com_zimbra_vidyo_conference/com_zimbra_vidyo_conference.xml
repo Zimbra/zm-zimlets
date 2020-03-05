@@ -1,4 +1,4 @@
-<zimlet name="com_zimbra_vc_meeting" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
+<zimlet name="com_zimbra_vidyo_conference" version="1.0" label="${msg.label}" description="${msg.description}" target="main">
 	<include>js/com_zimbra_vidyo_conference.js</include>
 	<handlerObject>Com_Zimbra_Vidyo_Conference</handlerObject>
 
