@@ -531,14 +531,14 @@ UnknownPersonSlide.prototype._getActionedContact =
 		// actionObject can be a ZmContact, a String, or a generic Object (phew!)
 		var contact;
 		var addr = this.emailZimlet._actionObject;
+		var cl;
 		if (addr) {
 			if (addr.isZmContact) {
 				contact = this._actionObject;
-			} else if (AjxUtil.isString(addr)) {
-				addr = this.emailZimlet._getAddress(addr);
-				contact = AjxDispatcher.run("GetContacts").getContactByEmail(addr);
 			} else {
-				contact = AjxDispatcher.run("GetContacts").getContactByEmail(addr.address);
+				address = AjxUtil.isString(addr) ? this.emailZimlet._getAddress(addr) : addr.address;
+				cl = AjxDispatcher.run("GetContacts");
+				contact = cl && cl.getContactByEmail(address) || null;
 			}
 		}
 		this._isNewContact = false;
