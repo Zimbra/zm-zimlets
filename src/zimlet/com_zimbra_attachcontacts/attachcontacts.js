@@ -163,8 +163,10 @@ function(parent, num){
 		menu = menu.getActionsMenu();
 		after = ZmOperation.NEW_MESSAGE;
 	}
-	this._addContactActionMenuItem(menu, after);
-	menu.enable(AttachContactsZimlet.SEND_CONTACTS, num > 0 && this._isOkayToAttach());
+	if (menu) {
+		this._addContactActionMenuItem(menu, after);
+		menu.enable(AttachContactsZimlet.SEND_CONTACTS, num > 0 && this._isOkayToAttach());
+	}
 };
 
 
