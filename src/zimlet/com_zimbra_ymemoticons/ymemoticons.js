@@ -60,23 +60,16 @@ function(msg, manager) {
 		this.enableInMail = Boolean(this.getUserProperty("yemoticons_enableInMail"));
 	}
 
-	if (msg && msg.folderId == ZmOrganizer.ID_CHATS) {
+	if (!manager.__hasSmileysHandler && this._isEnabled && this.enableInMail) {
 		manager.addHandler(this);
 		manager.sortHandlers();
 		manager.__hasSmileysHandler = true;
 	}
-	else { // for other mail folders
-		if (!manager.__hasSmileysHandler && this._isEnabled && this.enableInMail) {
-			manager.addHandler(this);
-			manager.sortHandlers();
-			manager.__hasSmileysHandler = true;
-		}
 
-		if (manager.__hasSmileysHandler && (!this._isEnabled || !this.enableInMail)) {
-			manager.removeHandler(this);
-			manager.sortHandlers();
-			manager.__hasSmileysHandler = false;
-		}
+	if (manager.__hasSmileysHandler && (!this._isEnabled || !this.enableInMail)) {
+		manager.removeHandler(this);
+		manager.sortHandlers();
+		manager.__hasSmileysHandler = false;
 	}
 };
 
