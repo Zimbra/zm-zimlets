@@ -73,7 +73,10 @@
 .Img_onthephone,
 .Img_away,
 .Img_vacation,
-.Img_unknown {
+.Img_unknown,
+.Img_active,
+.Img_idle,
+.Img_offline {
 	background:transparent no-repeat 0 0;
 	width:12px;
 	height:12px;
@@ -96,6 +99,18 @@
 .Img_vacation,
 .Img_unknown {
 	background-image: url("img/ImgPresenceBusy.png");
+}
+
+.Img_active {
+	background-image: url("img/ImgPresenceAvailable.png");
+}
+
+.Img_idle {
+	background-image: url("img/ImgPresenceIdle.png");
+}
+
+.Img_offline {
+	background-image: url("img/ImgPresenceOffline.png");
 }
 
 .ImgEmailZimlet_closeBtn {
