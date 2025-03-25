@@ -559,7 +559,7 @@ UnknownPersonSlide.prototype._getActionedContact =
 UnknownPersonSlide.prototype._isKnownPresenceCode =
     function(presence) {
          if (!this._presenceCodes){
-             var status_array = ["dnd", "vacation", "on-the-phone", "busy", "unavailable", "away", "available", "unknown"];
+             var status_array = ["dnd", "vacation", "on-the-phone", "busy", "unavailable", "away", "available", "active", "idle", "offline",  "unknown"];
              this._presenceCodes = {};
              for (var i=0; i < status_array.length; i++){
                  this._presenceCodes[status_array[i]] = true;
