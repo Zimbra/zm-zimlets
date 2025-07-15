@@ -13,7 +13,7 @@
   <dependency org="org.dom4j" name="dom4j" rev="${dom4j.version}" />
   <dependency org="org.apache.logging.log4j" name="log4j-core" rev="${log4j.core.version}" />
   <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${log4j.api.version}" />
-  <dependency org="com.unboundid" name="unboundid-ldapsdk" rev="2.3.5" />
+  <dependency org="com.unboundid" name="unboundid-ldapsdk" rev="7.0.3" />
   <dependency org="javax.servlet.jsp" name="jsp-api" rev="2.2.1-b03"/>
   
   <dependency org="zimbra" name="zm-common" rev="latest.integration" />
