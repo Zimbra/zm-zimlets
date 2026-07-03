@@ -1,0 +1,247 @@
+version: 2.1
+
+############################################################################
+
+references:
+   checkout_job_steps: &checkout_job_steps
+      steps:
+         - checkout
+         - run:
+            name: Cloning dependency repositories..
+            command: |
+               git clone -b develop --single-branch https://github.com/Zimbra/zm-zcs.git ~/zm-zcs
+               git clone -b master --single-branch https://github.com/Zimbra/zimbra-package-stub.git ~/zimbra-package-stub
+               git clone -b develop --single-branch https://github.com/Zimbra/zm-mailbox.git ~/zm-mailbox
+               git clone -b poc --single-branch https://$GITHUB_ACCESS_TOKEN@github.com/Zimbra/zm-nexus.git ~/zm-nexus
+               mkdir -p ~/.zcs-deps
+
+         - persist_to_workspace:
+            root: ..
+            paths:
+               - zm-zimlets
+               - zm-zcs
+               - zimbra-package-stub
+               - zm-mailbox
+               - zm-nexus
+               - .zcs-deps
+
+############################################################################
+
+   build_job_steps: &build_job_steps
+      steps:
+         - attach_workspace:
+            at: ..
+
+         - run:
+            name: Compiling required dependencies and creating artifacts..
+            command: |
+              mkdir -p /home/build/.ivy2/cache
+              sudo apt-get update && sudo apt-get install ant-contrib -y
+
+              VERSION="${BUILD_RELEASE_NO}_${CIRCLE_BUILD_NUM}"
+
+              MAJOR_VERSION=$(echo "$BUILD_RELEASE_NO" | cut -d'.' -f1)
+              MINOR_VERSION=$(echo "$BUILD_RELEASE_NO" | cut -d'.' -f2)
+              MICRO_TAG=$(echo "$BUILD_RELEASE_NO" | cut -d'.' -f3 | cut -d'_' -f1)
+
+              echo "VERSION=$VERSION"
+              echo "MAJOR=$MAJOR_VERSION MINOR=$MINOR_VERSION MICRO=$MICRO_TAG"
+
+              run_ant() {
+                JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 && export JAVA_HOME && \
+                ant \
+                  -Dzimbra.buildinfo.version="$VERSION" \
+                  -Dzimbra.buildinfo.majorversion="$MAJOR_VERSION" \
+                  -Dzimbra.buildinfo.minorversion="$MINOR_VERSION" \
+                  -Dzimbra.buildinfo.microtag="$MICRO_TAG" "$@"
+              }
+
+              cd ../zm-mailbox/
+              run_ant clean publish-local-all
+
+              cd ../zm-zimlets
+              run_ant clean jar
+
+         - run:
+            name: Packaging zimlets into individual ZIPs
+            command: |
+              cd ../zm-zimlets
+              JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+              ant package-zimlets
+
+              echo "--- ZIPs produced ---"
+              find build/dist/zimlets -name "*.zip" | sort
+
+         - persist_to_workspace:
+            root: ..
+            paths:
+               - zm-zimlets/build
+               - .zcs-deps
+
+############################################################################
+
+   publish_job_steps: &publish_job_steps
+      steps:
+         - attach_workspace:
+            at: ..
+
+         - run:
+            name: Publishing zm-zimlets JAR to Nexus.
+            command: |
+               mkdir -p /home/build/.ivy2/cache
+               sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl
+
+               cd ../zm-zimlets
+
+               GIT_TIMESTAMP=$(git log -1 --pretty=format:%at)
+               ARTIFACT_VERSION=$(echo "$BUILD_RELEASE_NO" | cut -d'_' -f1)
+               VERSION="${ARTIFACT_VERSION}.${GIT_TIMESTAMP}"
+
+               echo "Preparing the existing JAR for upload (version: $VERSION)"
+
+               cd build
+
+               ORIGINAL_JAR=$(find . -type f -name "*.jar" | head -n 1)
+
+               if [ -z "$ORIGINAL_JAR" ]; then
+                 echo "No JAR found!"
+                 exit 1
+               fi
+
+               MODULE="zm-zimlets"
+               TARGET_DIR="$HOME/.zcs-deps/zimbra/$MODULE"
+               mkdir -p "$TARGET_DIR"
+
+               FINAL_JAR="${MODULE}-${VERSION}.jar"
+               mv "$ORIGINAL_JAR" "$TARGET_DIR/$FINAL_JAR"
+
+               echo "Using previously built JAR: $TARGET_DIR/$FINAL_JAR"
+
+               export MODULE_LIST="$MODULE"
+               bash ~/zm-nexus/scripts/publish-jars-to-nexus.sh "$HOME/.zcs-deps/zimbra"
+               echo "JAR publish completed"
+
+         - run:
+            name: Publishing zm-zimlets ZIPs to Nexus (per-zimlet, versioned)
+            command: |
+               cd ../zm-zimlets
+
+               sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
+
+               ZIP_DIR="build/dist/zimlets"
+
+               ZIP_COUNT=$(find "$ZIP_DIR" -maxdepth 1 -type f -name "*.zip" | wc -l)
+               if [ "$ZIP_COUNT" -eq 0 ]; then
+                 echo "No ZIPs found under $ZIP_DIR!"
+                 exit 1
+               fi
+
+               echo "Found ${ZIP_COUNT} zimlet ZIPs to publish"
+
+               # The Nexus zip-artifacts repo has "Disable redeploy" set, so a
+               # static path/filename can only ever be written once. package-zimlets
+               # keeps each zip's filename static (e.g. com_zimbra_date.zip) but
+               # stamps the *version inside that zimlet's own XML* with this
+               # build's buildinfo version + timestamp (see set-buildinfo-vars /
+               # package-zimlet in build.xml). So we pull the version back out of
+               # each zip's XML and publish under a version-specific subfolder,
+               # same pattern as zm-versioncheck-admin-zimlet.
+
+               FAILED=0
+
+               for zip in "$ZIP_DIR"/*.zip; do
+                 [ -f "$zip" ] || continue
+
+                 zimlet_name=$(basename "$zip" .zip)
+
+                 zimlet_version=$(unzip -p "$zip" "${zimlet_name}.xml" 2>/dev/null \
+                   | grep -o 'version="[^"]*"' | head -n1 | cut -d'"' -f2)
+
+                 if [ -z "$zimlet_version" ]; then
+                   echo "WARNING: could not read version from ${zimlet_name}.xml inside $zip, skipping"
+                   FAILED=1
+                   continue
+                 fi
+
+                 echo "Publishing ${zimlet_name} version ${zimlet_version}"
+
+                 UPLOAD_DIR=$(mktemp -d)
+                 cp "$zip" "$UPLOAD_DIR/"
+
+                 bash ~/zm-nexus/scripts/publish-zip-to-nexus.sh \
+                   "$UPLOAD_DIR" \
+                   "zm-zimlets/${zimlet_name}/${zimlet_version}"
+
+                 rm -rf "$UPLOAD_DIR"
+               done
+
+               if [ "$FAILED" -eq 1 ]; then
+                 echo "One or more zimlets failed to publish - see warnings above"
+                 exit 1
+               fi
+
+               echo "ZIP publish completed"
+
+############################################################################
+
+jobs:
+   checkout:
+      working_directory: ~/zm-zimlets
+      shell: /bin/bash -eo pipefail
+      docker:
+      - image: $DOCKER_REGISTRY/zm-base-os:devcore-ubuntu-22.04
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+      resource_class: small
+      <<: *checkout_job_steps
+
+   build:
+      working_directory: ~/zm-zimlets
+      shell: /bin/bash -eo pipefail
+      docker:
+      - image: $DOCKER_REGISTRY/zm-base-os:devcore-ubuntu-22.04
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+      resource_class: medium
+      <<: *build_job_steps
+
+   publish:
+      working_directory: ~/zm-zimlets
+      shell: /bin/bash -eo pipefail
+      circleci_ip_ranges: true
+      docker:
+      - image: $DOCKER_REGISTRY/zm-base-os:devcore-ubuntu-22.04
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+      resource_class: small
+      <<: *publish_job_steps
+
+############################################################################
+
+workflows:
+   version: 2
+   main:
+      jobs:
+         - checkout:
+            context:
+               - docker-dev-registry
+         - build:
+            context:
+               - build-info
+               - docker-dev-registry
+            requires:
+               - checkout
+         - publish:
+            context:
+               - docker-dev-registry
+               - build-info
+               - nexus-dev-artifactory
+            requires:
+               - build
+            filters:
+               branches:
+                 only:
+                   - ZCICD-48
