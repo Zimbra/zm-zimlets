@@ -67,7 +67,7 @@ references:
             command: |
               cd ../zm-zimlets
               JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-              ant package-zimlets
+              ant -Dzimbra.buildinfo.version="$BUILD_RELEASE_NO" package-zimlets
 
               echo "--- ZIPs produced ---"
               find build/dist/zimlets -name "*.zip" | sort
@@ -126,7 +126,7 @@ references:
             command: |
                cd ../zm-zimlets
 
-               sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
+               sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl
 
                ZIP_DIR="build/dist/zimlets"
 
@@ -138,14 +138,14 @@ references:
 
                echo "Found ${ZIP_COUNT} zimlet ZIPs to publish"
 
-               # The Nexus zip-artifacts repo has "Disable redeploy" set, so a
-               # static path/filename can only ever be written once. package-zimlets
-               # keeps each zip's filename static (e.g. com_zimbra_date.zip) but
-               # stamps the *version inside that zimlet's own XML* with this
-               # build's buildinfo version + timestamp (see set-buildinfo-vars /
-               # package-zimlet in build.xml). So we pull the version back out of
-               # each zip's XML and publish under a version-specific subfolder,
-               # same pattern as zm-versioncheck-admin-zimlet.
+               # package-zimlet copies each zimlet's source into a tempdir and
+               # ONLY THERE appends buildinfo+timestamp to the version before
+               # zipping - the original source XML under src/zimlet/ is never
+               # touched. So we read the plain version straight from source
+               # (same file the inventory sheet's "Version Source" column
+               # points to) instead of from the built zip, and publish under
+               # that plain version - e.g. zm-zimlets/com_zimbra_date/2.7/...
+               # matching the zm-viewmail-admin-zimlet pattern.
 
                FAILED=0
 
@@ -153,12 +153,18 @@ references:
                  [ -f "$zip" ] || continue
 
                  zimlet_name=$(basename "$zip" .zip)
+                 src_xml="src/zimlet/${zimlet_name}/${zimlet_name}.xml"
 
-                 zimlet_version=$(unzip -p "$zip" "${zimlet_name}.xml" 2>/dev/null \
-                   | grep -o 'version="[^"]*"' | head -n1 | cut -d'"' -f2)
+                 if [ ! -f "$src_xml" ]; then
+                   echo "WARNING: source XML not found for ${zimlet_name} at $src_xml, skipping"
+                   FAILED=1
+                   continue
+                 fi
+
+                 zimlet_version=$(grep -o 'version="[^"]*"' "$src_xml" | head -n1 | cut -d'"' -f2)
 
                  if [ -z "$zimlet_version" ]; then
-                   echo "WARNING: could not read version from ${zimlet_name}.xml inside $zip, skipping"
+                   echo "WARNING: could not read version from $src_xml, skipping"
                    FAILED=1
                    continue
                  fi
