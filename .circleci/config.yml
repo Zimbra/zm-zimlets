@@ -12,7 +12,7 @@ references:
                git clone -b develop --single-branch https://github.com/Zimbra/zm-zcs.git ~/zm-zcs
                git clone -b master --single-branch https://github.com/Zimbra/zimbra-package-stub.git ~/zimbra-package-stub
                git clone -b develop --single-branch https://github.com/Zimbra/zm-mailbox.git ~/zm-mailbox
-               git clone -b poc --single-branch https://$GITHUB_ACCESS_TOKEN@github.com/Zimbra/zm-nexus.git ~/zm-nexus
+               git clone -b master --single-branch https://$GITHUB_ACCESS_TOKEN@github.com/Zimbra/zm-nexus.git ~/zm-nexus
                mkdir -p ~/.zcs-deps
 
          - persist_to_workspace:
@@ -69,7 +69,7 @@ references:
               JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
               ant -Dzimbra.buildinfo.version="$BUILD_RELEASE_NO" package-zimlets
 
-              echo "--- ZIPs produced ---"
+              echo "--- ZIPs created ---"
               find build/dist/zimlets -name "*.zip" | sort
 
          - persist_to_workspace:
@@ -138,14 +138,7 @@ references:
 
                echo "Found ${ZIP_COUNT} zimlet ZIPs to publish"
 
-               # package-zimlet copies each zimlet's source into a tempdir and
-               # ONLY THERE appends buildinfo+timestamp to the version before
-               # zipping - the original source XML under src/zimlet/ is never
-               # touched. So we read the plain version straight from source
-               # (same file the inventory sheet's "Version Source" column
-               # points to) instead of from the built zip, and publish under
-               # that plain version - e.g. zm-zimlets/com_zimbra_date/2.7/...
-               # matching the zm-viewmail-admin-zimlet pattern.
+               # read the version straight from source XML under src/zimlet/
 
                FAILED=0
 
@@ -250,4 +243,4 @@ workflows:
             filters:
                branches:
                  only:
-                   - ZCICD-48
+                   - develop
