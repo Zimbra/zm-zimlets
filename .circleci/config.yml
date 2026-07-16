@@ -167,7 +167,7 @@ references:
                  UPLOAD_DIR=$(mktemp -d)
                  cp "$zip" "$UPLOAD_DIR/"
 
-                 bash ~/zm-nexus/scripts/publish-zip-to-nexus.sh \
+                 bash ~/zm-nexus/scripts/publish-raw-artifacts-to-nexus.sh \
                    "$UPLOAD_DIR" \
                    "zm-zimlets/${zimlet_name}/${zimlet_version}"
 
